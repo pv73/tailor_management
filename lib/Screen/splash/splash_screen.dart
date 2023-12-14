@@ -18,7 +18,7 @@ class _Splash_ScreenState extends State<Splash_Screen> {
   void initState() {
     super.initState();
 
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 2), () {
       if (FirebaseAuth.instance.currentUser != null) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Navigation_Bar()));
@@ -53,7 +53,7 @@ class _Splash_ScreenState extends State<Splash_Screen> {
         )),
         child: Center(
           child: Image.asset("assets/images/logo/logo.png",
-              width: mq.size.width * 0.7),
+              width: mq.size.width * 0.6),
         ),
       );
     });

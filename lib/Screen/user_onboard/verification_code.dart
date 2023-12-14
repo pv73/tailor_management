@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tailor/Screen/navigation_screen/navigation_bar.dart';
 import 'package:tailor/Screen/user_onboard/language_screen.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
-import 'package:tailor/controller/firebase_connection.dart';
 import 'package:tailor/cubits/auth_cubit/auth_cubit.dart';
 import 'package:tailor/cubits/auth_cubit/auth_state.dart';
 import 'package:tailor/ui_Helper.dart';
@@ -31,23 +30,12 @@ class _Verification_Code extends State<Verification_Code> {
 
   int _Counter = 30;
   late Timer _timer;
-  String UserId = "";
+  String? UserId;
 
   @override
   void initState() {
     super.initState();
     startTimer();
-    _getUserId();
-    userData = getUserData(UserId);
-  }
-
-  // Function to retrieve the UserId from shared preferences
-  Future<void> _getUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      UserId = prefs.getString('UserId').toString();
-      userData = getUserData(UserId);
-    });
   }
 
   void startTimer() {
@@ -65,7 +53,6 @@ class _Verification_Code extends State<Verification_Code> {
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -110,107 +97,76 @@ class _Verification_Code extends State<Verification_Code> {
 
               heightSpacer(mHeight: mq.size.height * 0.05),
 
-              FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  future: userData,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Text("Error: ${snapshot.hasError}");
-                    } else {
-                      //
-                      // all data Store in userData from userId fields
-                      var userData = snapshot.data?.data();
-                      return Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(color: AppColor.textColorBlue),
-                          ),
-                          child: Column(
-                            children: [
-                              Text("Enter the OTP you received",
-                                  style: mTextStyle17()),
-                              heightSpacer(mHeight: 20),
-                              SizedBox(
-                                height: 45,
-                                child: TextField(
-                                  controller: otpController,
-                                  maxLength: 6,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: mInputDecoration(
-                                    radius: 5,
-                                    mCounterText: "",
-                                    padding:
-                                        EdgeInsets.only(bottom: 10, left: 10),
-                                  ),
-                                ),
-                              ),
-
-                              /// Button Continue ///
-                              heightSpacer(mHeight: 20),
-                              BlocConsumer<AuthCubit, AuthState>(
-                                listener: (context, state) {
-                                  // TODO: implement listener
-                                  if (state is AuthLoggedInState) {
-                                    _timer.cancel();
-
-                                    Navigator.popUntil(
-                                        context, (route) => route.isFirst);
-                                    if (userData?['final_submit'] == true) {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              Navigation_Bar(),
-                                        ),
-                                      );
-                                    } else {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              Language_Screen(),
-                                        ),
-                                      );
-                                    }
-                                  } else if (state is AuthErrorState) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Colors.red,
-                                        content: Text(state.error),
-                                        duration: Duration(seconds: 2),
-                                      ),
-                                    );
-                                  }
-                                },
-                                builder: (context, state) {
-                                  if (state is AuthLoadingState) {
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                  return Rounded_Btn_Widget(
-                                    mHeight: 40,
-                                    onPress: () {
-                                      BlocProvider.of<AuthCubit>(context)
-                                          .verifyOTP(otpController.text);
-                                    },
-                                    btnBgColor: AppColor.btnBgColorGreen,
-                                    title: "Verify OTP",
-                                    mAlignment: Alignment.center,
-                                    mTextColor: AppColor.textColorWhite,
-                                  );
-                                },
-                              )
-                            ],
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: AppColor.textColorBlue),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("Enter the OTP you received", style: mTextStyle17()),
+                      heightSpacer(mHeight: 20),
+                      SizedBox(
+                        height: 45,
+                        child: TextField(
+                          controller: otpController,
+                          maxLength: 6,
+                          keyboardType: TextInputType.phone,
+                          decoration: mInputDecoration(
+                            radius: 5,
+                            mCounterText: "",
+                            padding: EdgeInsets.only(bottom: 10, left: 10),
                           ),
                         ),
-                      );
-                    }
-                  }),
+                      ),
+
+                      /// Button Continue ///
+                      heightSpacer(mHeight: 20),
+                      BlocConsumer<AuthCubit, AuthState>(
+                        listener: (context, state) async {
+                          // TODO: implement listener
+                          if (state is AuthLoggedInState) {
+                            _timer.cancel();
+
+                            //
+                            _isFinalSubmitCheck(context);
+                            //
+                          } else if (state is AuthErrorState) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(state.error),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is AuthLoadingState) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return Rounded_Btn_Widget(
+                            mHeight: 40,
+                            onPress: () {
+                              BlocProvider.of<AuthCubit>(context)
+                                  .verifyOTP(otpController.text);
+                            },
+                            btnBgColor: AppColor.btnBgColorGreen,
+                            title: "Verify OTP",
+                            mAlignment: Alignment.center,
+                            mTextColor: AppColor.textColorWhite,
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
 
               /// timer Text //
               heightSpacer(),
@@ -239,5 +195,62 @@ class _Verification_Code extends State<Verification_Code> {
         ),
       ),
     );
+  }
+
+  ///   verify login
+  _isFinalSubmitCheck(context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      UserId = prefs.getString('UserId').toString();
+    });
+
+    print("UserId check ${UserId}");
+
+    // Check for the "final_submit" field in Firebase Database
+    try {
+      // Reference to the Firestore collection
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('clients');
+
+      // Get the document with the specified userId
+      DocumentSnapshot userSnapshot = await users.doc(UserId).get();
+
+      // Check if the document exists
+      if (userSnapshot.exists) {
+        // Get the document data
+        var userData = userSnapshot.data() as Map<String, dynamic>?;
+
+        // Check if the 'final_submit' field exists and is not null
+        if (userData != null && userData['final_submit'] != null) {
+          // 'final_submit' field exists
+          print('true');
+
+          var prefs = await SharedPreferences.getInstance();
+          prefs.setBool("final_submit", true);
+
+          Navigator.popUntil(context, (route) => route.isFirst);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Navigation_Bar(),
+            ),
+          );
+        } else {
+          // 'final_submit' field does not exist or is null
+          print('not find field');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Language_Screen(),
+            ),
+          );
+        }
+      } else {
+        // Document with the specified userId does not exist
+        print('not find field');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
 
 // ------------------------------------ //
@@ -28,7 +29,7 @@ TextStyle mTextStyle10(
     {Color mColor = AppColor.textColorBlack,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 10,
+    fontSize: 10.0.sp,
     color: mColor,
     fontWeight: mFontWeight,
     // fontFamily: 'Acumin Variable'
@@ -39,7 +40,7 @@ TextStyle mTextStyle12(
     {Color mColor = AppColor.textColorBlack,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 12,
+    fontSize: 12.0.sp,
     color: mColor,
     fontWeight: mFontWeight,
     // fontFamily: 'Acumin Variable'
@@ -48,20 +49,22 @@ TextStyle mTextStyle12(
 
 TextStyle mTextStyle13(
     {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+    FontWeight mFontWeight = FontWeight.normal,
+    double letterSpacing = 0.0}) {
   return TextStyle(
-    fontSize: 13,
-    color: mColor,
-    fontWeight: mFontWeight,
-    // fontFamily: 'Acumin Variable'
-  );
+      fontSize: 13.sp,
+      color: mColor,
+      fontWeight: mFontWeight,
+      letterSpacing: letterSpacing
+      // fontFamily: 'Acumin Variable'
+      );
 }
 
 TextStyle mTextStyle14(
     {Color mColor = AppColor.textColorBlack,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 14,
+    fontSize: 14.sp,
     color: mColor,
     fontWeight: mFontWeight,
     // fontFamily: 'Acumin Variable'

@@ -1,14 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tailor/Screen/Home/Home_page_details/job_referral_details.dart';
 import 'package:tailor/Screen/user_onboard/number_login_screen.dart';
 import 'package:tailor/app_widget/activity_widget.dart';
 import 'package:tailor/app_widget/panding_task_widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
+import 'package:tailor/controller/firebase_connection.dart';
 import 'package:tailor/cubits/auth_cubit/auth_cubit.dart';
 import 'package:tailor/cubits/auth_cubit/auth_state.dart';
 import 'package:tailor/dynimic_list/job_referral_list.dart';
-
 import '../../ui_helper.dart';
 
 class Home_Page extends StatefulWidget {
@@ -17,8 +22,28 @@ class Home_Page extends StatefulWidget {
 }
 
 class _Home_PageState extends State<Home_Page> {
+  //
+  late Stream<QuerySnapshot<Map<String, dynamic>>> clientsStream;
+
+  //
   late MediaQueryData mq;
   int activeIndex = 0;
+  String? UserId;
+
+  @override
+  void initState() {
+    super.initState();
+    // _getUserId();
+    clientsStream = FirebaseProvider().getClients();
+  }
+
+  // Function to retrieve the UserId from shared preferences
+  // Future<void> _getUserId() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     UserId = prefs.getString('UserId');
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +133,7 @@ class _Home_PageState extends State<Home_Page> {
                     // Attendance Box
                     heightSpacer(),
                     Container(
-                      // Adjust the height as needed
-                      height: 188,
-                      child: PageView(
+                      child: ExpandablePageView(
                         onPageChanged: (index) {
                           setState(() {
                             activeIndex = index;
@@ -131,7 +154,6 @@ class _Home_PageState extends State<Home_Page> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    //
                                     Activity_Widget(
                                       mImage:
                                           "assets/images/logo/ic_attendence.png",
@@ -191,7 +213,7 @@ class _Home_PageState extends State<Home_Page> {
                                   style: mTextStyle15(
                                       mFontWeight: FontWeight.w600),
                                 ),
-                                heightSpacer(mHeight: 15),
+                                heightSpacer(mHeight: 15.h),
                                 Row(
                                   children: [
                                     // 1st container
@@ -204,7 +226,7 @@ class _Home_PageState extends State<Home_Page> {
                                     ),
 
                                     // 2nd Container
-                                    widthSpacer(mWidth: 8),
+                                    widthSpacer(mWidth: 8.w),
                                     Today_Activity(
                                       mIcon: Icons.arrow_circle_left_outlined,
                                       mText: "Check Out",
@@ -266,10 +288,12 @@ class _Home_PageState extends State<Home_Page> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Complete Your pending tasks",
-                                style:
-                                    mTextStyle17(mFontWeight: FontWeight.w500),
+                              FittedBox(
+                                child: Text(
+                                  "Complete Your pending tasks",
+                                  style: mTextStyle17(
+                                      mFontWeight: FontWeight.w500),
+                                ),
                               ),
                               heightSpacer(mHeight: 2),
                               FittedBox(
@@ -289,7 +313,7 @@ class _Home_PageState extends State<Home_Page> {
                     // Complete pending tasks slider
                     heightSpacer(),
                     Container(
-                      height: 93,
+                      height: 75.h,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
@@ -325,315 +349,389 @@ class _Home_PageState extends State<Home_Page> {
                 ),
               ),
 
-              // Down image
-              // Without Padding
+              // business image
               Container(
+                child: Image.asset("assets/images/banner/img_business.jpg"),
+              ),
+
+              // Get a Job referral Section
+              heightSpacer(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                color: AppColor.bgColorBlue,
                 child: Column(
                   children: [
-                    // business image
-                    Container(
-                      child:
-                          Image.asset("assets/images/banner/img_business.jpg"),
+                    // get a job Heading
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: Text(
+                            "Get a job referral from peers from tailor management",
+                            style: mTextStyle17(mFontWeight: FontWeight.w500),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Image.asset(
+                            "assets/images/banner/job_image.png",
+                          ),
+                        )
+                      ],
                     ),
 
-                    // Get a Job referral Section
-                    heightSpacer(),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      color: AppColor.bgColorBlue,
-                      child: Column(
-                        children: [
-                          // get a job Heading
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 6,
-                                child: Text(
-                                  "Get a job referral from peers from tailor management",
-                                  style: mTextStyle17(
-                                      mFontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Image.asset(
-                                  "assets/images/banner/job_image.png",
-                                ),
-                              )
-                            ],
-                          ),
+                    // Get a job Card
+                    heightSpacer(mHeight: 5),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: clientsStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("${snapshot.hasError}");
+                        } else if (snapshot.hasData) {
+                          clients_data.clear();
+                          for (DocumentSnapshot doc in snapshot.data!.docs) {
+                            clients_data.add(doc.data());
+                          }
 
-                          // Get a job Card
-                          heightSpacer(mHeight: 5),
-                          Container(
-                            height: 240,
+                          return Container(
+                            height: 220.h,
                             child: ListView.builder(
-                              itemCount: referral_list.length,
+                              shrinkWrap: true,
+                              itemCount: clients_data.length > 6
+                                  ? 6
+                                  : clients_data.length,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, jobIndex) {
+                                //
+                                var nameText = getInitials(
+                                    clients_data[jobIndex]['user_name']!
+                                        .toUpperCase());
+                                var field_data = clients_data[jobIndex];
+                                //
                                 return Container(
-                                  width: 155,
-                                  child: Card(
-                                    color: AppColor.textColorWhite,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: Column(
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor:
-                                                AppColor.textColorBlue,
-                                            radius: 25,
-                                            child: Text(
-                                              getInitials(
-                                                  referral_list[jobIndex]
-                                                      ['name']!),
-                                              style: mTextStyle18(
-                                                  mFontWeight: FontWeight.w700,
-                                                  mColor:
-                                                      AppColor.textColorWhite),
+                                  width: 148.h,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Job_Referral_Details(
+                                                  index: jobIndex),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      color: AppColor.textColorWhite,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15),
+                                        child: Column(
+                                          children: [
+                                            field_data['profile_pic'] == null
+                                                ? CircleAvatar(
+                                                    backgroundColor:
+                                                        AppColor.textColorBlue,
+                                                    radius: 25,
+                                                    child: Text(
+                                                      nameText,
+                                                      style: mTextStyle18(
+                                                          mFontWeight:
+                                                              FontWeight.w700,
+                                                          mColor: AppColor
+                                                              .textColorWhite),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  )
+                                                : CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundImage:
+                                                        NetworkImage(
+                                                      field_data['profile_pic'],
+                                                    ),
+                                                  ),
+
+                                            //
+                                            heightSpacer(mHeight: 7),
+                                            Text(
+                                              field_data['user_name']
+                                                  .toString(),
+                                              style: mTextStyle15(
+                                                  mFontWeight: FontWeight.w600),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                          heightSpacer(mHeight: 7),
-                                          Text(
-                                            referral_list[jobIndex]['name']
-                                                .toString(),
-                                            style: mTextStyle15(
-                                                mFontWeight: FontWeight.w600),
-                                          ),
-                                          heightSpacer(mHeight: 7),
-                                          Text(
-                                            referral_list[jobIndex]['skills']
-                                                .toString(),
-                                            style: mTextStyle12(),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          heightSpacer(mHeight: 7),
-                                          Text(
-                                            referral_list[jobIndex]
-                                                    ['company_name']
-                                                .toString(),
-                                            style: mTextStyle12(),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Spacer(),
-                                          Rounded_Btn_Widget(
-                                            title: "Ask for eferral",
-                                            mFontWeight: FontWeight.w600,
-                                            mfontSize: 11,
-                                            mAlignment: Alignment.center,
-                                            btnBgColor: AppColor.cardBtnBgGreen,
-                                            mHeight: 25,
-                                            onPress: () {
-                                              print(jobIndex);
-                                              print(referral_list[jobIndex]
-                                                      ['name']
-                                                  .toString());
-                                              setState(() {});
-                                            },
-                                          )
-                                        ],
+                                            heightSpacer(mHeight: 7),
+                                            field_data['skills'] == null
+                                                ? Container()
+                                                : buildSkills(
+                                                    field_data['skills']),
+
+                                            //
+                                            heightSpacer(mHeight: 7),
+                                            field_data['experience_company']
+                                                    .isEmpty
+                                                ? Container()
+                                                : Text(
+                                                    field_data[
+                                                            'experience_company']
+                                                        .toString(),
+                                                    style: mTextStyle12(),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+
+                                            //
+                                            Spacer(),
+                                            Rounded_Btn_Widget(
+                                              title: "Ask for eferral",
+                                              mFontWeight: FontWeight.w600,
+                                              mfontSize: 11,
+                                              mAlignment: Alignment.center,
+                                              btnBgColor:
+                                                  AppColor.cardBtnBgGreen,
+                                              mHeight: 25,
+                                              onPress: () {
+                                                setState(() {});
+                                              },
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 );
                               },
                             ),
-                          ),
-
-                          //
-                          heightSpacer(),
-                          Rounded_Btn_Widget(
-                            title: "View All",
-                            mAlignment: Alignment.center,
-                            mHeight: 30,
-                            btnBgColor: AppColor.textColorWhite,
-                            mTextColor: AppColor.cardBtnBgGreen,
-                            onPress: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Only Image
-                    heightSpacer(),
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(5),
-                      child: Image.asset(
-                        "assets/images/banner/working_home.jpg",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-
-                    // People from Your field
-                    heightSpacer(),
-                    Container(
-                      width: double.infinity,
-                      color: Colors.blue.shade50,
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        "People from your filed",
-                        style: mTextStyle17(mFontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      color: Colors.blue.shade50,
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        itemCount:
-                            referral_list.length > 4 ? 4 : referral_list.length,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 5,
-                            mainAxisExtent: 240),
-                        itemBuilder: (context, releted_job_Index) {
-                          return Container(
-                            child: Card(
-                              color: AppColor.textColorWhite,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: AppColor.textColorBlue,
-                                      child: Text(
-                                        getInitials(
-                                            referral_list[releted_job_Index]
-                                                ['name']!),
-                                        style: mTextStyle18(
-                                            mFontWeight: FontWeight.w700,
-                                            mColor: AppColor.textColorWhite),
-                                      ),
-                                    ),
-                                    heightSpacer(mHeight: 7),
-                                    Text(
-                                      referral_list[releted_job_Index]['name']
-                                          .toString(),
-                                      style: mTextStyle15(
-                                          mFontWeight: FontWeight.w600),
-                                    ),
-                                    heightSpacer(mHeight: 7),
-                                    Text(
-                                      referral_list[releted_job_Index]['skills']
-                                          .toString(),
-                                      style: mTextStyle12(),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    heightSpacer(mHeight: 7),
-                                    Text(
-                                      referral_list[releted_job_Index]
-                                              ['company_name']
-                                          .toString(),
-                                      style: mTextStyle12(),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Spacer(),
-                                    Rounded_Btn_Widget(
-                                      title: "Ask for eferral",
-                                      mFontWeight: FontWeight.w600,
-                                      mfontSize: 12,
-                                      mAlignment: Alignment.center,
-                                      btnBgColor: AppColor.cardBtnBgGreen,
-                                      mHeight: 25,
-                                      onPress: () {
-                                        print(releted_job_Index);
-                                        print(referral_list[releted_job_Index]
-                                                ['name']
-                                            .toString());
-                                        setState(() {});
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
                           );
-                        },
-                      ),
+                        }
+
+                        //
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     ),
 
-                    // Recommended Job Section
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: Text(
-                              "Recommended Jobs",
-                              style: mTextStyle17(mFontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          heightSpacer(mHeight: 2),
-                          Container(
-                            width: double.infinity,
-                            child: Text(
-                              "Jobs based on your preferences",
-                              style: mTextStyle15(
-                                mFontWeight: FontWeight.w400,
-                                mColor: AppColor.textColorLightBlack,
-                              ),
-                            ),
-                          ),
-                          heightSpacer(mHeight: 15),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Recomnd_job_Widget(
-                                    mTitle: "From home",
-                                    mIcon:
-                                        "assets/images/logo/ic_work_home.png",
-                                    mOnPressed: () {
-                                      print("From Home");
-                                    }),
-                              ),
-                              Expanded(
-                                child: Recomnd_job_Widget(
-                                    mTitle: "Part Time",
-                                    mIcon:
-                                        "assets/images/logo/ic_part_time.png",
-                                    mIcon_width: 48,
-                                    mOnPressed: () {
-                                      print("Part Time");
-                                    }),
-                              ),
-                              Expanded(
-                                child: Recomnd_job_Widget(
-                                    mTitle: "Night Shift",
-                                    mIcon:
-                                        "assets/images/logo/ic_night_shift.png",
-                                    mIcon_width: 60,
-                                    mOnPressed: () {
-                                      print("Night Shift");
-                                    }),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // only  image name img_2
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      color: Colors.blue.shade50,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset("assets/images/banner/img_2.jpg")),
+                    //
+                    heightSpacer(),
+                    Rounded_Btn_Widget(
+                      title: "View All",
+                      mAlignment: Alignment.center,
+                      mHeight: 30,
+                      btnBgColor: AppColor.textColorWhite,
+                      mTextColor: AppColor.cardBtnBgGreen,
+                      onPress: () {},
                     ),
                   ],
                 ),
               ),
+
+              // Only Image
+              heightSpacer(),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(5),
+                child: Image.asset(
+                  "assets/images/banner/working_home.jpg",
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              // People from Your field
+              heightSpacer(),
+              Container(
+                width: double.infinity,
+                color: Colors.blue.shade50,
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "People from your filed",
+                  style: mTextStyle17(mFontWeight: FontWeight.w500),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.blue.shade50,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount:
+                      referral_list.length > 4 ? 4 : referral_list.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                      mainAxisExtent: 220.h),
+                  itemBuilder: (context, releted_job_Index) {
+                    return Container(
+                      child: Card(
+                        color: AppColor.textColorWhite,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 25,
+                                backgroundColor: AppColor.textColorBlue,
+                                child: Text(
+                                  getInitials(referral_list[releted_job_Index]
+                                      ['name']!),
+                                  style: mTextStyle18(
+                                      mFontWeight: FontWeight.w700,
+                                      mColor: AppColor.textColorWhite),
+                                ),
+                              ),
+                              heightSpacer(mHeight: 7),
+                              Text(
+                                referral_list[releted_job_Index]['name']
+                                    .toString(),
+                                style:
+                                    mTextStyle15(mFontWeight: FontWeight.w600),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              heightSpacer(mHeight: 7),
+                              Text(
+                                referral_list[releted_job_Index]['skills']
+                                    .toString(),
+                                style: mTextStyle12(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                              heightSpacer(mHeight: 7),
+                              Text(
+                                referral_list[releted_job_Index]['company_name']
+                                    .toString(),
+                                style: mTextStyle12(),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Spacer(),
+                              Rounded_Btn_Widget(
+                                title: "Ask for eferral",
+                                mFontWeight: FontWeight.w600,
+                                mfontSize: 12,
+                                mAlignment: Alignment.center,
+                                btnBgColor: AppColor.cardBtnBgGreen,
+                                mHeight: 25,
+                                onPress: () {
+                                  print(releted_job_Index);
+                                  print(referral_list[releted_job_Index]['name']
+                                      .toString());
+                                  setState(() {});
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Recommended Job Section
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        "Recommended Jobs",
+                        style: mTextStyle17(mFontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    heightSpacer(mHeight: 2),
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        "Jobs based on your preferences",
+                        style: mTextStyle15(
+                          mFontWeight: FontWeight.w400,
+                          mColor: AppColor.textColorLightBlack,
+                        ),
+                      ),
+                    ),
+                    heightSpacer(mHeight: 15),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Recomnd_job_Widget(
+                              mTitle: "From home",
+                              mIcon: "assets/images/logo/ic_work_home.png",
+                              mOnPressed: () {
+                                print("From Home");
+                              }),
+                        ),
+                        Expanded(
+                          child: Recomnd_job_Widget(
+                              mTitle: "Part Time",
+                              mIcon: "assets/images/logo/ic_part_time.png",
+                              mIcon_width: 48,
+                              mOnPressed: () {
+                                print("Part Time");
+                              }),
+                        ),
+                        Expanded(
+                          child: Recomnd_job_Widget(
+                              mTitle: "Night Shift",
+                              mIcon: "assets/images/logo/ic_night_shift.png",
+                              mIcon_width: 60,
+                              mOnPressed: () {
+                                print("Night Shift");
+                              }),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // only  image name img_2
+              Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.blue.shade50,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset("assets/images/banner/img_2.jpg")),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // ==========================================
+  //          Skills build
+  Widget buildSkills(List<dynamic> skills) {
+    return Wrap(
+      direction: Axis.horizontal,
+      alignment: WrapAlignment.start,
+      children: List.generate(
+        skills.length > 1 ? 1 : skills.length,
+        (index) {
+          return Container(
+            padding: EdgeInsets.only(right: 4),
+            child: Text(
+              "${skills[index]},",
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: mTextStyle12(
+                mFontWeight: FontWeight.w500,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

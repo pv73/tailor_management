@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/ui_Helper.dart';
 
@@ -19,9 +20,9 @@ void bottom_Sheet_Widget(context, mq) {
     context: context,
     builder: (context) {
       return Container(
-        height: mq.size.height > 806
-            ? mq.size.height * 0.60
-            : mq.size.height * 0.90,
+        height: mq.size.height > 800
+            ? mq.size.height * 0.65.h
+            : mq.size.height * 0.92.h,
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(
@@ -35,7 +36,6 @@ void bottom_Sheet_Widget(context, mq) {
               alignment: Alignment.topRight,
               child: InkWell(
                 onTap: () {
-                  print(mq);
                   Navigator.pop(context);
                 },
                 child: Container(
@@ -66,6 +66,8 @@ void bottom_Sheet_Widget(context, mq) {
               style: mTextStyle19(
                   mFontWeight: FontWeight.w500,
                   mColor: AppColor.textColorBlack),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             heightSpacer(),
             Text(
@@ -73,6 +75,8 @@ void bottom_Sheet_Widget(context, mq) {
               style: mTextStyle14(
                   mFontWeight: FontWeight.normal,
                   mColor: AppColor.textColorLightBlack),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
 
             //
@@ -97,15 +101,19 @@ void bottom_Sheet_Widget(context, mq) {
                   color: Colors.amber,
                 ),
               ),
-              title: Text(
-                "Keep your profile updated to get invites",
-                style: mTextStyle15(),
+              title: FittedBox(
+                child: Text(
+                  "Keep your profile updated to get invites",
+                  style: mTextStyle15(),
+                ),
               ),
               subtitle: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
                   "Tailor Management recommend your profile to HR so keep it updated to get selected by HR.",
-                  style: mTextStyle13(mColor: AppColor.textColorLightBlack),
+                  style: mTextStyle14(mColor: AppColor.textColorLightBlack),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
@@ -124,15 +132,19 @@ void bottom_Sheet_Widget(context, mq) {
                   color: Colors.purple,
                 ),
               ),
-              title: Text(
-                "Accept/reject the interview invite",
-                style: mTextStyle15(),
+              title: FittedBox(
+                child: Text(
+                  "Accept/reject the interview invite",
+                  style: mTextStyle15(),
+                ),
               ),
               subtitle: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
                   "Accept or decline the interview invite to show you interest in the role",
-                  style: mTextStyle13(mColor: AppColor.textColorLightBlack),
+                  style: mTextStyle14(mColor: AppColor.textColorLightBlack),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
@@ -158,9 +170,10 @@ void bottom_Sheet_Widget(context, mq) {
               subtitle: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
-                  "If interested, connect with HR through Call or WhatsApp to discuss on next steps",
-                  style: mTextStyle13(mColor: AppColor.textColorLightBlack),
-                ),
+                    "If interested, connect with HR through Call or WhatsApp to discuss on next steps",
+                    style: mTextStyle14(mColor: AppColor.textColorLightBlack),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
               ),
             ),
 

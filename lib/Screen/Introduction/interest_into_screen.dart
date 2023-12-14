@@ -16,6 +16,7 @@ class Interest_Into_Screen extends StatefulWidget {
 }
 
 class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
+  TextEditingController experience = TextEditingController();
   List<String> interest = [];
   String? category;
   bool _is_invite = false;
@@ -195,7 +196,32 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                             ),
                           ),
                         ],
-                      )
+                      ),
+
+                /// Experience
+                heightSpacer(mHeight: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Experience & Worked",
+                      style: mTextStyle15(),
+                    ),
+                    heightSpacer(mHeight: 10),
+                    SizedBox(
+                      height: 45,
+                      child: TextFormField(
+                        controller: experience,
+                        keyboardType: TextInputType.text,
+                        decoration: mInputDecoration(
+                          hint: "Experience & at worked",
+                          radius: 5,
+                          padding: EdgeInsets.only(top: 10, left: 15),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -212,26 +238,34 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
             btnBgColor: AppColor.btnBgColorGreen,
             borderColor: AppColor.btnBgColorGreen,
             onPress: () {
-              var interestData = {
-                'interest':
-                    interest.isEmpty ? null : FieldValue.arrayUnion(interest),
-                'category': category == null ? null : '${category}'
-              };
+              if (experience.text.isNotEmpty) {
+                var interestData = {
+                  'interest':
+                      interest.isEmpty ? null : FieldValue.arrayUnion(interest),
+                  'category': category == null ? null : '${category}',
+                  'experience_company': experience.text.toString(),
+                };
 
-              print(interestData);
-              print(interest);
+                FirebaseFirestore.instance
+                    .collection('clients')
+                    .doc(UserId)
+                    .update(interestData);
 
-              FirebaseFirestore.instance
-                  .collection('clients')
-                  .doc(UserId)
-                  .update(interestData);
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Skills_Into_Screen(),
-                ),
-              );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Skills_Into_Screen(),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Center(child: Text('Experience field is Empty')),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             mHeight: 40,
             mAlignment: Alignment.center,

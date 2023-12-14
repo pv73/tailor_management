@@ -17,6 +17,8 @@ class Education_Into_Screen extends StatefulWidget {
 
 class _Education_Into_ScreenState extends State<Education_Into_Screen> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController pass_year = TextEditingController();
+  TextEditingController collage_name = TextEditingController();
 
   //
   // Variables
@@ -27,7 +29,6 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
   bool _isDropDownOption = false;
   late SingleValueDropDownController branch_value =
       SingleValueDropDownController();
-  TextEditingController pass_year = TextEditingController();
 
   //dropdown options
   List<DropDownValueModel> currentOptions = [];
@@ -110,6 +111,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                       "ITI",
                       "Graduate",
                       "Post Graduate"
+                          "Other"
                     ],
                     onSelected: (btn_name, index, isSelected) {
                       education = btn_name;
@@ -176,6 +178,38 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                           ),
                         ),
 
+                  ///  Collage Name
+                  heightSpacer(mHeight: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Collage/Institute Name",
+                        style: mTextStyle15(),
+                      ),
+                      heightSpacer(mHeight: 10),
+                      SizedBox(
+                        height: 45,
+                        child: TextFormField(
+                          controller: collage_name,
+                          keyboardType: TextInputType.text,
+                          decoration: mInputDecoration(
+                            hint: "",
+                            radius: 5,
+                            padding: EdgeInsets.only(top: 10, left: 15),
+                          ),
+                          validator: (value) {
+                            if (value == null) {
+                              return "please enter institute name";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
                   ///  Passing Year
                   heightSpacer(mHeight: 20),
                   Column(
@@ -229,11 +263,13 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                     if (pass_year.text.isNotEmpty &&
                         pass_year.text.length >= 4 &&
                         int.tryParse(pass_year.text) != null &&
-                        int.parse(pass_year.text) <= 2023) {
+                        int.parse(pass_year.text) <= 2023 &&
+                        collage_name.text.isNotEmpty) {
                       var qualification = {
                         'education': '${education}',
                         'course': course == null ? null : "${course}",
-                        'education_year': '${pass_year.text}'
+                        'education_year': '${pass_year.text}',
+                        'collage_name': '${collage_name.text}'
                       };
 
                       FirebaseFirestore.instance

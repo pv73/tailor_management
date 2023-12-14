@@ -175,46 +175,43 @@ class _Attendance_ScreenState extends State<Attendance_Screen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            Icon(
+                              Icons.alarm,
+                              size: 18,
+                            ),
                             Expanded(
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.alarm,
-                                    size: 18,
-                                  ),
-                                  widthSpacer(mWidth: 2),
-                                  Text(
-                                    "Today",
-                                    style: mTextStyle14(
-                                        mFontWeight: FontWeight.w700),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "5h 00m",
-                                    style: mTextStyle14(
-                                        mFontWeight: FontWeight.w700,
-                                        mColor: AppColor.cardBtnBgGreen),
-                                  ),
-                                ],
+                              child: Text(
+                                "Today",
+                                style:
+                                    mTextStyle14(mFontWeight: FontWeight.w700),
                               ),
                             ),
-                            widthSpacer(mWidth: 20),
                             Expanded(
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Today",
-                                    style: mTextStyle14(
-                                        mFontWeight: FontWeight.w700),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "5h 00m",
-                                    style: mTextStyle14(
-                                        mFontWeight: FontWeight.w700,
-                                        mColor: AppColor.cardBtnBgGreen),
-                                  ),
-                                ],
+                              child: Text(
+                                "5h 00m",
+                                style: mTextStyle14(
+                                    mFontWeight: FontWeight.w700,
+                                    mColor: AppColor.cardBtnBgGreen),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+                            //
+                            Expanded(
+                              child: Text(
+                                "Today",
+                                style:
+                                    mTextStyle14(mFontWeight: FontWeight.w700),
+                              ),
+                            ),
+
+                            Expanded(
+                              child: Text(
+                                "5h 00m",
+                                style: mTextStyle14(
+                                    mFontWeight: FontWeight.w700,
+                                    mColor: AppColor.cardBtnBgGreen),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ],
@@ -269,45 +266,64 @@ class _Attendance_ScreenState extends State<Attendance_Screen> {
                                     child: Column(
                                       children: [
                                         /// Check In
+
                                         Row(
                                           children: [
                                             Expanded(
+                                              flex: 4,
                                               child: Row(
                                                 children: [
-                                                  Icon(
-                                                    Icons
-                                                        .arrow_circle_right_outlined,
-                                                    size: 18,
-                                                    color:
-                                                        AppColor.cardBtnBgGreen,
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Icon(
+                                                      Icons
+                                                          .arrow_circle_right_outlined,
+                                                      size: 18,
+                                                      color: Colors.green,
+                                                    ),
                                                   ),
                                                   widthSpacer(mWidth: 3),
-                                                  Text(
-                                                    "Check In",
-                                                    style: mTextStyle15(),
+                                                  Expanded(
+                                                    flex: 10,
+                                                    child: Text(
+                                                      "Check In",
+                                                      style: mTextStyle15(
+                                                          mColor: AppColor
+                                                              .btnBgColorGreen),
+                                                      // maxLines: 1,
+                                                      // overflow:
+                                                      //     TextOverflow.ellipsis,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
                                             ),
                                             Expanded(
+                                              flex: 3,
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  Text(
-                                                    "23 Feb 2023",
-                                                    style: mTextStyle12(),
+                                                  FittedBox(
+                                                    child: Text(
+                                                      "23 Feb 2023",
+                                                      style: mTextStyle12(),
+                                                    ),
                                                   ),
                                                   Text(
-                                                    "15 Min. Late",
+                                                    "2H 15 Min. Overtime",
                                                     style: mTextStyle12(),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
                                             ),
                                             Expanded(
+                                              flex: 3,
                                               child: Text(
-                                                "09:45 AM",
+                                                "08:45 PM",
                                                 style: mTextStyle15(),
                                                 textAlign: TextAlign.end,
                                               ),
@@ -320,43 +336,57 @@ class _Attendance_ScreenState extends State<Attendance_Screen> {
                                         Row(
                                           children: [
                                             Expanded(
+                                              flex: 4,
                                               child: Row(
                                                 children: [
-                                                  Icon(
-                                                    Icons
-                                                        .arrow_circle_left_outlined,
-                                                    size: 18,
-                                                    color: Colors.red,
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Icon(
+                                                      Icons
+                                                          .arrow_circle_left_outlined,
+                                                      size: 18,
+                                                      color: Colors.red,
+                                                    ),
                                                   ),
                                                   widthSpacer(mWidth: 3),
-                                                  Text(
-                                                    "Check Out",
-                                                    style: mTextStyle15(
-                                                        mColor: Colors.red),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "23 Feb 2023",
-                                                    style: mTextStyle12(),
-                                                  ),
-                                                  FittedBox(
-                                                    fit: BoxFit.scaleDown,
+                                                  Expanded(
+                                                    flex: 10,
                                                     child: Text(
-                                                      "2H 15 Min. Overtime",
-                                                      style: mTextStyle12(),
+                                                      "Check Out",
+                                                      style: mTextStyle15(
+                                                          mColor: Colors.red),
+                                                      // maxLines: 1,
+                                                      // overflow:
+                                                      //     TextOverflow.ellipsis,
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
                                             Expanded(
+                                              flex: 3,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  FittedBox(
+                                                    child: Text(
+                                                      "23 Feb 2023",
+                                                      style: mTextStyle12(),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "2H 15 Min. Overtime",
+                                                    style: mTextStyle12(),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
                                               child: Text(
                                                 "08:45 PM",
                                                 style: mTextStyle15(),

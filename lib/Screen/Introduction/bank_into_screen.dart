@@ -246,9 +246,9 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                       .update(account_page);
 
                   // Save UserId to shared preferences
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setBool('final_submit', true);
+
+                  var prefs = await SharedPreferences.getInstance();
+                  prefs.setBool("final_submit", true);
 
                   // All Page close then Navigate to Navigation_Bar
                   Navigator.popUntil(context, (route) => route.isFirst);

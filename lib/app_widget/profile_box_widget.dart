@@ -43,13 +43,14 @@ class _Profile_box_WidgetState extends State<Profile_box_Widget> {
             return Container(
               child: Stack(
                 children: [
+
                   /// stack box height
                   Container(
                     height: 150,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border:
-                            Border.all(color: AppColor.textColorLightBlack)),
+                        Border.all(color: AppColor.textColorLightBlack)),
                   ),
 
                   // Box profile Image
@@ -85,59 +86,48 @@ class _Profile_box_WidgetState extends State<Profile_box_Widget> {
                         heightSpacer(mHeight: 3),
                         userData?['education'] == null
                             ? Container()
-                            : Row(
-                                children: [
-                                  Icon(
-                                    Icons.book_outlined,
-                                    size: 14,
-                                    color: AppColor.textColorLightBlack,
-                                  ),
-                                  widthSpacer(mWidth: 5),
-                                  Text(
-                                    "${userData?['education']}  | ",
-                                    style: mTextStyle13(
-                                        mFontWeight: FontWeight.w600,
-                                        mColor: AppColor.textColorLightBlack),
-                                  ),
-
-                                  // Course display
-
-                                  userData?['course'] == null
-                                      ? Container()
-                                      : Text(
-                                          "${userData?['course']}  | ",
-                                          style: mTextStyle13(
-                                              mFontWeight: FontWeight.w600,
-                                              mColor:
-                                                  AppColor.textColorLightBlack),
-                                        ),
-
-                                  // Course display
-                                  userData?['education_year'] == null
-                                      ? Container()
-                                      : Text(
-                                          "${userData?['education_year']}",
-                                          style: mTextStyle13(
-                                              mFontWeight: FontWeight.w600,
-                                              mColor:
-                                                  AppColor.textColorLightBlack),
-                                        ),
-                                ],
+                            : FittedBox(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.book_outlined,
+                                size: 14,
+                                color: AppColor.textColorLightBlack,
                               ),
-                        //
-                        // SizedBox(
-                        //   height: 50,
-                        //   child: ListView.builder(
-                        //       scrollDirection: Axis.horizontal,
-                        //       shrinkWrap: true,
-                        //       itemCount: (userData?['interest'] as List).length,
-                        //       itemBuilder: (childctn, index) {
-                        //         return Padding(
-                        //           padding: const EdgeInsets.all(8.0),
-                        //           child: Text(userData?['interest'][index]),
-                        //         );
-                        //       }),
-                        // ),
+                              widthSpacer(mWidth: 5),
+                              Text(
+                                "${userData?['education']}  | ",
+                                style: mTextStyle13(
+                                    mFontWeight: FontWeight.w600,
+                                    mColor: AppColor.textColorLightBlack),
+                              ),
+
+                              // Course display
+
+                              userData?['course'] == null
+                                  ? Container()
+                                  : Text(
+                                "${userData?['course']}  | ",
+                                style: mTextStyle13(
+                                    mFontWeight: FontWeight.w600,
+                                    mColor: AppColor
+                                        .textColorLightBlack),
+                              ),
+
+                              // Course display
+                              userData?['education_year'] == null
+                                  ? Container()
+                                  : Text(
+                                "${userData?['education_year']}",
+                                style: mTextStyle13(
+                                    mFontWeight: FontWeight.w600,
+                                    mColor: AppColor
+                                        .textColorLightBlack),
+                              ),
+                            ],
+                          ),
+                        ),
+
 
                         // Phone Number
                         Spacer(),
@@ -174,9 +164,12 @@ class _Profile_box_WidgetState extends State<Profile_box_Widget> {
                     bottom: 0,
                     right: 0,
                     child: QrImageView(
-                      size: MediaQuery.of(context).size.width * 0.22,
+                      size: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.22,
                       data:
-                          "Name: '${userData?['user_name']}', Number: '${userData?['phone']}', Email: '${userData?['email']}', Address: '${userData?['address']}'",
+                      "Name: '${userData?['user_name']}', Number: '${userData?['phone']}', Email: '${userData?['email']}', Address: '${userData?['address']}'",
                       version: QrVersions.auto,
                     ),
                   ),
@@ -226,13 +219,13 @@ class _Profile_box_WidgetState extends State<Profile_box_Widget> {
       } else {
         return (widget.proflie_pic != null)
             ? CircleAvatar(
-                backgroundImage: FileImage(widget.proflie_pic!),
-                radius: 28,
-              )
+          backgroundImage: FileImage(widget.proflie_pic!),
+          radius: 28,
+        )
             : CircleAvatar(
-                backgroundColor: Color(0xffE7BDBDBD),
-                radius: 28,
-              );
+          backgroundColor: Color(0xffE7BDBDBD),
+          radius: 28,
+        );
       }
     } catch (ex) {
       log(ex.toString());

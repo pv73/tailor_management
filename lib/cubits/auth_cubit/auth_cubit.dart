@@ -33,7 +33,7 @@ class AuthCubit extends Cubit<AuthState> {
         _verificationId = verificationId;
         emit(AuthCodeSentState());
       },
-      verificationCompleted: (phoneAuthCredential) {
+      verificationCompleted: (phoneAuthCredential) async {
         signInWithPhone(phoneAuthCredential);
       },
       verificationFailed: (error) {
@@ -48,9 +48,13 @@ class AuthCubit extends Cubit<AuthState> {
   void verifyOTP(String otp) async {
     emit(AuthLoadingState());
 
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: _verificationId!, smsCode: otp);
-    signInWithPhone(credential);
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId!, smsCode: otp);
+      signInWithPhone(credential);
+    } catch (error) {
+      emit(AuthErrorState(error.toString()));
+    }
   }
 
   void signInWithPhone(PhoneAuthCredential credential) async {
@@ -60,16 +64,39 @@ class AuthCubit extends Cubit<AuthState> {
 
       UserId = userCredential.user!.uid;
 
-      emit(AuthLoggedInState(userCredential.user!));
+      // Check if the user already exists in Firestore
+      DocumentSnapshot userDoc =
+          await _fireStore.collection('clients').doc(UserId).get();
 
-      _fireStore.collection('clients').doc(userCredential.user!.uid).update({
-        "uid": userCredential.user!.uid.toString(),
-        "phone": userCredential.user!.phoneNumber.toString(),
-      });
+      if (!userDoc.exists) {
+        // User doesn't exist, perform Firestore setup
+        await _fireStore.collection('clients').doc(UserId).set({
+          "uid": UserId,
+          "phone": userCredential.user!.phoneNumber.toString(),
+        });
+      }
+
+      // Emit AuthLoggedInState regardless of whether user existed or not
+      emit(AuthLoggedInState(userCredential.user!));
 
       // Save UserId to shared preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('UserId', UserId!);
+
+      // UserCredential userCredential =
+      //     await _auth.signInWithCredential(credential);
+      //
+      // emit(AuthLoggedInState(userCredential.user!));
+      // UserId = userCredential.user!.uid;
+      //
+      // // Save UserId to shared preferences
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // prefs.setString('UserId', UserId!);
+      //
+      // _fireStore.collection('clients').doc(userCredential.user!.uid).set({
+      //   "uid": userCredential.user!.uid.toString(),
+      //   "phone": userCredential.user!.phoneNumber.toString(),
+      // });
     } on FirebaseAuthException catch (ex) {
       emit(AuthErrorState(ex.message.toString()));
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tailor/ui_Helper.dart';
 
 //// Attendance Activity First page Widget ////
@@ -33,14 +34,18 @@ class Activity_Widget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(flex: 2, child: Image.asset("${mImage}")),
+                  Expanded(
+                      flex: 2,
+                      child: Image.asset(
+                        "${mImage}",
+                      )),
                   Expanded(
                     flex: 5,
                     child: Text(
                       "${mTextNo}",
                       textAlign: TextAlign.end,
                       style: TextStyle(
-                          fontSize: 38,
+                          fontSize: 38.sp,
                           fontWeight: FontWeight.w800,
                           color: mColor),
                     ),
@@ -52,6 +57,8 @@ class Activity_Widget extends StatelessWidget {
                 "${mText}",
                 style:
                     mTextStyle13(mFontWeight: FontWeight.w500, mColor: mColor!),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               )
             ],
           ),
@@ -94,27 +101,40 @@ class Today_Activity extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  mIcon,
-                  color: mColor,
-                  size: 18,
+                Expanded(
+                  flex: 2,
+                  child: Icon(
+                    mIcon,
+                    color: mColor,
+                    size: 18,
+                  ),
                 ),
                 widthSpacer(mWidth: 2),
-                Text(
-                  "${mText}",
-                  style: mTextStyle12(
-                      mFontWeight: FontWeight.w600,
-                      mColor: mActionText == null
-                          ? mColor!
-                          : AppColor.textColorBlack),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "${mText}",
+                    style: mTextStyle12(
+                        mFontWeight: FontWeight.w600,
+                        mColor: mActionText == null
+                            ? mColor!
+                            : AppColor.textColorBlack),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                Spacer(),
+                // Spacer(),
                 mActionText == null
                     ? Container()
-                    : Text(
-                        "${mActionText}",
-                        style: mTextStyle12(
-                            mFontWeight: FontWeight.w700, mColor: mColor!),
+                    : Expanded(
+                        flex: 5,
+                        child: Text(
+                          "${mActionText}",
+                          style: mTextStyle12(
+                              mFontWeight: FontWeight.w700, mColor: mColor!),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       )
               ],
             ),

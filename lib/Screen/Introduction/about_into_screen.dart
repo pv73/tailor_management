@@ -7,7 +7,6 @@ import 'package:tailor/Screen/Introduction/location_into_screen.dart';
 import 'package:tailor/app_widget/intro_number_widget.dart';
 import 'package:tailor/app_widget/profile_box_widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
-import 'package:tailor/controller/firebase_connection.dart';
 import 'package:tailor/ui_Helper.dart';
 
 class About_Me extends StatefulWidget {

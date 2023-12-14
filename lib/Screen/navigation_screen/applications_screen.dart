@@ -199,6 +199,7 @@ class _Interview_TabState extends State<Interview_Tab> {
               style: mTextStyle19(
                   mFontWeight: FontWeight.w700,
                   mColor: AppColor.textColorBlack),
+              textAlign: TextAlign.center,
             ),
             heightSpacer(),
             Container(
@@ -220,7 +221,6 @@ class _Interview_TabState extends State<Interview_Tab> {
                 mAlignment: Alignment.center,
                 onPress: () {
                   bottom_Sheet_Widget(context, mq);
-                  print("How it works");
                 },
               ),
             ),

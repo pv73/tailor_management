@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tailor/Screen/user_onboard/verification_code.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/auth_cubit/auth_cubit.dart';
@@ -18,12 +19,10 @@ class _Number_login_ScreenState extends State<Number_login_Screen> {
 
   TextEditingController phoneController = TextEditingController();
   String? phoneNumber;
-  String? verifyId;
 
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
-
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),

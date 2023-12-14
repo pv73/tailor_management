@@ -98,12 +98,11 @@ class _Navigation_BarState extends State<Navigation_Bar> {
               children: [
                 Icon(mIcon, size: 25, color: Colors.white),
                 heightSpacer(mHeight: 5),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    mTitle,
-                    style: mTextStyle12(mColor: AppColor.textColorWhite),
-                  ),
+                Text(
+                  mTitle,
+                  style: mTextStyle12(mColor: AppColor.textColorWhite),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 )
               ],
             ),

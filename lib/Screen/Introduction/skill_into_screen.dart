@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'package:group_button/group_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
@@ -26,6 +27,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
 
   // For Image
   File? profile_pic;
+  double upload_Percentage = 0.0;
 
   @override
   void initState() {
@@ -47,7 +49,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +142,20 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                           textAlign: TextAlign.center,
                         ),
                       ),
+                      upload_Percentage == 0.0
+                          ? Container()
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GFProgressBar(
+                                percentage: upload_Percentage == 0.0
+                                    ? 0.0
+                                    : upload_Percentage / 100,
+                                lineHeight: 15,
+                                radius: 100,
+                                backgroundColor: Colors.black38,
+                                progressBarColor: Colors.green,
+                              ),
+                            ),
                       InkWell(
                         onTap: () {
                           // _pickImageFromGallery();
@@ -151,6 +167,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                               "assets/images/lottie_animation/upload_photo.json"),
                         ),
                       ),
+                      heightSpacer(mHeight: 35),
                     ],
                   ),
                 ),
@@ -289,17 +306,27 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
 
     try {
       var skills_page;
-      if (profile_pic != null) {
+      if (profile_pic != null && selectedSkills.isNotEmpty) {
         UploadTask uploadTask = FirebaseStorage.instance
             .ref()
             .child("documents")
             .child(UserId!)
             .putFile(profile_pic!);
 
+        // this get how many % upload
+        uploadTask.snapshotEvents.listen((snapshot) {
+          double percentage =
+              snapshot.bytesTransferred / snapshot.totalBytes * 100;
+          setState(() {
+            upload_Percentage = percentage;
+          });
+
+          log(upload_Percentage.toString());
+        });
+
         //
         TaskSnapshot taskSnapshot = await uploadTask;
         String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-
         skills_page = {
           'skills': selectedSkills.isEmpty
               ? null
@@ -307,14 +334,13 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
           "profile_pic": downloadUrl,
         };
       } else {
-        //
-        // If profile_pic is null, only update skills
-        skills_page = {
-          'skills': selectedSkills.isEmpty
-              ? null
-              : FieldValue.arrayUnion(selectedSkills),
-          'profile_pic': null,
-        };
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
+            content: Center(child: Text("Plz. Select min. 1 filed")),
+          ),
+        );
       }
 
       // Update user profile in Firestore

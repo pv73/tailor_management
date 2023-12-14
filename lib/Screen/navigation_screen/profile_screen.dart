@@ -34,7 +34,6 @@ class _Profile_Screen extends State<Profile_Screen> {
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
-    print("This Userid in profileScreen ${UserId}");
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -92,20 +91,19 @@ class _Profile_Screen extends State<Profile_Screen> {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // with 10px padding
                               // Start Profile Box
-                              Container(
-                                child: Stack(
+                              Card_Container_Widget(
+                                padding: EdgeInsets.only(
+                                    top: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    /// stack box height
-                                    Card_Container_Widget(
-                                      mHeight: 130,
-                                    ),
-
-                                    // Box profile Image
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
+                                    Expanded(
+                                      flex: 2,
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
                                           padding: EdgeInsets.all(10.0),
                                           child: userData?['profile_pic'] !=
                                                   null
@@ -122,146 +120,145 @@ class _Profile_Screen extends State<Profile_Screen> {
                                                   backgroundImage: AssetImage(
                                                       "assets/images/logo/programmer.png"),
                                                   radius: 30,
-                                                )),
+                                                ),
+                                        ),
+                                      ),
                                     ),
 
-                                    // Box all Text Details
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      height: 130,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 10),
-                                      margin: EdgeInsets.only(left: 65),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "${userData?['user_name']}"
-                                                .toUpperCase(),
-                                            style: mTextStyle19(
-                                                mFontWeight: FontWeight.w600,
-                                                mColor:
-                                                    AppColor.btnBgColorGreen),
-                                          ),
-
-                                          // Eduction
-                                          heightSpacer(mHeight: 3),
-                                          FittedBox(
-                                            child: userData?['education'] ==
-                                                    null
-                                                ? Container()
-                                                : Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.book_outlined,
-                                                        size: 14,
-                                                        color: AppColor
-                                                            .textColorLightBlack,
-                                                      ),
-                                                      widthSpacer(mWidth: 5),
-                                                      Text(
-                                                        "${userData?['education']}  | ",
-                                                        style: mTextStyle13(
-                                                            mFontWeight:
-                                                                FontWeight.w600,
-                                                            mColor: AppColor
-                                                                .textColorLightBlack),
-                                                      ),
-
-                                                      // Course display
-
-                                                      userData?['course'] ==
-                                                              null
-                                                          ? Container()
-                                                          : Text(
-                                                              "${userData?['course']}  | ",
-                                                              style: mTextStyle13(
-                                                                  mFontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  mColor: AppColor
-                                                                      .textColorLightBlack),
-                                                            ),
-
-                                                      // Course display
-                                                      userData?['education_year'] ==
-                                                              null
-                                                          ? Container()
-                                                          : Text(
-                                                              "${userData?['education_year']}",
-                                                              style: mTextStyle13(
-                                                                  mFontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  mColor: AppColor
-                                                                      .textColorLightBlack),
-                                                            ),
-                                                    ],
-                                                  ),
-                                          ),
-
-                                          // Skill
-                                          heightSpacer(mHeight: 3),
-                                          Row(children: [
-                                            Expanded(
-                                              flex: 2,
-                                              child: Icon(
-                                                Icons.streetview,
-                                                size: 14,
-                                                color: AppColor
-                                                    .textColorLightBlack,
+                                    //
+                                    Expanded(
+                                      flex: 6,
+                                      child: Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                "${userData?['user_name']}"
+                                                    .toUpperCase(),
+                                                style: mTextStyle19(
+                                                    mFontWeight:
+                                                        FontWeight.w600,
+                                                    mColor: AppColor
+                                                        .btnBgColorGreen),
                                               ),
                                             ),
-                                            widthSpacer(mWidth: 5),
-                                            Expanded(
-                                              flex: 30,
-                                              child: userData?['interest'] ==
-                                                      null
-                                                  ? CircularProgressIndicator()
-                                                  : Wrap(
-                                                      direction:
-                                                          Axis.horizontal,
-                                                      alignment:
-                                                          WrapAlignment.start,
-                                                      // Align items to the start of the line
-                                                      children: List.generate(
-                                                        (userData?['interest']
-                                                                as List<
-                                                                    dynamic>)
-                                                            .length,
-                                                        (index) {
-                                                          return Container(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    right: 4),
-                                                            child: Text(
-                                                              "${userData?['interest'][index]},",
-                                                              style:
-                                                                  mTextStyle12(
-                                                                mFontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                mColor: AppColor
-                                                                    .textColorLightBlack,
+
+                                            // Eduction
+                                            heightSpacer(mHeight: 3),
+                                            userData?['education'] == null
+                                                ? Container()
+                                                : FittedBox(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.book_outlined,
+                                                          size: 14,
+                                                        ),
+                                                        widthSpacer(mWidth: 5),
+                                                        Text(
+                                                          "${userData?['education']}  | ",
+                                                          style: mTextStyle13(
+                                                              mFontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+
+                                                        // Course display
+
+                                                        userData?['course'] ==
+                                                                null
+                                                            ? Container()
+                                                            : Text(
+                                                                "${userData?['course']}  | ",
+                                                                style:
+                                                                    mTextStyle13(
+                                                                  mFontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+
+                                                        // Course display
+                                                        userData?['education_year'] ==
+                                                                null
+                                                            ? Container()
+                                                            : Text(
+                                                                "${userData?['education_year']}",
+                                                                style:
+                                                                    mTextStyle13(
+                                                                  mFontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                            // Skill
+                                            heightSpacer(mHeight: 3),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Icon(
+                                                    Icons.streetview,
+                                                    size: 14,
+                                                  ),
+                                                ),
+                                                widthSpacer(mWidth: 5),
+                                                Expanded(
+                                                  flex: 30,
+                                                  child:
+                                                      userData?['interest'] ==
+                                                              null
+                                                          ? Container()
+                                                          : Wrap(
+                                                              direction: Axis
+                                                                  .horizontal,
+                                                              alignment:
+                                                                  WrapAlignment
+                                                                      .start,
+                                                              // Align items to the start of the line
+                                                              children:
+                                                                  List.generate(
+                                                                (userData?['interest']
+                                                                        as List<
+                                                                            dynamic>)
+                                                                    .length,
+                                                                (index) {
+                                                                  return Container(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            right:
+                                                                                4),
+                                                                    child: Text(
+                                                                      "${userData?['interest'][index]},",
+                                                                      style:
+                                                                          mTextStyle12(
+                                                                        mFontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
                                                               ),
                                                             ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
+                                                ),
+                                              ],
                                             ),
-                                          ]),
 
-                                          // Phone Number
-                                          Spacer(),
-                                          Icon_Text(
-                                            mIcon: Icons.phone,
-                                            mText: "${userData?['phone']}",
-                                          ),
-                                        ],
+                                            // Phone Number
+                                            heightSpacer(mHeight: 20),
+                                            Icon_Text(
+                                              mIcon: Icons.phone,
+                                              mText: "${userData?['phone']}",
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -324,21 +321,31 @@ class _Profile_Screen extends State<Profile_Screen> {
                                 padding: EdgeInsets.all(10),
                                 child: Row(
                                   children: [
-                                    Text(
-                                      "Total years of experience",
-                                      style: mTextStyle13(),
+                                    Expanded(
+                                      flex: 17,
+                                      child: Text(
+                                        "Total years of experience",
+                                        style: mTextStyle13(),
+                                      ),
                                     ),
-                                    Spacer(),
-                                    Text(
-                                      "2 Year, 3 Months",
-                                      style: mTextStyle13(
-                                          mFontWeight: FontWeight.w700),
+                                    // Spacer(),
+                                    Expanded(
+                                      flex: 15,
+                                      child: Text(
+                                        "2 Year, 3 Months",
+                                        style: mTextStyle13(
+                                            mFontWeight: FontWeight.w700),
+                                        textAlign: TextAlign.end,
+                                      ),
                                     ),
                                     widthSpacer(mWidth: 5),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: AppColor.btnBgColorGreen,
-                                      size: 13,
+                                    Expanded(
+                                      flex: 2,
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: AppColor.btnBgColorGreen,
+                                        size: 13,
+                                      ),
                                     )
                                   ],
                                 ),
@@ -350,21 +357,31 @@ class _Profile_Screen extends State<Profile_Screen> {
                                 padding: EdgeInsets.all(10),
                                 child: Row(
                                   children: [
-                                    Text(
-                                      "Current monthly salary",
-                                      style: mTextStyle13(),
+                                    Expanded(
+                                      flex: 27,
+                                      child: Text(
+                                        "Current monthly salary",
+                                        style: mTextStyle13(),
+                                      ),
                                     ),
-                                    Spacer(),
-                                    Text(
-                                      "INR 15,000",
-                                      style: mTextStyle13(
-                                          mFontWeight: FontWeight.w700),
+                                    // Spacer(),
+                                    Expanded(
+                                      flex: 12,
+                                      child: Text(
+                                        "INR 15,000",
+                                        style: mTextStyle13(
+                                            mFontWeight: FontWeight.w700),
+                                        textAlign: TextAlign.end,
+                                      ),
                                     ),
                                     widthSpacer(mWidth: 5),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: AppColor.btnBgColorGreen,
-                                      size: 13,
+                                    Expanded(
+                                      flex: 2,
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: AppColor.btnBgColorGreen,
+                                        size: 13,
+                                      ),
                                     )
                                   ],
                                 ),
@@ -398,7 +415,7 @@ class _Profile_Screen extends State<Profile_Screen> {
                                     /// Skills filed
                                     heightSpacer(),
                                     userData?['skills'] == null
-                                        ? CircularProgressIndicator()
+                                        ? Container()
                                         : Wrap(
                                             direction: Axis.horizontal,
                                             alignment: WrapAlignment.start,
@@ -456,23 +473,23 @@ class _Profile_Screen extends State<Profile_Screen> {
                                       ],
                                     ),
                                     heightSpacer(),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          border: Border.all(
-                                              color: AppColor
-                                                  .textColorLightBlack)),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 4, horizontal: 8),
-                                      margin: EdgeInsets.all(2),
-                                      child: userData?['category'] == null
-                                          ? CircularProgressIndicator()
-                                          : Text(
+                                    userData?['category'] == null
+                                        ? Container()
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                border: Border.all(
+                                                    color: AppColor
+                                                        .textColorLightBlack)),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 8),
+                                            margin: EdgeInsets.all(2),
+                                            child: Text(
                                               "${userData?['category']}",
                                               style: mTextStyle12(),
                                             ),
-                                    ),
+                                          ),
                                   ],
                                 ),
                               ),
@@ -634,16 +651,13 @@ class _Profile_Screen extends State<Profile_Screen> {
           Icon(
             mIcon,
             size: 14,
-            color: AppColor.textColorLightBlack,
           ),
           widthSpacer(mWidth: 4),
           Expanded(
             flex: 3,
             child: Text(
               "${mText}",
-              style: mTextStyle12(
-                  mFontWeight: FontWeight.w600,
-                  mColor: AppColor.textColorLightBlack),
+              style: mTextStyle12(mFontWeight: FontWeight.w500),
             ),
           ),
         ],

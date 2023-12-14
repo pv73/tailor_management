@@ -102,26 +102,26 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                       address_1 == null
                           ? Container()
                           : Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                "Your Location",
-                                style: mTextStyle16(
-                                    mFontWeight: FontWeight.w600,
-                                    mColor: AppColor.btnBgColorGreen),
-                              ),
-                            ),
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          "Your Location",
+                          style: mTextStyle16(
+                              mFontWeight: FontWeight.w600,
+                              mColor: AppColor.btnBgColorGreen),
+                        ),
+                      ),
 
                       address_1 == null
                           ? Text(
-                              "Discover the best jobs near you",
-                              style: mTextStyle18(mFontWeight: FontWeight.w600),
-                            )
+                        "Discover the best jobs near you",
+                        style: mTextStyle18(mFontWeight: FontWeight.w600),
+                      )
                           : Text(
-                              "${address_1}",
-                              style: mTextStyle17(
-                                  mFontWeight: FontWeight.w600,
-                                  mColor: AppColor.textColorBlack),
-                            ),
+                        "${address_1}",
+                        style: mTextStyle17(
+                            mFontWeight: FontWeight.w600,
+                            mColor: AppColor.textColorBlack),
+                      ),
 
                       //==========================
                       //     Second Address
@@ -129,21 +129,21 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                       heightSpacer(mHeight: 5),
                       address_2 == null
                           ? Container(
-                              color: Colors.green.shade100,
-                              margin: EdgeInsets.only(top: 5),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2),
-                              child: Text(
-                                "Help us know where you currently live",
-                                style: mTextStyle12(),
-                              ),
-                            )
+                        color: Colors.green.shade100,
+                        margin: EdgeInsets.only(top: 5),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 2),
+                        child: Text(
+                          "Help us know where you currently live",
+                          style: mTextStyle12(),
+                        ),
+                      )
                           : Text(
-                              "${address_2}",
-                              style: mTextStyle16(
-                                mColor: AppColor.textColorBlack,
-                              ),
-                            )
+                        "${address_2}",
+                        style: mTextStyle16(
+                          mColor: AppColor.textColorBlack,
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -165,72 +165,88 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
               Container(
                 child: isLoading
                     ? Center(
-                        child: CircularProgressIndicator(
-                          color: AppColor.btnBgColorGreen,
-                        ),
-                      )
+                  child: CircularProgressIndicator(
+                    color: AppColor.btnBgColorGreen,
+                  ),
+                )
                     : Rounded_Btn_Widget(
-                        title: address_1 == null
-                            ? "Pick current location"
-                            : "Next",
-                        btnBgColor: AppColor.btnBgColorGreen,
-                        onPress: address_1 == null
-                            ? () {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                getLatLong();
-                              }
-                            : () {
-                                var location = {
-                                  'address': '${address_1}, ${address_2}',
-                                };
+                  title: address_1 == null
+                      ? "Pick current location"
+                      : "Next",
+                  btnBgColor: AppColor.btnBgColorGreen,
+                  onPress: address_1 == null
+                      ? () {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    getLatLong();
+                  }
+                      : () {
+                    var location = {
+                      'address': '${address_1}, ${address_2}',
+                    };
 
-                                FirebaseFirestore.instance
-                                    .collection('clients')
-                                    .doc(UserId)
-                                    .update(location);
+                    FirebaseFirestore.instance
+                        .collection('clients')
+                        .doc(UserId)
+                        .update(location);
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        Education_Into_Screen(),
-                                  ),
-                                );
-                              },
-                        mHeight: 40,
-                        borderRadius: 5,
-                        mAlignment: Alignment.center,
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Education_Into_Screen(),
                       ),
+                    );
+                  },
+                  mHeight: 40,
+                  borderRadius: 5,
+                  mAlignment: Alignment.center,
+                ),
               ),
               heightSpacer(mHeight: 5),
               Container(
                 child: Rounded_Btn_Widget(
-                  title: "Search Manually",
+                  // title: "Search Manually",
+                  title: "Skip Location",
                   borderColor: AppColor.btnBgColorGreen,
                   btnBgColor: Colors.transparent,
                   mTextColor: AppColor.cardBtnBgGreen,
                   onPress: () {
+                    var location = {
+                      'address': '',
+                    };
+
+                    FirebaseFirestore.instance
+                        .collection('clients')
+                        .doc(UserId)
+                        .update(location);
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Education_Into_Screen()),
+                    );
+
                     /// Show Dialog
                     ///
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        title: const Text('Alert'),
-                        content: const Text('Now This Button is not Working'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
+                    // showDialog<String>(
+                    //   context: context,
+                    //   builder: (BuildContext context) => AlertDialog(
+                    //     title: const Text('Alert'),
+                    //     content: const Text('Now This Button is not Working'),
+                    //     actions: <Widget>[
+                    //       TextButton(
+                    //         onPressed: () => Navigator.pop(context, 'Cancel'),
+                    //         child: const Text('Cancel'),
+                    //       ),
+                    //       TextButton(
+                    //         onPressed: () => Navigator.pop(context, 'OK'),
+                    //         child: const Text('OK'),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // );
                   },
                   mHeight: 40,
                   borderRadius: 5,
@@ -278,21 +294,41 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          padding: EdgeInsets.all(10),
+          content: Text('Location services are disabled.'),
+        ),
+      );
+
+      // return Future.error('Location services are disabled.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          content: Text("Location permissions are denied"),
+        ));
+        // return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        content: Text(
+            "Location permissions are permanently denied, we cannot request permissions."),
+      ));
+      // return Future.error(
+      //     'Location permissions are permanently denied, we cannot request permissions.');
     }
 
     return await Geolocator.getCurrentPosition(

@@ -45,7 +45,6 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
   Widget build(BuildContext context) {
     // MediaQuery
     mq = MediaQuery.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
