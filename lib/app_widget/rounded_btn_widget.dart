@@ -5,6 +5,7 @@ class Rounded_Btn_Widget extends StatelessWidget {
   double mWidth;
   double mHeight;
   String title;
+  EdgeInsetsGeometry? mPadding;
   double? mfontSize;
   double? mIconSize;
   FontWeight? mFontWeight;
@@ -23,6 +24,7 @@ class Rounded_Btn_Widget extends StatelessWidget {
       required this.onPress,
       this.mfontSize = 15,
       this.mIconSize = 15,
+      this.mPadding,
       this.mFontWeight = FontWeight.w600,
       this.mWidth = double.infinity,
       this.mHeight = 45,
@@ -42,6 +44,7 @@ class Rounded_Btn_Widget extends StatelessWidget {
       height: mHeight,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+            padding: mPadding,
             elevation: 0,
             backgroundColor: btnBgColor,
             disabledBackgroundColor: disabledBgColor,
@@ -51,7 +54,6 @@ class Rounded_Btn_Widget extends StatelessWidget {
                 side: BorderSide(color: borderColor!))),
         onPressed: onPress,
         child: FittedBox(
-          fit: BoxFit.cover,
           child: mIcon == null
               ? Text(
                   title,

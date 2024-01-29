@@ -19,7 +19,7 @@ class Job_Department_widget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 27.h,
+            radius: 27,
             backgroundImage: image == null ? null : AssetImage(image!),
           ),
           heightSpacer(),

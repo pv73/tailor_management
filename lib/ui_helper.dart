@@ -1,5 +1,5 @@
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
 
 // ------------------------------------ //
@@ -29,7 +29,18 @@ TextStyle mTextStyle10(
     {Color mColor = AppColor.textColorBlack,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 10.0.sp,
+    fontSize: 10,
+    color: mColor,
+    fontWeight: mFontWeight,
+    // fontFamily: 'Acumin Variable'
+  );
+}
+
+TextStyle mTextStyle11(
+    {Color mColor = AppColor.textColorBlack,
+    FontWeight mFontWeight = FontWeight.normal}) {
+  return TextStyle(
+    fontSize: 11,
     color: mColor,
     fontWeight: mFontWeight,
     // fontFamily: 'Acumin Variable'
@@ -40,7 +51,7 @@ TextStyle mTextStyle12(
     {Color mColor = AppColor.textColorBlack,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 12.0.sp,
+    fontSize: 12,
     color: mColor,
     fontWeight: mFontWeight,
     // fontFamily: 'Acumin Variable'
@@ -49,13 +60,15 @@ TextStyle mTextStyle12(
 
 TextStyle mTextStyle13(
     {Color mColor = AppColor.textColorBlack,
+    double? mHeight,
     FontWeight mFontWeight = FontWeight.normal,
     double letterSpacing = 0.0}) {
   return TextStyle(
-      fontSize: 13.sp,
+      fontSize: 13,
       color: mColor,
       fontWeight: mFontWeight,
-      letterSpacing: letterSpacing
+      letterSpacing: letterSpacing,
+      height: mHeight
       // fontFamily: 'Acumin Variable'
       );
 }
@@ -64,7 +77,7 @@ TextStyle mTextStyle14(
     {Color mColor = AppColor.textColorBlack,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 14.sp,
+    fontSize: 14,
     color: mColor,
     fontWeight: mFontWeight,
     // fontFamily: 'Acumin Variable'
@@ -117,13 +130,12 @@ TextStyle mTextStyle18(
 
 TextStyle mTextStyle19(
     {Color mColor = AppColor.textColorBlue,
+    double? mHeight,
     FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
-    fontSize: 19,
-    color: mColor,
-    fontWeight: mFontWeight,
-    // fontFamily: 'Acumin Variable'
-  );
+      fontSize: 19, color: mColor, fontWeight: mFontWeight, height: mHeight
+      // fontFamily: 'Acumin Variable'
+      );
 }
 
 TextStyle mTextStyle20(
@@ -196,29 +208,30 @@ InputDecoration mInputDecoration({
   String? hint,
   String? mLabelText,
   double? mFontSize,
+  double? mIconSize,
   Color? filledColor = AppColor.bgColorWhite,
   Color? preFixColor = AppColor.textColorBlue,
   Color? suffixColor = AppColor.textColorBlue,
-  Color? hintColor = AppColor.textColorBlue,
+  Color? hintColor = AppColor.textColorLightBlack,
   Color? labelColor = AppColor.textColorBlue,
   double radius = 15,
-  IconData? prefixIcon,
+  Widget? prefixIcon,
   EdgeInsetsGeometry? padding,
-  IconData? suffixIcon,
+  Widget? suffixIcon,
   String? mCounterText,
 }) {
   return InputDecoration(
     filled: true,
     fillColor: filledColor,
     hintText: hint,
-    hintStyle: TextStyle(color: hintColor),
+    hintStyle: TextStyle(color: hintColor, fontSize: mFontSize),
     labelText: mLabelText,
     labelStyle: TextStyle(color: labelColor, fontSize: mFontSize),
-    prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+    prefixIcon: prefixIcon != null ? prefixIcon : null,
     prefixIconColor: preFixColor,
     counterText: mCounterText,
     contentPadding: padding,
-    suffixIcon: suffixIcon != null ? Icon(suffixIcon) : null,
+    suffixIcon: suffixIcon != null ? suffixIcon : null,
     suffixIconColor: suffixColor,
     enabledBorder: mGetBorder(radius: radius),
     focusedBorder: mGetBorder(radius: radius),
@@ -245,13 +258,31 @@ GroupButtonOptions mGroupButtonOptions() {
     mainGroupAlignment: MainGroupAlignment.start,
     spacing: 5,
     unselectedTextStyle: mTextStyle12(),
-    selectedTextStyle: mTextStyle13(mColor: Colors.white),
+    selectedTextStyle: mTextStyle12(mColor: Colors.white),
     borderRadius: BorderRadius.circular(20),
     buttonHeight: 30,
     unselectedBorderColor: AppColor.textColorLightBlack,
     selectedColor: AppColor.activeColor,
     selectedBorderColor: AppColor.activeColor,
     textPadding: EdgeInsets.symmetric(horizontal: 13),
+  );
+}
+
+// ------------------------------------ //
+//   GroupButtonOptions Selection  //
+// ------------------------------------ //
+GroupButtonOptions mAdminPageGroupButtonOptions() {
+  return GroupButtonOptions(
+    mainGroupAlignment: MainGroupAlignment.start,
+    spacing: 5,
+    unselectedTextStyle: mTextStyle11(),
+    selectedTextStyle: mTextStyle11(mColor: Colors.white),
+    borderRadius: BorderRadius.circular(5),
+    buttonHeight: 30,
+    unselectedBorderColor: AppColor.textColorLightBlack,
+    selectedColor: AppColor.activeColor,
+    selectedBorderColor: AppColor.activeColor,
+    textPadding: EdgeInsets.symmetric(horizontal: 10),
   );
 }
 
@@ -263,7 +294,8 @@ Widget Card_Container_Widget(
     double? mHeight,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
-    Color? mColor = Colors.white}) {
+    Color? mColor = Colors.white,
+    Color? mBorderColor = const Color(0xFFBDBDBD)}) {
   return Container(
     width: double.infinity,
     height: mHeight,
@@ -273,9 +305,112 @@ Widget Card_Container_Widget(
       color: mColor,
       borderRadius: BorderRadius.circular(5),
       border: Border.all(
-        color: Colors.grey.shade400,
+        color: mBorderColor!,
       ),
     ),
     child: child,
+  );
+}
+
+// --------------------------------------------- //
+//   ExpansionTile in page job post page
+// --------------------------------------------//
+
+Widget Custom_ExpansionTile({
+  required Widget title,
+  void Function(bool)? onExpansionChanged,
+  List<Widget> children = const <Widget>[],
+  Widget? trailing,
+  Color? collapsedBackgroundColor,
+  Color? backgroundColor,
+  bool initiallyExpanded = false,
+}) {
+  return ExpansionTile(
+    initiallyExpanded: initiallyExpanded,
+    trailing: trailing,
+    collapsedBackgroundColor: collapsedBackgroundColor,
+    childrenPadding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+    backgroundColor: backgroundColor == null ? Colors.grey.shade50 : backgroundColor,
+    shape: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(color: AppColor.navBgColor),
+    ),
+    collapsedShape: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+    title: title,
+    children: children,
+    onExpansionChanged: onExpansionChanged,
+  );
+}
+
+// ------------------------------------------//
+//    DropDownTextField in page job post page
+// ------------------------------------------//
+
+Widget Custom_DropDownTextField({
+  required List<DropDownValueModel> dropDownList,
+  dynamic controller,
+  void Function(dynamic)? onChanged,
+  String? hint,
+}) {
+  return DropDownTextField(
+      listTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+      textStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+      controller: controller,
+      readOnly: true,
+      dropdownRadius: 5,
+      listPadding: ListPadding(bottom: 10, top: 7),
+      textFieldDecoration: mInputDecoration(
+        padding: EdgeInsets.only(top: 3, left: 10, bottom: 3),
+        radius: 5,
+        hint: hint,
+        hintColor: AppColor.textColorLightBlack,
+      ),
+      dropDownList: dropDownList,
+      onChanged: onChanged);
+}
+
+// -------------------------------------------//
+//   Alert Box //
+// -------------------------------------------//
+alertBox(
+  BuildContext context, {
+  titleColor,
+  title,
+  content,
+  required void Function()? okayPress,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.circular(5.0), // Set your desired radius here
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16, color: titleColor, fontWeight: FontWeight.w500),
+      ),
+      content: Text(content),
+      actions: <Widget>[
+        InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Cancel",
+              style: mTextStyle14(mFontWeight: FontWeight.w600),
+            )),
+        widthSpacer(),
+        InkWell(
+          onTap: okayPress,
+          child: Text(
+            "Okay",
+            style: mTextStyle14(
+                mFontWeight: FontWeight.w600, mColor: AppColor.btnBgColorGreen),
+          ),
+        ),
+      ],
+    ),
   );
 }

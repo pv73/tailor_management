@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/bottom_sheet_Widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/ui_helper.dart';
@@ -16,6 +17,7 @@ class _Applications_Screen extends State<Applications_Screen> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
+          leadingWidth: 25,
           title: RichText(
             text: TextSpan(text: "Tailor ", style: mTextStyle20(), children: [
               TextSpan(
@@ -44,6 +46,7 @@ class _Applications_Screen extends State<Applications_Screen> {
             ),
           ],
         ),
+        drawer: Drawer_Widget(),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tailor/ui_Helper.dart';
 
 //// Attendance Activity First page Widget ////
@@ -45,7 +44,7 @@ class Activity_Widget extends StatelessWidget {
                       "${mTextNo}",
                       textAlign: TextAlign.end,
                       style: TextStyle(
-                          fontSize: 38.sp,
+                          fontSize: 38,
                           fontWeight: FontWeight.w800,
                           color: mColor),
                     ),

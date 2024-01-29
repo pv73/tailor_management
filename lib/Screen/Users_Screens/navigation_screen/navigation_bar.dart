@@ -1,14 +1,21 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tailor/Screen/Home/home_page.dart';
-import 'package:tailor/Screen/navigation_screen/applications_screen.dart';
-import 'package:tailor/Screen/navigation_screen/attendance_screen.dart';
-import 'package:tailor/Screen/navigation_screen/profile_screen.dart';
-import 'package:tailor/Screen/navigation_screen/jobs_screen.dart';
-
-import '../../../ui_helper.dart';
+import 'package:tailor/Screen/Users_Screens/Home/home_page.dart';
+import 'package:tailor/Screen/Users_Screens/navigation_screen/applications_screen.dart';
+import 'package:tailor/Screen/Users_Screens/navigation_screen/attendance_screen.dart';
+import 'package:tailor/Screen/Users_Screens/navigation_screen/jobs_screen.dart';
+import 'package:tailor/Screen/Users_Screens/navigation_screen/profile_screen.dart';
+import 'package:tailor/modal/UserModel.dart';
+import 'package:tailor/ui_helper.dart';
 
 class Navigation_Bar extends StatefulWidget {
+  final User firebaseUser;
+  final UserModel userModel;
+
+  const Navigation_Bar(
+      {super.key, required this.firebaseUser, required this.userModel});
+
   @override
   State<Navigation_Bar> createState() => _Navigation_BarState();
 }
@@ -17,18 +24,19 @@ class _Navigation_BarState extends State<Navigation_Bar> {
   late MediaQueryData mq;
   int index = 2;
 
-  /// Screen page
-  final screens = [
-    Jobs_Screen(),
-    Attendance_Screen(),
-    Home_Page(),
-    Applications_Screen(),
-    Profile_Screen()
-  ];
-
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
+
+    /// Screen page
+    final screens = [
+      Jobs_Screen(),
+      Attendance_Screen(),
+      Home_Page(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
+      Applications_Screen(),
+      Profile_Screen(
+          userModel: widget.userModel, firebaseUser: widget.firebaseUser)
+    ];
 
     final items = <Widget>[
       // Videos

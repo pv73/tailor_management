@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/activity_widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/ui_helper.dart';
@@ -16,6 +17,7 @@ class _Attendance_ScreenState extends State<Attendance_Screen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+        leadingWidth: 25,
         title: RichText(
           text: TextSpan(text: "Tailor ", style: mTextStyle20(), children: [
             TextSpan(
@@ -44,6 +46,7 @@ class _Attendance_ScreenState extends State<Attendance_Screen> {
           ),
         ],
       ),
+      drawer: Drawer_Widget(),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
