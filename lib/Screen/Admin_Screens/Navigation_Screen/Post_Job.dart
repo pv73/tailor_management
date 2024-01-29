@@ -51,34 +51,20 @@ class _Post_JobState extends State<Post_Job> {
   List<String> selectedEducation = [];
 
   //Garment filed all Dropdown value
-  late SingleValueDropDownController garment_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController department_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController job_type_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController totalSkillEmp_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController category_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController Part_Time_Cate_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController part_Time_Sub_Cate_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController grade_Salary_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController part_Rate_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController full_Pc_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController workType_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController workShift_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController interviewMode_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController workLocation_value =
-      SingleValueDropDownController();
+  late SingleValueDropDownController garment_value = SingleValueDropDownController();
+  late SingleValueDropDownController department_value = SingleValueDropDownController();
+  late SingleValueDropDownController job_type_value = SingleValueDropDownController();
+  late SingleValueDropDownController totalSkillEmp_value = SingleValueDropDownController();
+  late SingleValueDropDownController category_value = SingleValueDropDownController();
+  late SingleValueDropDownController Part_Time_Cate_value = SingleValueDropDownController();
+  late SingleValueDropDownController part_Time_Sub_Cate_value = SingleValueDropDownController();
+  late SingleValueDropDownController grade_Salary_value = SingleValueDropDownController();
+  late SingleValueDropDownController part_Rate_value = SingleValueDropDownController();
+  late SingleValueDropDownController full_Pc_value = SingleValueDropDownController();
+  late SingleValueDropDownController workType_value = SingleValueDropDownController();
+  late SingleValueDropDownController workShift_value = SingleValueDropDownController();
+  late SingleValueDropDownController interviewMode_value = SingleValueDropDownController();
+  late SingleValueDropDownController workLocation_value = SingleValueDropDownController();
 
   //dropdown options
   List<DropDownValueModel> currentCategoryOptions = [];
