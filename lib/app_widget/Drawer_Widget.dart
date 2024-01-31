@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tailor/Screen/Drawer_Screen/About_us.dart';
 import 'package:tailor/Screen/user_onboard/First_Dashboard.dart';
 import 'package:tailor/Screen/user_onboard/Login_Page.dart';
 import 'package:tailor/Screen/user_onboard/Number_Login.dart';
@@ -75,7 +76,6 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
             ),
 
             // menu
-
             heightSpacer(),
             Divider(),
 
@@ -111,10 +111,21 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
             ),
 
             List_Name(
-              onPres: () {},
+              onPres: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    child: About_Us(),
+                    type: PageTransitionType.rightToLeftWithFade,
+                  ),
+                );
+              },
               mIcon: Icons.info_outline,
               mText: "About us",
             ),
+
+            // This code show only if Company or Tailor are LoggedIn OtherWise Hide
             if (widget.isCurUserCom == true || widget.isCurUserCom == false)
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {

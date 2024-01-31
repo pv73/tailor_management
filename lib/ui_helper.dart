@@ -330,7 +330,8 @@ Widget Custom_ExpansionTile({
     trailing: trailing,
     collapsedBackgroundColor: collapsedBackgroundColor,
     childrenPadding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-    backgroundColor: backgroundColor == null ? Colors.grey.shade50 : backgroundColor,
+    backgroundColor:
+        backgroundColor == null ? Colors.grey.shade50 : backgroundColor,
     shape: OutlineInputBorder(
       borderRadius: BorderRadius.circular(5),
       borderSide: BorderSide(color: AppColor.navBgColor),
@@ -414,3 +415,5 @@ alertBox(
     ),
   );
 }
+
+

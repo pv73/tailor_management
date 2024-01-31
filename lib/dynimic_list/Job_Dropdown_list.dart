@@ -133,9 +133,9 @@ List<DropDownValueModel> interviewMode_Option = [
 //    List for workLocation_Option
 List<DropDownValueModel> workLocation_Option = [
   DropDownValueModel(
-      name: "Same as interview address", value: "Same_as_interview_address"),
+      name: "Interview address", value: "interview address"),
   DropDownValueModel(
-      name: "Same as company address", value: "Same as company address"),
+      name: "Company address", value: "company address"),
 ];
 
 // ==================================================================

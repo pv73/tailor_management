@@ -32,7 +32,7 @@ class JobPostModel {
   List<String>? tailor_education;
 
   JobPostModel({
-    required this.dateTime,
+    this.dateTime,
     this.uid,
     this.jobId,
     this.company_logo,

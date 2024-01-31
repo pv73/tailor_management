@@ -11,6 +11,7 @@ import 'package:group_button/group_button.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Company_Details.dart';
+import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/ShowSnackBar_Widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
@@ -31,8 +32,6 @@ class Post_Job extends StatefulWidget {
 class _Post_JobState extends State<Post_Job> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // JobPostModel? thisJobPostModel;
-
   TextEditingController garmentQtyController = TextEditingController();
   TextEditingController jobDesController = TextEditingController();
   TextEditingController totalTailorController = TextEditingController();
@@ -51,20 +50,34 @@ class _Post_JobState extends State<Post_Job> {
   List<String> selectedEducation = [];
 
   //Garment filed all Dropdown value
-  late SingleValueDropDownController garment_value = SingleValueDropDownController();
-  late SingleValueDropDownController department_value = SingleValueDropDownController();
-  late SingleValueDropDownController job_type_value = SingleValueDropDownController();
-  late SingleValueDropDownController totalSkillEmp_value = SingleValueDropDownController();
-  late SingleValueDropDownController category_value = SingleValueDropDownController();
-  late SingleValueDropDownController Part_Time_Cate_value = SingleValueDropDownController();
-  late SingleValueDropDownController part_Time_Sub_Cate_value = SingleValueDropDownController();
-  late SingleValueDropDownController grade_Salary_value = SingleValueDropDownController();
-  late SingleValueDropDownController part_Rate_value = SingleValueDropDownController();
-  late SingleValueDropDownController full_Pc_value = SingleValueDropDownController();
-  late SingleValueDropDownController workType_value = SingleValueDropDownController();
-  late SingleValueDropDownController workShift_value = SingleValueDropDownController();
-  late SingleValueDropDownController interviewMode_value = SingleValueDropDownController();
-  late SingleValueDropDownController workLocation_value = SingleValueDropDownController();
+  late SingleValueDropDownController garment_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController department_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController job_type_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController totalSkillEmp_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController category_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController Part_Time_Cate_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController part_Time_Sub_Cate_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController grade_Salary_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController part_Rate_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController full_Pc_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController workType_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController workShift_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController interviewMode_value =
+      SingleValueDropDownController();
+  late SingleValueDropDownController workLocation_value =
+      SingleValueDropDownController();
 
   //dropdown options
   List<DropDownValueModel> currentCategoryOptions = [];
@@ -93,7 +106,7 @@ class _Post_JobState extends State<Post_Job> {
 
   // ExpansionTile change when any required filed is empty
   Color? detailsErrorColor;
-  Color? salaryErrorColor;
+  Color? totalErrorColor;
   Color? experienceErrorColor;
   Color? moreInfoErrorColor;
   Color? interviewErrorColor;
@@ -106,6 +119,7 @@ class _Post_JobState extends State<Post_Job> {
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
         automaticallyImplyLeading: true,
+        titleSpacing: 0,
         title: RichText(
           text: TextSpan(text: "Post ", style: mTextStyle20(), children: [
             TextSpan(
@@ -114,6 +128,10 @@ class _Post_JobState extends State<Post_Job> {
           ]),
         ),
       ),
+      drawer: Drawer_Widget(
+          isCurUserCom: true,
+          firebaseUser: widget.firebaseUser,
+          companyModel: widget.companyModel),
       body: SafeArea(
         child: Container(
           width: double.infinity,
@@ -136,7 +154,8 @@ class _Post_JobState extends State<Post_Job> {
                   ),
                   heightSpacer(mHeight: 1),
                   Padding(
-                    padding: EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
+                    padding:
+                        EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
                     child: Text(
                       "Fill all fields to upload job",
                       style: mTextStyle13(
@@ -158,7 +177,8 @@ class _Post_JobState extends State<Post_Job> {
                           // Company Details ExpansionTile
                           Custom_ExpansionTile(
                             collapsedBackgroundColor: Color(0x47BEDFFF),
-                            title: Text("Company Details",
+                            title: Text(
+                              "Company Details",
                               style: mTextStyle14(mFontWeight: FontWeight.w600),
                             ),
                             children: [
@@ -175,6 +195,9 @@ class _Post_JobState extends State<Post_Job> {
                             collapsedBackgroundColor: detailsErrorColor != null
                                 ? detailsErrorColor
                                 : Color(0x47BEDFFF),
+                            backgroundColor: detailsErrorColor != null
+                                ? detailsErrorColor
+                                : Colors.grey.shade50,
                             title: Row(
                               children: [
                                 Text(
@@ -200,7 +223,9 @@ class _Post_JobState extends State<Post_Job> {
                                   if (value != null) {
                                     garment_type =
                                         garment_value.dropDownValue?.name;
-                                    // print(garment_value.dropDownValue?.name);
+                                    setState(() {
+                                      detailsErrorColor = null;
+                                    });
                                   } else {
                                     // Handle the case when nothing is selected
                                     garment_type = null;
@@ -237,7 +262,9 @@ class _Post_JobState extends State<Post_Job> {
                                   if (value != null) {
                                     job_type =
                                         job_type_value.dropDownValue?.name;
-                                    // print(job_type_value.dropDownValue?.name);
+                                    setState(() {
+                                      detailsErrorColor = null;
+                                    });
                                   } else {
                                     // Handle the case when nothing is selected
                                     job_type = null;
@@ -258,7 +285,9 @@ class _Post_JobState extends State<Post_Job> {
                                   if (value != null) {
                                     department =
                                         department_value.dropDownValue?.name;
-                                    // print(department_value.dropDownValue?.name);
+                                    setState(() {
+                                      detailsErrorColor = null;
+                                    });
                                   } else {
                                     // Handle the case when nothing is selected
                                     department = null;
@@ -725,9 +754,12 @@ class _Post_JobState extends State<Post_Job> {
                           //Total Tailor & Skills
                           heightSpacer(),
                           Custom_ExpansionTile(
-                            collapsedBackgroundColor: salaryErrorColor != null
-                                ? salaryErrorColor
+                            collapsedBackgroundColor: totalErrorColor != null
+                                ? totalErrorColor
                                 : Color(0x47BEDFFF),
+                            backgroundColor: totalErrorColor != null
+                                ? totalErrorColor
+                                : Colors.grey.shade50,
                             title: Row(
                               children: [
                                 Text(
@@ -749,6 +781,11 @@ class _Post_JobState extends State<Post_Job> {
                                 controller: totalTailorController,
                                 keyboardType: TextInputType.number,
                                 maxLength: 5,
+                                onChanged: (value) {
+                                  setState(() {
+                                    totalErrorColor = null;
+                                  });
+                                },
                                 style: TextStyle(
                                     fontSize: 13, fontWeight: FontWeight.w400),
                                 decoration: mInputDecoration(
@@ -818,6 +855,9 @@ class _Post_JobState extends State<Post_Job> {
                                           (skills_btn_name, index, isSelected) {
                                         if (isSelected) {
                                           selectedSkills.add(skills_btn_name);
+                                          setState(() {
+                                            totalErrorColor = null;
+                                          });
                                         } else {
                                           selectedSkills
                                               .remove(skills_btn_name);
@@ -996,6 +1036,9 @@ class _Post_JobState extends State<Post_Job> {
                             collapsedBackgroundColor: moreInfoErrorColor != null
                                 ? moreInfoErrorColor
                                 : Color(0x47BEDFFF),
+                            backgroundColor: moreInfoErrorColor != null
+                                ? moreInfoErrorColor
+                                : Colors.grey.shade50,
                             title: Row(
                               children: [
                                 Text(
@@ -1021,7 +1064,9 @@ class _Post_JobState extends State<Post_Job> {
                                   if (value != null) {
                                     workType =
                                         workType_value.dropDownValue?.name;
-                                    // print(job_type_value.dropDownValue?.name);
+                                    setState(() {
+                                      moreInfoErrorColor = null;
+                                    });
                                   } else {
                                     // Handle the case when nothing is selected
                                     workType = null;
@@ -1041,7 +1086,9 @@ class _Post_JobState extends State<Post_Job> {
                                   if (value != null) {
                                     workShift =
                                         workShift_value.dropDownValue?.name;
-                                    // print(job_type_value.dropDownValue?.name);
+                                    setState(() {
+                                      moreInfoErrorColor = null;
+                                    });
                                   } else {
                                     // Handle the case when nothing is selected
                                     workShift = null;
@@ -1134,6 +1181,9 @@ class _Post_JobState extends State<Post_Job> {
                             collapsedBackgroundColor: moreInfoErrorColor != null
                                 ? moreInfoErrorColor
                                 : Color(0x47BEDFFF),
+                            backgroundColor: moreInfoErrorColor != null
+                                ? moreInfoErrorColor
+                                : Colors.grey.shade50,
                             title: Row(
                               children: [
                                 Text(
@@ -1190,12 +1240,15 @@ class _Post_JobState extends State<Post_Job> {
                                         if (isSelected) {
                                           selectedEducation
                                               .add(education_btn_name);
+                                          setState(() {
+                                            moreInfoErrorColor = null;
+                                          });
                                         } else {
                                           selectedEducation
                                               .remove(education_btn_name);
                                         }
 
-                                        print(selectedEducation);
+                                        // print(selectedEducation);
                                       },
                                     ),
                                   ],
@@ -1224,6 +1277,11 @@ class _Post_JobState extends State<Post_Job> {
                                 controller: jobDesController,
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
+                                onChanged: (value) {
+                                  setState(() {
+                                    moreInfoErrorColor = null;
+                                  });
+                                },
                                 style: TextStyle(
                                     fontSize: 13, fontWeight: FontWeight.w400),
                                 decoration: mInputDecoration(
@@ -1243,6 +1301,9 @@ class _Post_JobState extends State<Post_Job> {
                                   interviewErrorColor != null
                                       ? interviewErrorColor
                                       : Color(0x47BEDFFF),
+                              backgroundColor: interviewErrorColor != null
+                                  ? interviewErrorColor
+                                  : Colors.grey.shade50,
                               title: Row(
                                 children: [
                                   Text(
@@ -1269,7 +1330,9 @@ class _Post_JobState extends State<Post_Job> {
                                     if (value != null) {
                                       interviewMode = interviewMode_value
                                           .dropDownValue?.name;
-                                      // print(interviewMode_value.dropDownValue?.name);
+                                      setState(() {
+                                        interviewErrorColor = null;
+                                      });
                                     } else {
                                       // Handle the case when nothing is selected
                                       interviewMode = null;
@@ -1277,23 +1340,6 @@ class _Post_JobState extends State<Post_Job> {
 
                                     setState(() {});
                                   },
-                                ),
-
-                                // Interview Address
-                                heightSpacer(),
-                                TextFormField(
-                                  controller: interviewAddressController,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
-                                  decoration: mInputDecoration(
-                                    padding: EdgeInsets.only(top: 3, left: 10),
-                                    radius: 5,
-                                    hint: "Interview Address/Contact *",
-                                    hintColor: AppColor.textColorLightBlack,
-                                  ),
                                 ),
 
                                 // Work Location
@@ -1306,14 +1352,43 @@ class _Post_JobState extends State<Post_Job> {
                                     if (value != null) {
                                       workLocation = workLocation_value
                                           .dropDownValue?.name;
+                                      setState(() {
+                                        interviewErrorColor = null;
+                                      });
                                       // print(interviewMode_value.dropDownValue?.name);
                                     } else {
                                       // Handle the case when nothing is selected
                                       workLocation = null;
                                     }
+                                  },
+                                ),
 
+                                // Interview Address
+                                heightSpacer(),
+                                TextFormField(
+                                  controller: interviewAddressController,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  readOnly: workLocation == "Company address"
+                                      ? true
+                                      : false,
+                                  onChanged: (value) {
+                                    interviewErrorColor = null;
                                     setState(() {});
                                   },
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400),
+                                  decoration: mInputDecoration(
+                                    padding: EdgeInsets.only(top: 3, left: 10),
+                                    radius: 5,
+                                    hint: workLocation == "Company address"
+                                        ? "${widget.companyModel.address}"
+                                        : "Interview Address/Contact *",
+                                    hintColor: workLocation == "Company address"
+                                        ? Colors.black
+                                        : AppColor.textColorLightBlack,
+                                  ),
                                 ),
 
                                 // State
@@ -1497,7 +1572,6 @@ class _Post_JobState extends State<Post_Job> {
           selectedEducation.isNotEmpty &&
           jobDesController.text.isNotEmpty &&
           interviewMode != null &&
-          interviewAddressController.text.isNotEmpty &&
           workLocation != null &&
           stateController.text.isNotEmpty) {
         // condition true
@@ -1634,11 +1708,10 @@ class _Post_JobState extends State<Post_Job> {
     }
 
     // Total Tailor & Salary
-    if (totalTailorController.text.isEmpty ||
-        minimumSalaryController.text.isEmpty) {
-      salaryErrorColor = Colors.red.shade50;
+    if (totalTailorController.text.isEmpty || selectedSkills.isEmpty) {
+      totalErrorColor = Colors.red.shade50;
     } else {
-      salaryErrorColor = null;
+      totalErrorColor = null;
     }
 
     // Work & Experience

@@ -15,7 +15,6 @@ import 'package:tailor/app_widget/ShowSnackBar_Widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/company_cubit/company_cubit.dart';
 import 'package:tailor/modal/CompanyModel.dart';
-import 'package:tailor/modal/JobModel.dart';
 import 'package:tailor/ui_helper.dart';
 
 class Factory_Details extends StatefulWidget {

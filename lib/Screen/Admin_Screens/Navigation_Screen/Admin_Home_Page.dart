@@ -26,6 +26,7 @@ class Admin_Home_Page extends StatefulWidget {
 
 class _Admin_Home_PageState extends State<Admin_Home_Page> {
   late MediaQueryData mq;
+  var getJobPostedList;
 
   @override
   Widget build(BuildContext context) {
@@ -100,15 +101,17 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                                   if (snapshot.hasError) {
                                     return Text('Error: ${snapshot.error}');
                                   } else if (snapshot.hasData) {
-                                    var getAllJobPosts = snapshot.data!.docs;
+                                    // var getAllJobPosts = snapshot.data!.docs;
+                                    totalPostedJob(snapshot);
+
                                     return Admin_Dashboard_Widget(
                                       mBgColor: Colors.white,
                                       mImage:
                                           "assets/images/logo/ic_attendence.png",
                                       mText: "Applied Job",
-                                      mTextNo: getAllJobPosts.length.isNaN
+                                      mTextNo: getJobPostedList.length.isNaN
                                           ? "0"
-                                          : "${getAllJobPosts.length}",
+                                          : "${getJobPostedList.length}",
                                       mColor: AppColor.textColorBlue,
                                     );
                                   }
@@ -256,5 +259,25 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
     }
 
     return initials;
+  }
+
+  //
+  void totalPostedJob(snapshot) {
+    // first get jobPosts List from JobPostCubit file the store getJobPostList variable
+    getJobPostedList = BlocProvider.of<JobPostCubit>(context).jobPosts;
+    getJobPostedList.clear();
+
+    // var jobPosts = snapshot.data!.docs;
+    for (DocumentSnapshot doc in snapshot.data!.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+      // Check if the UserId isNotEqual to the current user's ID
+      if (data.containsKey("uid") && data["uid"] != widget.firebaseUser.uid) {
+        // Skip adding this document to clients_data
+        continue;
+      }
+      // Add all Data in jobPosts list
+      getJobPostedList.add(data);
+    }
   }
 }
