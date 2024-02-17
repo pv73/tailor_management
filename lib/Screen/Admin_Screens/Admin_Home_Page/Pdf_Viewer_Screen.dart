@@ -32,11 +32,10 @@ class _Pdf_Viewer_ScreenState extends State<Pdf_Viewer_Screen> {
         backgroundColor: Colors.grey.shade100,
         titleSpacing: 0,
         title: RichText(
-          text: TextSpan(text: "View ", style: mTextStyle20(), children: [
-            TextSpan(
-                text: "Pdf",
-                style: mTextStyle20(mColor: AppColor.textColorBlue))
-          ]),
+          text: TextSpan(
+              text: "View ",
+              style: mTextStyle20(),
+              children: [TextSpan(text: "Pdf", style: mTextStyle20(mColor: AppColor.textColorBlue))]),
         ),
       ),
       body: document != null

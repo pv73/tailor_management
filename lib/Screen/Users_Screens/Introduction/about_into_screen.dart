@@ -81,14 +81,14 @@ class _About_MeState extends State<About_Me> {
                       mFontWeight: FontWeight.w700),
                 ),
 
-                // Name Field
+                // ============= Name Field =================
                 heightSpacer(mHeight: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Full Name",
-                      style: mTextStyle15(),
+                        style: mTextStyle13(mFontWeight: FontWeight.w500),
                     ),
                     heightSpacer(mHeight: 10),
                     SizedBox(
@@ -115,14 +115,48 @@ class _About_MeState extends State<About_Me> {
                   ],
                 ),
 
-                // Email Field
+                // =============Mobile Number =================
+                heightSpacer(mHeight: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Mobile No.",
+                      style: mTextStyle13(mFontWeight: FontWeight.w500),
+                    ),
+                    heightSpacer(mHeight: 10),
+                    SizedBox(
+                      height: 45,
+                      child: TextFormField(
+                        controller: userNameController,
+                        enabled:
+                            widget.userModel.phone == null ? true : false,
+                        style: mTextStyle14(),
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                          hintText: widget.userModel.user_name == null
+                              ? "Mobile no."
+                              : "${widget.userModel.phone}",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: AppColor.textColorBlack, width: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                //========= Email Field=================
                 heightSpacer(mHeight: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Email (Optional)",
-                      style: mTextStyle15(),
+                       style: mTextStyle13(mFontWeight: FontWeight.w500),
                     ),
                     heightSpacer(mHeight: 5),
                     SizedBox(
@@ -155,7 +189,7 @@ class _About_MeState extends State<About_Me> {
                   children: [
                     Text(
                       "Date of birth",
-                      style: mTextStyle15(),
+                        style: mTextStyle13(mFontWeight: FontWeight.w500),
                     ),
                     heightSpacer(mHeight: 5),
                     SizedBox(
@@ -186,7 +220,7 @@ class _About_MeState extends State<About_Me> {
                   children: [
                     Text(
                       "Gender",
-                      style: mTextStyle15(),
+                       style: mTextStyle13(mFontWeight: FontWeight.w500),
                     ),
                     heightSpacer(mHeight: 5),
                     GroupButton(

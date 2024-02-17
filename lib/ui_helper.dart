@@ -25,9 +25,7 @@ class AppColor {
 //       Text Style Selection  //
 // ------------------------------------ //
 
-TextStyle mTextStyle10(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle10({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 10,
     color: mColor,
@@ -36,9 +34,7 @@ TextStyle mTextStyle10(
   );
 }
 
-TextStyle mTextStyle11(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle11({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 11,
     color: mColor,
@@ -47,9 +43,7 @@ TextStyle mTextStyle11(
   );
 }
 
-TextStyle mTextStyle12(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle12({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 12,
     color: mColor,
@@ -63,19 +57,12 @@ TextStyle mTextStyle13(
     double? mHeight,
     FontWeight mFontWeight = FontWeight.normal,
     double letterSpacing = 0.0}) {
-  return TextStyle(
-      fontSize: 13,
-      color: mColor,
-      fontWeight: mFontWeight,
-      letterSpacing: letterSpacing,
-      height: mHeight
+  return TextStyle(fontSize: 13, color: mColor, fontWeight: mFontWeight, letterSpacing: letterSpacing, height: mHeight
       // fontFamily: 'Acumin Variable'
       );
 }
 
-TextStyle mTextStyle14(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle14({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 14,
     color: mColor,
@@ -84,9 +71,7 @@ TextStyle mTextStyle14(
   );
 }
 
-TextStyle mTextStyle15(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.w600}) {
+TextStyle mTextStyle15({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.w600}) {
   return TextStyle(
     fontSize: 15,
     color: mColor,
@@ -95,9 +80,7 @@ TextStyle mTextStyle15(
   );
 }
 
-TextStyle mTextStyle16(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle16({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 16,
     color: mColor,
@@ -106,9 +89,7 @@ TextStyle mTextStyle16(
   );
 }
 
-TextStyle mTextStyle17(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle17({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 17,
     color: mColor,
@@ -117,9 +98,7 @@ TextStyle mTextStyle17(
   );
 }
 
-TextStyle mTextStyle18(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle18({Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 18,
     color: mColor,
@@ -128,20 +107,14 @@ TextStyle mTextStyle18(
   );
 }
 
-TextStyle mTextStyle19(
-    {Color mColor = AppColor.textColorBlue,
-    double? mHeight,
-    FontWeight mFontWeight = FontWeight.normal}) {
-  return TextStyle(
-      fontSize: 19, color: mColor, fontWeight: mFontWeight, height: mHeight
+TextStyle mTextStyle19({Color mColor = AppColor.textColorBlue, double? mHeight, FontWeight mFontWeight = FontWeight.normal}) {
+  return TextStyle(fontSize: 19, color: mColor, fontWeight: mFontWeight, height: mHeight
       // fontFamily: 'Acumin Variable'
       );
 }
 
 TextStyle mTextStyle20(
-    {Color mColor = AppColor.textColorBlack,
-    FontWeight mFontWeight = FontWeight.w800,
-    FontStyle = FontStyle.italic}) {
+    {Color mColor = AppColor.textColorBlack, FontWeight mFontWeight = FontWeight.w800, FontStyle = FontStyle.italic}) {
   return TextStyle(
     fontSize: 22,
     color: mColor,
@@ -151,9 +124,7 @@ TextStyle mTextStyle20(
   );
 }
 
-TextStyle mTextStyle22(
-    {Color mColor = AppColor.textColorBlue,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle22({Color mColor = AppColor.textColorBlue, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 20,
     color: mColor,
@@ -162,9 +133,7 @@ TextStyle mTextStyle22(
   );
 }
 
-TextStyle mTextStyle24(
-    {Color mColor = AppColor.textColorBlue,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle24({Color mColor = AppColor.textColorBlue, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 24,
     color: mColor,
@@ -173,9 +142,7 @@ TextStyle mTextStyle24(
   );
 }
 
-TextStyle mTextStyle28(
-    {Color mColor = AppColor.textColorBlue,
-    FontWeight mFontWeight = FontWeight.normal}) {
+TextStyle mTextStyle28({Color mColor = AppColor.textColorBlue, FontWeight mFontWeight = FontWeight.normal}) {
   return TextStyle(
     fontSize: 28,
     color: mColor,
@@ -241,19 +208,17 @@ InputDecoration mInputDecoration({
 // ------------------------------------ //
 //   InputDecoration Selection  //
 // ------------------------------------ //
-OutlineInputBorder mGetBorder(
-    {double radius = 10,
-    Color borderColor = AppColor.textColorBlack,
-    double borderWidth = 1}) {
+OutlineInputBorder mGetBorder({double radius = 10, Color borderColor = AppColor.textColorBlack, double borderWidth = 1}) {
   return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(radius),
-      borderSide: BorderSide(color: borderColor, width: borderWidth));
+      borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: borderColor, width: borderWidth));
 }
 
 // ------------------------------------ //
 //   GroupButtonOptions Selection  //
 // ------------------------------------ //
-GroupButtonOptions mGroupButtonOptions() {
+GroupButtonOptions mGroupButtonOptions({
+  EdgeInsets? textPadding,
+}) {
   return GroupButtonOptions(
     mainGroupAlignment: MainGroupAlignment.start,
     spacing: 5,
@@ -264,7 +229,7 @@ GroupButtonOptions mGroupButtonOptions() {
     unselectedBorderColor: AppColor.textColorLightBlack,
     selectedColor: AppColor.activeColor,
     selectedBorderColor: AppColor.activeColor,
-    textPadding: EdgeInsets.symmetric(horizontal: 13),
+    textPadding: textPadding == null ? EdgeInsets.symmetric(horizontal: 13) : textPadding,
   );
 }
 
@@ -330,8 +295,7 @@ Widget Custom_ExpansionTile({
     trailing: trailing,
     collapsedBackgroundColor: collapsedBackgroundColor,
     childrenPadding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-    backgroundColor:
-        backgroundColor == null ? Colors.grey.shade50 : backgroundColor,
+    backgroundColor: backgroundColor == null ? Colors.grey.shade50 : backgroundColor,
     shape: OutlineInputBorder(
       borderRadius: BorderRadius.circular(5),
       borderSide: BorderSide(color: AppColor.navBgColor),
@@ -384,13 +348,11 @@ alertBox(
     context: context,
     builder: (ctx) => AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(5.0), // Set your desired radius here
+        borderRadius: BorderRadius.circular(5.0), // Set your desired radius here
       ),
       title: Text(
         title,
-        style: TextStyle(
-            fontSize: 16, color: titleColor, fontWeight: FontWeight.w500),
+        style: TextStyle(fontSize: 16, color: titleColor, fontWeight: FontWeight.w500),
       ),
       content: Text(content),
       actions: <Widget>[
@@ -407,8 +369,7 @@ alertBox(
           onTap: okayPress,
           child: Text(
             "Okay",
-            style: mTextStyle14(
-                mFontWeight: FontWeight.w600, mColor: AppColor.btnBgColorGreen),
+            style: mTextStyle14(mFontWeight: FontWeight.w600, mColor: AppColor.btnBgColorGreen),
           ),
         ),
       ],
@@ -416,4 +377,193 @@ alertBox(
   );
 }
 
+// -------------------------------------------//
+//   Card design in used of About us page  //
+// -------------------------------------------//
 
+Widget aboutCard_Helper({
+  ImageProvider<Object>? image,
+  heading,
+  text,
+}) {
+  return Card_Container_Widget(
+    mColor: Colors.transparent,
+    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+    child: Column(
+      children: [
+        Container(
+          height: 80,
+          width: 80,
+          decoration: BoxDecoration(
+              image: DecorationImage(image: image!),
+              borderRadius: BorderRadius.circular(50),
+              border: Border.all(color: AppColor.textColorLightBlack)),
+        ),
+        heightSpacer(),
+        Text(heading!, style: mTextStyle15(), textAlign: TextAlign.center),
+        heightSpacer(),
+        Text(
+          text,
+          style: mTextStyle14(),
+          textAlign: TextAlign.justify,
+        )
+      ],
+    ),
+  );
+}
+
+// -------------------------------------------//
+//   Text Filed Used in Post Job for Skills member  //
+// -------------------------------------------//
+
+Widget Job_TextField({
+  TextEditingController? controller,
+  required void Function(String)? onChanged,
+  String? Text_Hint,
+  TextInputType? keyboardType,
+  TextCapitalization textCapitalization = TextCapitalization.none,
+}) {
+  return TextFormField(
+    controller: controller,
+    keyboardType: keyboardType == null ? TextInputType.number : keyboardType,
+    onChanged: onChanged,
+    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+    decoration: mInputDecoration(
+      padding: EdgeInsets.only(top: 3, left: 10),
+      radius: 5,
+      hint: Text_Hint,
+      hintColor: AppColor.textColorLightBlack,
+      mCounterText: "",
+    ),
+    textCapitalization: textCapitalization,
+  );
+}
+
+// -------------------------------------------//
+//   Read More Or Read Less Button Used in terms & condition  //
+// -------------------------------------------//
+
+Widget ReadMoreAndLessMore_Btn({
+  void Function()? onPress,
+  String? mText,
+}) {
+  return InkWell(
+    onTap: onPress,
+    child: Container(
+      height: 28,
+      width: 100,
+      alignment: Alignment.topLeft,
+      child: Text(
+        mText!,
+        style: mTextStyle14(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
+        textAlign: TextAlign.start,
+      ),
+    ),
+  );
+}
+
+// -------------------------------------------//
+/// this code get name word's first letter
+/// like Mukesh Kumar then get MK
+// -------------------------------------------//
+
+String getInitials(String name) {
+  List<String> nameParts = name.split(" "); // Split the name into parts
+  String initials = "";
+
+  for (var part in nameParts) {
+    if (part.isNotEmpty) {
+      initials += part[0]; // Get the first letter of each non-empty part
+    }
+  }
+
+  return initials;
+}
+
+// ==================================================================
+//    List for category_Option
+Upload_btn({required String btnName, EdgeInsetsGeometry? padding}) {
+  return Container(
+    padding: padding == null ? EdgeInsets.symmetric(vertical: 14, horizontal: 15) : padding,
+    decoration: BoxDecoration(
+      color: Colors.grey.shade100,
+      borderRadius: BorderRadius.circular(5),
+      border: Border(
+        top: BorderSide(
+          color: AppColor.textColorLightBlack,
+        ),
+        right: BorderSide(
+          color: AppColor.textColorLightBlack,
+        ),
+        bottom: BorderSide(
+          color: AppColor.textColorLightBlack,
+        ),
+      ),
+    ),
+    child: Text(
+      btnName,
+      style: mTextStyle13(),
+      textAlign: TextAlign.center,
+    ),
+  );
+}
+
+// -------------------------------------------//
+//   Card design in used of About us page  //
+// -------------------------------------------//
+
+Widget Privacy_Policy_Helper({
+  required Function()? onPress,
+  bool isVisible = false,
+  String? heading,
+  String? text,
+  String? hideText,
+  String? btn_Name,
+  double? width,
+}) {
+  return Card_Container_Widget(
+    margin: EdgeInsets.only(top: 15),
+    padding: EdgeInsets.all(15),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.send,
+              color: AppColor.btnBgColorGreen,
+            ),
+            widthSpacer(),
+            Expanded(child: Text(heading!, style: mTextStyle15())),
+          ],
+        ),
+        heightSpacer(),
+        Text(
+          "${text}",
+          style: mTextStyle14(),
+          textAlign: TextAlign.justify,
+        ),
+
+        // Hide and Show
+        AnimatedContainer(
+          duration: Duration(milliseconds: 500),
+          width: width,
+          child: isVisible
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Text(
+                    "${hideText}",
+                    style: mTextStyle14(),
+                    textAlign: TextAlign.justify,
+                  ),
+                )
+              : null,
+        ),
+
+        heightSpacer(mHeight: 5),
+        ReadMoreAndLessMore_Btn(onPress: onPress, mText: "${btn_Name}"),
+      ],
+    ),
+  );
+}

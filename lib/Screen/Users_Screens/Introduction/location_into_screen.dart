@@ -88,6 +88,7 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                     TextFormField(
                       controller: permanent_address,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       maxLines: null,
                       style:
                           TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
@@ -139,7 +140,7 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                             )
                           : Text(
                               "${address_1}",
-                              style: mTextStyle17(
+                              style: mTextStyle15(
                                   mFontWeight: FontWeight.w600,
                                   mColor: AppColor.textColorBlack),
                             ),
@@ -161,9 +162,7 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                             )
                           : Text(
                               "${address_2}",
-                              style: mTextStyle16(
-                                mColor: AppColor.textColorBlack,
-                              ),
+                                style: mTextStyle13(mFontWeight: FontWeight.w500),
                             )
                     ],
                   ),

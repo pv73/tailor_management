@@ -23,8 +23,7 @@ class Skills_Into_Screen extends StatefulWidget {
   final User firebaseUser;
   final UserModel userModel;
 
-  const Skills_Into_Screen(
-      {super.key, required this.firebaseUser, required this.userModel});
+  const Skills_Into_Screen({super.key, required this.firebaseUser, required this.userModel});
 
   @override
   State<Skills_Into_Screen> createState() => _Skills_Into_ScreenState();
@@ -88,16 +87,12 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                   proflie_pic: profile_pic,
                 ),
 
-                // Skills Details
+                /// ========== Skills Button ============
                 heightSpacer(mHeight: 20),
                 Text(
                   "Personal Skills",
-                  style: mTextStyle19(
-                      mColor: AppColor.textColorBlack,
-                      mFontWeight: FontWeight.w700),
+                  style: mTextStyle17(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                 ),
-
-                /// Skills Button
                 heightSpacer(mHeight: 10),
                 GroupButton(
                   options: mGroupButtonOptions(),
@@ -123,16 +118,13 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                   },
                 ),
 
-                // Profile Photo Update
+                /// Profile Photo details
                 heightSpacer(mHeight: 20),
                 Text(
                   "Upload Photo",
-                  style: mTextStyle19(
-                      mColor: AppColor.textColorBlack,
-                      mFontWeight: FontWeight.w700),
+                  style: mTextStyle17(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                 ),
 
-                /// Profile Photo details
                 heightSpacer(mHeight: 10),
                 Container(
                   width: double.infinity,
@@ -152,8 +144,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                         },
                         child: Container(
                           height: 140,
-                          child: Lottie.asset(
-                              "assets/images/lottie_animation/upload_photo.json"),
+                          child: Lottie.asset("assets/images/lottie_animation/upload_photo.json"),
                         ),
                       ),
                     ],
@@ -169,14 +160,11 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Bank_Into_Screen(
-                              firebaseUser: widget.firebaseUser,
-                              userModel: widget.userModel),
+                          builder: (context) => Bank_Into_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
                         ),
                       );
                     } else if (state is UserErrorState) {
-                      showSnackBar_Widget(context,
-                          mHeading: "Error", title: "${state.error}");
+                      showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                     }
                   },
                   builder: (context, state) {
@@ -188,9 +176,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                         _uploadProfile();
                       },
                       child: GFProgressBar(
-                        percentage: upload_Percentage == 0.0
-                            ? 0.0
-                            : upload_Percentage / 100,
+                        percentage: upload_Percentage == 0.0 ? 0.0 : upload_Percentage / 100,
                         lineHeight: 40,
                         backgroundColor: AppColor.navBgColor,
                         progressBarColor: Colors.green,
@@ -201,16 +187,14 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                             ? Center(
                                 child: Text(
                                   'Submit',
-                                  style: mTextStyle14(
-                                      mColor: AppColor.bgColorWhite),
+                                  style: mTextStyle14(mColor: AppColor.bgColorWhite),
                                   textAlign: TextAlign.center,
                                 ),
                               )
                             : Center(
                                 child: Text(
                                   'Upload',
-                                  style: mTextStyle14(
-                                      mColor: AppColor.bgColorWhite),
+                                  style: mTextStyle14(mColor: AppColor.bgColorWhite),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -336,8 +320,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
 
         // this get how many % upload
         uploadTask.snapshotEvents.listen((snapshot) {
-          double percentage =
-              snapshot.bytesTransferred / snapshot.totalBytes * 100;
+          double percentage = snapshot.bytesTransferred / snapshot.totalBytes * 100;
           setState(() {
             upload_Percentage = percentage;
           });
@@ -347,20 +330,16 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
         TaskSnapshot taskSnapshot = await uploadTask;
         String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-        widget.userModel.skills =
-            selectedSkills.isEmpty ? null : selectedSkills;
+        widget.userModel.skills = selectedSkills.isEmpty ? null : selectedSkills;
         widget.userModel.profile_pic = downloadUrl;
 
         //
         BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
         isLodding = false;
-        showSnackBar_Widget(context,
-            mHeading: "Success", title: "Your form is submitted successfully");
+        showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully");
         //
       } else {
-        showSnackBar_Widget(context,
-            mHeading: "Error",
-            title: "Plz. Select skills and upload profile pic");
+        showSnackBar_Widget(context, mHeading: "Error", title: "Plz. Select skills and upload profile pic");
       }
     } catch (ex) {
       log(ex.toString());

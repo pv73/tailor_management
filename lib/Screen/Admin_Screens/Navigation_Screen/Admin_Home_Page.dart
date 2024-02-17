@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Post_Job.dart';
 import 'package:tailor/app_widget/Admin_NameCard_Widget.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
@@ -57,6 +57,30 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
           isCurUserCom: true,
           firebaseUser: widget.firebaseUser,
           companyModel: widget.companyModel),
+
+      // Floating Action button
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColor.navBgColor,
+        foregroundColor: AppColor.textColorWhite,
+        elevation: 0,
+        onPressed: () {
+          Navigator.push(
+              context,
+              PageTransition(
+                  child: Post_Job(
+                    companyModel: widget.companyModel,
+                    firebaseUser: widget.firebaseUser,
+                    isButtonClick: true,
+                  ),
+                  type: PageTransitionType.bottomToTop,
+                duration: Duration(milliseconds: 400)
+              ),
+          );
+        },
+        label: const Text("Create New Job"),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -221,23 +245,24 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                 ),
 
                 // Create new Job
-                heightSpacer(mHeight: 20),
-                Rounded_Btn_Widget(
-                  mWidth: MediaQuery.of(context).size.width * 0.75,
-                  onPress: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Post_Job(
-                          companyModel: widget.companyModel,
-                          firebaseUser: widget.firebaseUser,
-                        ),
-                      ),
-                    );
-                  },
-                  title: "Create New Job",
-                  mAlignment: Alignment.center,
-                ),
+                // heightSpacer(mHeight: 20),
+                // Rounded_Btn_Widget(
+                //   mWidth: MediaQuery.of(context).size.width * 0.75,
+                //   onPress: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => Post_Job(
+                //           companyModel: widget.companyModel,
+                //           firebaseUser: widget.firebaseUser,
+                //           isButtonClick: true,
+                //         ),
+                //       ),
+                //     );
+                //   },
+                //   title: "Create New Job",
+                //   mAlignment: Alignment.center,
+                // ),
               ],
             ),
           ),

@@ -13,8 +13,7 @@ class Navigation_Bar extends StatefulWidget {
   final User firebaseUser;
   final UserModel userModel;
 
-  const Navigation_Bar(
-      {super.key, required this.firebaseUser, required this.userModel});
+  const Navigation_Bar({super.key, required this.firebaseUser, required this.userModel});
 
   @override
   State<Navigation_Bar> createState() => _Navigation_BarState();
@@ -30,44 +29,68 @@ class _Navigation_BarState extends State<Navigation_Bar> {
 
     /// Screen page
     final screens = [
-      Jobs_Screen(),
-      Attendance_Screen(),
+      Jobs_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
+      Attendance_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
       Home_Page(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
-      Applications_Screen(),
-      Profile_Screen(
-          userModel: widget.userModel, firebaseUser: widget.firebaseUser)
+      Applications_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
+      Profile_Screen(userModel: widget.userModel, firebaseUser: widget.firebaseUser)
     ];
 
     final items = <Widget>[
       // Videos
       if (index == 0)
-        Nav_Icon_Text(mIcon: Icons.shopping_bag)
+        Nav_Icon_Text(
+          mIcon: Icons.card_travel_rounded,
+        )
       else
-        Nav_Icon_Text(mIcon: Icons.shopping_bag, mTitle: "Jobs"),
+        Nav_Icon_Text(
+          mIcon: Icons.card_travel_rounded,
+          mTitle: "Jobs",
+        ),
 
       // Attendance
       if (index == 1)
-        Nav_Icon_Text(mIcon: Icons.calendar_month)
+        Nav_Icon_Text(
+          mIcon: Icons.calendar_month,
+        )
       else
-        Nav_Icon_Text(mIcon: Icons.calendar_month, mTitle: "Attendance"),
+        Nav_Icon_Text(
+          mIcon: Icons.calendar_month,
+          mTitle: "Attendance",
+        ),
 
       //Chat
       if (index == 2)
-        Nav_Icon_Text(mIcon: Icons.home)
+        Nav_Icon_Text(
+          mIcon: Icons.home,
+        )
       else
-        Nav_Icon_Text(mIcon: Icons.home, mTitle: "Home"),
+        Nav_Icon_Text(
+          mIcon: Icons.home,
+          mTitle: "Home",
+        ),
 
       // Calls
       if (index == 3)
-        Nav_Icon_Text(mIcon: Icons.file_copy_outlined)
+        Nav_Icon_Text(
+          mIcon: Icons.file_copy_outlined,
+        )
       else
-        Nav_Icon_Text(mIcon: Icons.file_copy_outlined, mTitle: "Applications"),
+        Nav_Icon_Text(
+          mIcon: Icons.file_copy_outlined,
+          mTitle: "Applications",
+        ),
 
       // profile
       if (index == 4)
-        Nav_Icon_Text(mIcon: Icons.person_outline_outlined)
+        Nav_Icon_Text(
+          mIcon: Icons.person_outline_outlined,
+        )
       else
-        Nav_Icon_Text(mIcon: Icons.person_outline_outlined, mTitle: "Profile"),
+        Nav_Icon_Text(
+          mIcon: Icons.person_outline_outlined,
+          mTitle: "Profile",
+        ),
     ];
 
     return Scaffold(
@@ -94,17 +117,20 @@ class _Navigation_BarState extends State<Navigation_Bar> {
 
   Widget Nav_Icon_Text({required mIcon, mTitle}) {
     return mTitle == null
-        ? Icon(
-            mIcon,
-            size: 25,
-            color: Colors.white,
-          )
+        ? Container(
+      padding: EdgeInsets.all(8),
+          child: Icon(
+              mIcon,
+              size: 20,
+              color: Colors.white,
+            ),
+        )
         : Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(mIcon, size: 25, color: Colors.white),
+                Icon(mIcon, size: 20, color: Colors.white),
                 heightSpacer(mHeight: 5),
                 Text(
                   mTitle,

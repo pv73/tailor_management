@@ -40,14 +40,8 @@ class _SignUp_pageState extends State<SignUp_page> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/banner/splash_bg.jpg"),
-                fit: BoxFit.cover)),
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/banner/splash_bg.jpg"), fit: BoxFit.cover)),
         child: SafeArea(
           child: SingleChildScrollView(
             child: InkWell(
@@ -59,18 +53,9 @@ class _SignUp_pageState extends State<SignUp_page> {
                 child: Column(
                   children: [
                     heightSpacer(mHeight: 60),
-                    widget.isCompany == true
-                        ? Text(
-                      "Create Company Account",
-                      style: mTextStyle24(
-                          mFontWeight: FontWeight.w900,
-                          mColor: AppColor.textColorBlue),
-                    )
-                        : Text(
-                      "Create Tailor Account",
-                      style: mTextStyle24(
-                          mFontWeight: FontWeight.w900,
-                          mColor: AppColor.textColorBlue),
+                    Text(
+                      widget.isCompany == true ? "Create Company Account" : "Create Tailor Account",
+                      style: mTextStyle24(mFontWeight: FontWeight.w900, mColor: AppColor.textColorBlue),
                     ),
 
                     heightSpacer(),
@@ -86,8 +71,8 @@ class _SignUp_pageState extends State<SignUp_page> {
                     heightSpacer(mHeight: 40),
                     TextFormField(
                       controller: user_nameController,
-                      style:
-                      TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      textCapitalization: TextCapitalization.words,
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         prefixIcon: Icon(Icons.person),
@@ -102,9 +87,8 @@ class _SignUp_pageState extends State<SignUp_page> {
                     heightSpacer(mHeight: 20),
                     TextFormField(
                       controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      style:
-                      TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         prefixIcon: Icon(Icons.email_outlined),
@@ -121,8 +105,7 @@ class _SignUp_pageState extends State<SignUp_page> {
                       controller: phoneController,
                       keyboardType: TextInputType.number,
                       maxLength: 10,
-                      style:
-                      TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         prefixIcon: Icon(Icons.phone),
@@ -141,8 +124,7 @@ class _SignUp_pageState extends State<SignUp_page> {
                       obscureText: _isPassHide,
                       autocorrect: false,
                       keyboardType: TextInputType.visiblePassword,
-                      style:
-                      TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         preFixColor: AppColor.textColorLightBlack,
@@ -151,9 +133,7 @@ class _SignUp_pageState extends State<SignUp_page> {
                         hint: "Password",
                         hintColor: AppColor.textColorLightBlack,
                         prefixIcon: IconButton(
-                          icon: _isPassHide == false
-                              ? Icon(Icons.visibility_off)
-                              : Icon(Icons.visibility),
+                          icon: _isPassHide == false ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
                           onPressed: () {
                             if (_isPassHide == false) {
                               _isPassHide = true;
@@ -172,8 +152,7 @@ class _SignUp_pageState extends State<SignUp_page> {
                       obscureText: _isPassHide,
                       autocorrect: false,
                       keyboardType: TextInputType.visiblePassword,
-                      style:
-                      TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         preFixColor: AppColor.textColorLightBlack,
@@ -182,9 +161,7 @@ class _SignUp_pageState extends State<SignUp_page> {
                         hint: "Conform Password",
                         hintColor: AppColor.textColorLightBlack,
                         prefixIcon: IconButton(
-                          icon: _isPassHide == false
-                              ? Icon(Icons.visibility_off)
-                              : Icon(Icons.visibility),
+                          icon: _isPassHide == false ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
                           onPressed: () {
                             if (_isPassHide == false) {
                               _isPassHide = true;
@@ -208,8 +185,7 @@ class _SignUp_pageState extends State<SignUp_page> {
 
                           //
                         } else if (state is AuthErrorState) {
-                          showSnackBar_Widget(context,
-                              mHeading: "Error", title: "${state.error}");
+                          showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                         }
                       },
                       builder: (context, state) {
@@ -237,23 +213,17 @@ class _SignUp_pageState extends State<SignUp_page> {
                       child: RichText(
                         text: TextSpan(
                           text: "You have already an account ",
-                          style: mTextStyle13(
-                              mColor: AppColor.textColorBlack,
-                              mFontWeight: FontWeight.w400),
+                          style: mTextStyle13(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w400),
                           children: [
                             TextSpan(
                               text: " Login",
-                              style: mTextStyle13(
-                                  mColor: AppColor.textColorBlue,
-                                  mFontWeight: FontWeight.w700),
+                              style: mTextStyle13(mColor: AppColor.textColorBlue, mFontWeight: FontWeight.w700),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.popUntil(
-                                      context, (route) => route.isFirst);
+                                  Navigator.popUntil(context, (route) => route.isFirst);
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) => LogIn_Page()),
+                                    MaterialPageRoute(builder: (context) => LogIn_Page()),
                                   );
                                 },
                             )
@@ -281,18 +251,10 @@ class _SignUp_pageState extends State<SignUp_page> {
     String password = passwordController.text.trim();
     String confPassword = conf_PasswordController.text.trim();
 
-    if (user_name == "" ||
-        phone == "" ||
-        email == "" ||
-        password == "" ||
-        confPassword == "") {
-      showSnackBar_Widget(context,
-          mHeading: "Error",
-          title: "Incomplete Data, Please fill all the fields");
+    if (user_name == "" || phone == "" || email == "" || password == "" || confPassword == "") {
+      showSnackBar_Widget(context, mHeading: "Error", title: "Incomplete Data, Please fill all the fields");
     } else if (password != confPassword && password.length >= 6) {
-      showSnackBar_Widget(context,
-          mHeading: "Error",
-          title: "Do not match password OR Min. enter 6 Digit password");
+      showSnackBar_Widget(context, mHeading: "Error", title: "Do not match password OR Min. enter 6 Digit password");
     } else {
       if (widget.isCompany == true) {
         // register company
@@ -304,19 +266,16 @@ class _SignUp_pageState extends State<SignUp_page> {
         );
         log(widget.isCompany.toString());
 
-        BlocProvider.of<AuthCubit>(context)
-            .companySignUp(email, password, newCompany);
+        BlocProvider.of<AuthCubit>(context).companySignUp(email, password, newCompany);
       } else {
         // register tailor (Users).
-
         UserModel newUser = UserModel(
           user_name: user_name,
           phone: phone,
           is_company: widget.isCompany,
         );
 
-        BlocProvider.of<AuthCubit>(context)
-            .tailorSignUp(email, password, newUser);
+        BlocProvider.of<AuthCubit>(context).tailorSignUp(email, password, newUser);
       }
     }
   }
@@ -328,44 +287,33 @@ class _SignUp_pageState extends State<SignUp_page> {
     if (widget.isCompany == false) {
       // if register user is Client
 
-      DocumentSnapshot userData =
-      await FirebaseFirestore.instance.collection("clients").doc(uid).get();
+      DocumentSnapshot userData = await FirebaseFirestore.instance.collection("clients").doc(uid).get();
 
-      UserModel userModel =
-      UserModel.fromMap(userData.data() as Map<String, dynamic>);
+      UserModel userModel = UserModel.fromMap(userData.data() as Map<String, dynamic>);
 
-      showSnackBar_Widget(context,
-          mHeading: "Success",
-          title: "Your form is submitted successfully and you are loggedIn");
+      showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully and you are loggedIn");
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              Aadhar_Card_Screen(
-                firebaseUser: credential!.user!,
-                userModel: userModel,
-              ),
+          builder: (context) => Aadhar_Card_Screen(
+            firebaseUser: credential!.user!,
+            userModel: userModel,
+          ),
         ),
       );
     } else {
       // if register user is Company
 
-      DocumentSnapshot companyData =
-      await FirebaseFirestore.instance.collection("company").doc(uid).get();
+      DocumentSnapshot companyData = await FirebaseFirestore.instance.collection("company").doc(uid).get();
 
-      CompanyModel companyModel =
-      CompanyModel.fromMap(companyData.data() as Map<String, dynamic>);
+      CompanyModel companyModel = CompanyModel.fromMap(companyData.data() as Map<String, dynamic>);
 
-
-      showSnackBar_Widget(context,
-          mHeading: "Success",
-          title: "Your form is submitted successfully and you are loggedIn");
+      showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully and you are loggedIn");
       Navigator.popUntil(context, (route) => route.isFirst);
       // Get.to used because Navigate newPage with animation
 
-      Get.to(Factory_Details(
-          firebaseUser: credential!.user!, companyModel: companyModel));
+      Get.to(Factory_Details(firebaseUser: credential!.user!, companyModel: companyModel));
 
       var prefs = await SharedPreferences.getInstance();
       prefs.setBool("is_Company", true);

@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tailor/Screen/Drawer_Screen/About_us.dart';
+import 'package:tailor/Screen/Drawer_Screen/Disclaimer.dart';
+import 'package:tailor/Screen/Drawer_Screen/Privacy_Policy.dart';
+import 'package:tailor/Screen/Drawer_Screen/Terms_&_Condition.dart';
 import 'package:tailor/Screen/user_onboard/First_Dashboard.dart';
 import 'package:tailor/Screen/user_onboard/Login_Page.dart';
 import 'package:tailor/Screen/user_onboard/Number_Login.dart';
@@ -18,10 +20,10 @@ import 'package:tailor/ui_helper.dart';
 
 class Drawer_Widget extends StatefulWidget {
   // hear value get current user is Company Or Users
-  bool? isCurUserCom;
-  User? firebaseUser;
-  UserModel? userModel;
-  CompanyModel? companyModel;
+  final bool? isCurUserCom;
+  final User? firebaseUser;
+  final UserModel? userModel;
+  final CompanyModel? companyModel;
 
   Drawer_Widget(
       {this.isCurUserCom,
@@ -56,7 +58,7 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
         ),
         child: Column(
           children: [
-            heightSpacer(mHeight: 60),
+            heightSpacer(mHeight: 45),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 17),
               child: BlocBuilder<AuthCubit, AuthState>(
@@ -79,12 +81,6 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
             heightSpacer(),
             Divider(),
 
-            //
-            List_Name(
-              onPres: () {},
-              mIcon: Icons.search,
-              mText: "Search job",
-            ),
 
             List_Name(
               onPres: () {},
@@ -94,7 +90,7 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
 
             List_Name(
               onPres: () {},
-              mIcon: Icons.question_mark,
+              mIcon: Icons.help_outline,
               mText: "How Tailor works",
             ),
 
@@ -125,6 +121,51 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
               mText: "About us",
             ),
 
+             List_Name(
+              onPres: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    child: Terms_And_Condition(),
+                    type: PageTransitionType.rightToLeftWithFade,
+                  ),
+                );
+              },
+              mIcon: Icons.title,
+              mText: "Terms and Condition",
+            ),
+
+            List_Name(
+              onPres: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    child: Privacy_Policy(),
+                    type: PageTransitionType.rightToLeftWithFade,
+                  ),
+                );
+              },
+              mIcon: Icons.privacy_tip_outlined,
+              mText: "Privacy Policy",
+            ),
+
+            List_Name(
+              onPres: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    child: Disclaimer(),
+                    type: PageTransitionType.rightToLeftWithFade,
+                  ),
+                );
+              },
+              mIcon: Icons.not_interested,
+              mText: "Disclaimer",
+            ),
+
             // This code show only if Company or Tailor are LoggedIn OtherWise Hide
             if (widget.isCurUserCom == true || widget.isCurUserCom == false)
               BlocConsumer<AuthCubit, AuthState>(
@@ -144,11 +185,11 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
                         const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                     child: Column(
                       children: [
-                        List_Name(
-                          onPres: () {},
-                          mIcon: Icons.person,
-                          mText: "profile",
-                        ),
+                        // List_Name(
+                        //   onPres: () {},
+                        //   mIcon: Icons.person,
+                        //   mText: "profile",
+                        // ),
                         List_Name(
                           onPres: () async {
                             BlocProvider.of<AuthCubit>(context).logOut();
@@ -165,6 +206,7 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
               )
             else
               Container(child: Text("")),
+
           ],
         ),
       ),

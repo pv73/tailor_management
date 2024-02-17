@@ -20,9 +20,9 @@ class CompanyDetailsComponents extends StatelessWidget {
             companyModel.company_logo != null
                 ? CircleAvatar(
                     backgroundColor: AppColor.navBgColor,
-                    radius: 40,
+                    radius: 35,
                     child: CircleAvatar(
-                      radius: 38,
+                      radius: 33,
                       backgroundColor: Colors.white,
                       backgroundImage:
                           NetworkImage("${companyModel.company_logo}"),

@@ -16,8 +16,7 @@ class Education_Into_Screen extends StatefulWidget {
   final User firebaseUser;
   final UserModel userModel;
 
-  const Education_Into_Screen(
-      {super.key, required this.firebaseUser, required this.userModel});
+  const Education_Into_Screen({super.key, required this.firebaseUser, required this.userModel});
 
   @override
   State<Education_Into_Screen> createState() => _Education_Into_ScreenState();
@@ -29,10 +28,9 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
   TextEditingController collage_name = TextEditingController();
 
   String? education;
-  var course;
+  String? course;
   bool _isDropDownOption = false;
-  late SingleValueDropDownController branch_value =
-  SingleValueDropDownController();
+  late SingleValueDropDownController branch_value = SingleValueDropDownController();
 
   //dropdown options
   List<DropDownValueModel> currentOptions = [];
@@ -81,26 +79,19 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                 FocusScope.of(context).unfocus();
               },
               child: Container(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height,
+                height: MediaQuery.of(context).size.height,
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Start Profile Box
-                    Profile_box_Widget(
-                        firebaseUser: widget.firebaseUser,
-                        userModel: widget.userModel),
+                    Profile_box_Widget(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
 
-                    // Education Details
+                    // ========= Education Details ============
                     heightSpacer(mHeight: 20),
                     Text(
                       "Your Highest Eduction",
-                      style: mTextStyle19(
-                          mColor: AppColor.textColorBlack,
-                          mFontWeight: FontWeight.w700),
+                      style: mTextStyle17(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                     ),
 
                     /// Education Button
@@ -108,15 +99,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                     GroupButton(
                       options: mGroupButtonOptions(),
                       isRadio: true,
-                      buttons: [
-                        "10th or Below 10th",
-                        "12th Pass",
-                        "Diploma",
-                        "ITI",
-                        "Graduate",
-                        "Post Graduate",
-                        "Other"
-                      ],
+                      buttons: ["10th or Below 10th", "12th Pass", "Diploma", "ITI", "Graduate", "Post Graduate", "Other"],
                       onSelected: (btn_name, index, isSelected) {
                         education = btn_name;
                         setState(() {
@@ -142,48 +125,46 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                     _isDropDownOption == false
                         ? Container()
                         : Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Course",
-                            style: mTextStyle15(),
-                          ),
-                          heightSpacer(mHeight: 5),
-                          SizedBox(
-                            height: 45,
-                            child: DropDownTextField(
-                              controller: branch_value,
-                              textStyle: mTextStyle13(),
-                              listTextStyle: mTextStyle13(),
-                              readOnly: true,
-                              dropdownRadius: 5,
-                              listPadding: ListPadding(bottom: 8, top: 8),
-                              textFieldDecoration: mInputDecoration(
-                                hint: "Select Course",
-                                radius: 5,
-                                padding:
-                                EdgeInsets.only(top: 10, left: 15),
-                              ),
-                              dropDownList: currentOptions,
-                              onChanged: (value) {
-                                if (value != null) {
-                                  course =
-                                      branch_value.dropDownValue!.value;
-                                  // print(branch_value.dropDownValue!.name);
-                                } else {
-                                  // Handle the case when nothing is selected
-                                  course = null;
-                                }
+                            margin: EdgeInsets.only(top: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Course",
+                                  style: mTextStyle13(mFontWeight: FontWeight.w500),
+                                ),
+                                heightSpacer(mHeight: 5),
+                                SizedBox(
+                                  height: 45,
+                                  child: DropDownTextField(
+                                    controller: branch_value,
+                                    textStyle: mTextStyle13(),
+                                    listTextStyle: mTextStyle13(),
+                                    readOnly: true,
+                                    dropdownRadius: 5,
+                                    listPadding: ListPadding(bottom: 8, top: 8),
+                                    textFieldDecoration: mInputDecoration(
+                                      hint: "Select Course",
+                                      radius: 5,
+                                      padding: EdgeInsets.only(top: 10, left: 15),
+                                    ),
+                                    dropDownList: currentOptions,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        course = branch_value.dropDownValue!.value;
+                                        // print(branch_value.dropDownValue!.name);
+                                      } else {
+                                        // Handle the case when nothing is selected
+                                        course = null;
+                                      }
 
-                                setState(() {});
-                              },
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
 
                     ///  Collage Name
                     heightSpacer(mHeight: 20),
@@ -192,7 +173,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                       children: [
                         Text(
                           "Collage/Institute Name",
-                          style: mTextStyle15(),
+                          style: mTextStyle13(mFontWeight: FontWeight.w500),
                         ),
                         heightSpacer(mHeight: 10),
                         SizedBox(
@@ -225,7 +206,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                       children: [
                         Text(
                           "Passing Year",
-                          style: mTextStyle15(),
+                          style: mTextStyle13(mFontWeight: FontWeight.w500),
                         ),
                         heightSpacer(mHeight: 10),
                         SizedBox(
@@ -236,10 +217,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                             keyboardType: TextInputType.number,
                             maxLength: 4,
                             decoration: mInputDecoration(
-                                hint: "Passing Year",
-                                radius: 5,
-                                padding: EdgeInsets.only(top: 10, left: 15),
-                                mCounterText: ""),
+                                hint: "Passing Year", radius: 5, padding: EdgeInsets.only(top: 10, left: 15), mCounterText: ""),
                           ),
                         ),
                       ],
@@ -261,33 +239,27 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
             listener: (context, state) {
               // TODO: implement listener
               if (state is UserLoadedState) {
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        Interest_Into_Screen(
-                            firebaseUser: widget.firebaseUser,
-                            userModel: widget.userModel),
+                    builder: (context) => Interest_Into_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
                   ),
                 );
               } else if (state is UserErrorState) {
-                showSnackBar_Widget(context,
-                    mHeading: "Error", title: "${state.error}");
+                showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
               }
             },
             builder: (context, state) {
               return Rounded_Btn_Widget(
                 title: "Next",
-                mTextColor:
-                education == null ? AppColor.btnBgColorGreen : Colors.white,
+                mTextColor: education == null ? AppColor.btnBgColorGreen : Colors.white,
                 btnBgColor: AppColor.btnBgColorGreen,
                 borderColor: AppColor.btnBgColorGreen,
                 onPress: education == null
                     ? null
                     : () {
-                  checkValue();
-                },
+                        checkValue();
+                      },
                 mHeight: 40,
                 borderRadius: 5,
                 mAlignment: Alignment.center,
@@ -313,13 +285,9 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
       widget.userModel.collage_name = collage_name.text;
 
       BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
-        showSnackBar_Widget(context,
-                    mHeading: "Success",
-                    title: "Your form is submitted successfully");
+      showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully");
     } else {
-      showSnackBar_Widget(context,
-          mHeading: "Error",
-          title: "Please filled all field and year less then 2023");
+      showSnackBar_Widget(context, mHeading: "Error", title: "Please filled all field and year less then 2023");
     }
   }
 
@@ -339,9 +307,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
             flex: 3,
             child: Text(
               "${mText}",
-              style: mTextStyle13(
-                  mFontWeight: FontWeight.w600,
-                  mColor: AppColor.textColorLightBlack),
+              style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: AppColor.textColorLightBlack),
             ),
           ),
           Expanded(child: Container()),
@@ -354,15 +320,11 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
   // =================== DropDown Lists ===================================
 
   List<DropDownValueModel> diplomaOptions = [
-    DropDownValueModel(
-        name: "Computer Science Engineering", value: "Computer_Science_Eng."),
-    DropDownValueModel(
-        name: "Mechanical Engineering", value: "Mechanical_Eng."),
-    DropDownValueModel(
-        name: "Electrical Engineering", value: "Electrical_Eng."),
+    DropDownValueModel(name: "Computer Science Engineering", value: "Computer_Science_Eng."),
+    DropDownValueModel(name: "Mechanical Engineering", value: "Mechanical_Eng."),
+    DropDownValueModel(name: "Electrical Engineering", value: "Electrical_Eng."),
     DropDownValueModel(name: "Civil Engineering", value: "Civil_Eng."),
-    DropDownValueModel(
-        name: "Electronics Engineering", value: "Electronics_Eng."),
+    DropDownValueModel(name: "Electronics Engineering", value: "Electronics_Eng."),
     DropDownValueModel(name: "Automobile Engineering", value: "Automobile_Eng.")
   ];
 
@@ -370,8 +332,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
     DropDownValueModel(name: "Carpenter", value: "Carpenter"),
     DropDownValueModel(name: "Computer Operator", value: "Computer_Operator"),
     DropDownValueModel(name: "Electrician", value: "Electrician"),
-    DropDownValueModel(
-        name: "Electronic Mechanic", value: "Electronic_Mechanic"),
+    DropDownValueModel(name: "Electronic Mechanic", value: "Electronic_Mechanic"),
     DropDownValueModel(name: "Fitter", value: "Fitter"),
     DropDownValueModel(name: "Plumber", value: "Plumber")
   ];

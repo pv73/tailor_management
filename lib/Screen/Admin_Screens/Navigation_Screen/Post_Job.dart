@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,20 +10,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Company_Details.dart';
+import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Experience_Filed_Widget.dart';
+import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/ImageUpload_Field.dart';
+import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Multi_And_Single_btn.dart';
+import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Tailor_Category_All_Filed.dart';
+import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Veriables_And_Function.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/ShowSnackBar_Widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
 import 'package:tailor/dynimic_list/Job_Dropdown_list.dart';
 import 'package:tailor/modal/CompanyModel.dart';
+import 'package:tailor/modal/JobModel.dart';
 import 'package:tailor/ui_helper.dart';
+import 'package:uuid/uuid.dart';
 
 class Post_Job extends StatefulWidget {
   final User firebaseUser;
   final CompanyModel companyModel;
+  final bool isButtonClick;
 
-  Post_Job({super.key, required this.firebaseUser, required this.companyModel});
+  Post_Job({super.key, required this.firebaseUser, required this.companyModel, this.isButtonClick = false});
 
   @override
   State<Post_Job> createState() => _Post_JobState();
@@ -31,812 +40,559 @@ class Post_Job extends StatefulWidget {
 
 class _Post_JobState extends State<Post_Job> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  TextEditingController garmentQtyController = TextEditingController();
-  TextEditingController jobDesController = TextEditingController();
-  TextEditingController totalTailorController = TextEditingController();
-  TextEditingController stitchingPriceController = TextEditingController();
-  TextEditingController cateSalaryController = TextEditingController();
-  TextEditingController grade_Salary_Controller = TextEditingController();
-  TextEditingController part_Rate_Text_Controller = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController expMinimumController = TextEditingController();
-  TextEditingController expMaximumController = TextEditingController();
-  TextEditingController job_Responsibilities = TextEditingController();
-  TextEditingController interviewAddressController = TextEditingController();
-  TextEditingController minimumSalaryController = TextEditingController();
-  TextEditingController maxmimumSalaryController = TextEditingController();
-  List<String> selectedSkills = [];
-  List<String> selectedEducation = [];
-
-  //Garment filed all Dropdown value
-  late SingleValueDropDownController garment_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController department_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController job_type_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController totalSkillEmp_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController category_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController Part_Time_Cate_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController part_Time_Sub_Cate_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController grade_Salary_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController part_Rate_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController full_Pc_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController workType_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController workShift_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController interviewMode_value =
-      SingleValueDropDownController();
-  late SingleValueDropDownController workLocation_value =
-      SingleValueDropDownController();
-
-  //dropdown options
-  List<DropDownValueModel> currentCategoryOptions = [];
-  List<DropDownValueModel> currentPartTimeCateOptions = [];
-
-  //
-  DateTime? mDateTime;
-  String? garment_type;
-  String? department;
-  String? job_type;
-  String? category;
-  String? part_Time_Category;
-  String? part_Time_Sub_Category;
-  String? grade_Salary;
-  String? part_Rate;
-  String? full_Pc;
-  File? garment_pic;
-  File? partRateImage;
-  String selectedValue = "Image";
-  String? workType;
-  String? workShift;
-  String? interviewMode;
-  String? workLocation;
-  bool? isLodding = false;
-  bool? isGarmentImage = false;
-
-  // ExpansionTile change when any required filed is empty
-  Color? detailsErrorColor;
-  Color? totalErrorColor;
-  Color? experienceErrorColor;
-  Color? moreInfoErrorColor;
-  Color? interviewErrorColor;
+  late MediaQueryData mq;
 
   @override
   Widget build(BuildContext context) {
+    mq = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColor.textColorWhite,
       appBar: AppBar(
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
         automaticallyImplyLeading: true,
         titleSpacing: 0,
+        leading: widget.isButtonClick == false
+            ? null
+            : IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  // Navigate back when back button is pressed
+                  Navigator.pop(context);
+                },
+              ),
         title: RichText(
-          text: TextSpan(text: "Post ", style: mTextStyle20(), children: [
-            TextSpan(
-                text: "new job",
-                style: mTextStyle20(mColor: AppColor.textColorBlue))
-          ]),
+          text: TextSpan(
+              text: "Post ",
+              style: mTextStyle20(),
+              children: [TextSpan(text: "new job", style: mTextStyle20(mColor: AppColor.textColorBlue))]),
         ),
       ),
-      drawer: Drawer_Widget(
-          isCurUserCom: true,
-          firebaseUser: widget.firebaseUser,
-          companyModel: widget.companyModel),
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: InkWell(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Text
-                  Padding(
-                    padding:
-                        EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
-                    child: Text(
-                      "Post your new job for users",
-                      style: mTextStyle16(mFontWeight: FontWeight.w800),
-                    ),
-                  ),
-                  heightSpacer(mHeight: 1),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
-                    child: Text(
-                      "Fill all fields to upload job",
-                      style: mTextStyle13(
-                          mColor: AppColor.textColorLightBlack,
-                          mFontWeight: FontWeight.w500),
-                    ),
-                  ),
+      drawer: !widget.isButtonClick
+          ? Drawer_Widget(isCurUserCom: true, firebaseUser: widget.firebaseUser, companyModel: widget.companyModel)
+          : null,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text
+            Padding(
+              padding: EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 0),
+              child: Text(
+                "Post your new job for users",
+                style: mTextStyle16(mFontWeight: FontWeight.w800),
+              ),
+            ),
+            heightSpacer(mHeight: 5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                "Fill all fields to upload job",
+                style: mTextStyle13(mColor: AppColor.textColorLightBlack, mFontWeight: FontWeight.w500),
+              ),
+            ),
 
-                  /// Form
-                  heightSpacer(mHeight: 20),
-                  Form(
-                    key: _formKey,
-                    child: Container(
-                      color: AppColor.textColorWhite,
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Company Details ExpansionTile
-                          Custom_ExpansionTile(
-                            collapsedBackgroundColor: Color(0x47BEDFFF),
-                            title: Text(
-                              "Company Details",
-                              style: mTextStyle14(mFontWeight: FontWeight.w600),
-                            ),
-                            children: [
-                              CompanyDetailsComponents(
-                                firebaseUser: widget.firebaseUser,
-                                companyModel: widget.companyModel,
+            /// Form
+            heightSpacer(),
+            Form(
+              key: _formKey,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    // ========== Company Details ExpansionTile =============
+                    Custom_ExpansionTile(
+                      collapsedBackgroundColor: Color(0x47BEDFFF),
+                      title: Text(
+                        "Company Details",
+                        style: mTextStyle14(mFontWeight: FontWeight.w600),
+                      ),
+                      children: [
+                        CompanyDetailsComponents(
+                          firebaseUser: widget.firebaseUser,
+                          companyModel: widget.companyModel,
+                        )
+                      ],
+                    ),
+
+                    // Job Details ExpansionTile
+                    heightSpacer(),
+                    Custom_ExpansionTile(
+                      // By default open this ExpansionTile when loaded
+                      initiallyExpanded: true,
+                      collapsedBackgroundColor: detailsErrorColor != null ? detailsErrorColor : Color(0x47BEDFFF),
+                      backgroundColor: detailsErrorColor != null ? detailsErrorColor : Colors.grey.shade50,
+                      title: RichText(
+                        text: TextSpan(
+                          text: "Job Details ",
+                          style: mTextStyle14(mFontWeight: FontWeight.w600),
+                          children: [
+                            TextSpan(
+                              text: " *",
+                              style: mTextStyle14(mFontWeight: FontWeight.w800, mColor: Colors.red),
+                            )
+                          ],
+                        ),
+                      ),
+                      children: [
+                        // ================== GARMENT TYPE ==========
+                        Custom_DropDownTextField(
+                          hint: "Garment Type *",
+                          controller: garment_value,
+                          dropDownList: garment_Option,
+                          onChanged: (value) {
+                            if (value != null) {
+                              garment = garment_value.dropDownValue?.name;
+                              detailsErrorColor = null;
+                            } else {
+                              garment = null;
+                            }
+                            setState(() {});
+                          },
+                        ),
+
+                        // =========== Upload Garment Image ===========
+                        ImageUpload_field(
+                          padding: EdgeInsets.only(top: 10),
+                          selected_pic: garment_Pic,
+                          hintText: "Garment Image",
+                          ImageName: garmentPicName,
+                          Upload: () {
+                            Select_Image_BottomSheet();
+                          },
+                        ),
+
+                        // ============== Garment Order ================
+                        heightSpacer(),
+                        Job_TextField(
+                          controller: garmentQtyController,
+                          Text_Hint: "Garment Order Quantity",
+                          onChanged: (value) {},
+                        ),
+
+                        // ============== Work place Type ==================
+                        heightSpacer(),
+                        Multi_And_Single_Btn(
+                          heading_Text: "Work Place Type",
+                          isRequired_start: " *",
+                          isRadio: true,
+                          buttons: [
+                            "Onsite",
+                            "Work from home",
+                          ],
+                          onSelected: (work_btn_name, index, isSelected) {
+                            setState(() {
+                              work_Type = work_btn_name;
+                              detailsErrorColor = null;
+                            });
+                          },
+                        ),
+
+                        // ============== Work Shift ==================
+                        heightSpacer(),
+                        Multi_And_Single_Btn(
+                          heading_Text: "Work Shift",
+                          isRequired_start: " *",
+                          isRadio: true,
+                          buttons: [
+                            "Day Shift",
+                            "Night Shift",
+                          ],
+                          onSelected: (shift_btn_name, index, isSelected) {
+                            setState(() {
+                              work_Shift = shift_btn_name;
+                              detailsErrorColor = null;
+                            });
+                          },
+                        ),
+
+                        // ============== Job Type ==================
+                        heightSpacer(),
+                        Custom_DropDownTextField(
+                          hint: "Job Type *",
+                          controller: job_type_value,
+                          dropDownList: job_Type_Option,
+                          onChanged: (value) {
+                            if (value != null) {
+                              job_Type = job_type_value.dropDownValue?.name;
+                              // error Color null
+                              detailsErrorColor = null;
+                            } else {
+                              job_Type = null;
+                            }
+                            setState(() {});
+                          },
+                        ),
+
+                        // ============ Tailor Department ===============
+                        heightSpacer(),
+                        Custom_DropDownTextField(
+                          hint: "Tailor Department *",
+                          controller: department_value,
+                          dropDownList: department_Option,
+                          onChanged: (value) {
+                            if (value != null) {
+                              department = department_value.dropDownValue?.name;
+                              detailsErrorColor = null;
+                            } else {
+                              department = null;
+                            }
+
+                            setState(() {
+                              // Close the dropdown list when the education value changes
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              String? isDepEqTo = department_value.dropDownValue?.value;
+
+                              if (isDepEqTo == "Sampling") {
+                                currentCategoryOptions = sampling_Alter_Option;
+                                ProSalaryEmptyFields();
+                                PartRateEmptyFields();
+                                FullPcEmptyFields();
+                                category_value.clearDropDown();
+                                category = null;
+                              } else if (isDepEqTo == "Production") {
+                                currentCategoryOptions = production_Option;
+                                // Clear Field Sampling
+                                SamplingEmptyFields();
+                              } else if (isDepEqTo == "Finishing") {
+                                currentCategoryOptions = sampling_Alter_Option;
+                                ProSalaryEmptyFields();
+                                PartRateEmptyFields();
+                                FullPcEmptyFields();
+                                category_value.clearDropDown();
+                                category = null;
+                              } else {
+                                currentCategoryOptions;
+                              }
+                            });
+                          },
+                        ),
+
+                        // Only Show when Selected Simpling and Finishing in Department
+                        department == "Sampling" || department == "Finishing"
+                            ? Column(
+                                children: [
+                                  Sampling_Salary_Widget(
+                                    hint: "Tailor Category",
+                                    select_Category: category,
+                                    list_Controller: category_value,
+                                    dropDownList: currentCategoryOptions,
+                                    SalaryController: sampling_SalaryController,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        category = category_value.dropDownValue?.name;
+                                      } else {
+                                        category = null;
+                                      }
+                                      setState(() {
+                                        // Empty Field part category
+                                        if (category == "Salary") {
+                                          partTime_Cat_value.clearDropDown();
+                                          partTime_Cat = null;
+                                          partTime_Sub_Cat_value.clearDropDown();
+                                          partTime_Sub_Cat = null;
+                                        } else {
+                                          sampling_SalaryController.text = "";
+                                        }
+                                      });
+                                    },
+                                  ),
+
+                                  // Hear write for Part Time Sub Category - Pc Rate and Hourly Basis
+                                  category == "Part Time"
+                                      ? Container(
+                                          margin: EdgeInsets.only(top: 10),
+                                          child: Custom_DropDownTextField(
+                                            hint: "Part Time Sub Category",
+                                            controller: partTime_Cat_value,
+                                            dropDownList: part_Time_Option,
+                                            onChanged: (value) {
+                                              if (value != null) {
+                                                partTime_Cat = partTime_Cat_value.dropDownValue?.name;
+                                              } else {
+                                                partTime_Cat = null;
+                                              }
+
+                                              setState(() {
+                                                // Close the dropdown list when the education value changes
+                                                FocusScope.of(context).requestFocus(FocusNode());
+                                                String isSubCatEqTo = partTime_Cat_value.dropDownValue?.value;
+
+                                                if (isSubCatEqTo == "PC_Rate") {
+                                                  currentPartTimeSubCatOptions = pc_Rate_Option;
+                                                  partTime_Sub_Cat_value.clearDropDown();
+                                                  partTime_Sub_Cat = null;
+                                                } else if (isSubCatEqTo == "Hourly_Basis") {
+                                                  currentPartTimeSubCatOptions = hourly_Base_Option;
+                                                  partTime_Sub_Cat_value.clearDropDown();
+                                                  partTime_Sub_Cat = null;
+                                                } else {
+                                                  currentPartTimeSubCatOptions;
+                                                }
+                                              });
+                                            },
+                                          ),
+                                        )
+                                      : Container(),
+
+                                  // ============== If selected Pc RAte in Part Time Cat ==================
+                                  partTime_Cat == "PC Rate" || partTime_Cat == "Hourly Basis"
+                                      ? Container(
+                                          margin: EdgeInsets.only(top: 10),
+                                          child: Custom_DropDownTextField(
+                                            hint: "Select Option",
+                                            controller: partTime_Sub_Cat_value,
+                                            dropDownList: currentPartTimeSubCatOptions,
+                                            onChanged: (value) {
+                                              if (value != null) {
+                                                partTime_Sub_Cat = partTime_Sub_Cat_value.dropDownValue?.name;
+                                                // Empty Field partT_Sub_Cat_Controller
+                                                partT_Sub_Cat_Controller.text = "";
+                                              } else {
+                                                partTime_Sub_Cat = null;
+                                              }
+                                              setState(() {});
+                                            },
+                                          ),
+                                        )
+                                      : Container(),
+
+                                  // ============== If any Selected partTime_Sub_Cat then add one Text Filed ==================
+                                  partTime_Sub_Cat != null
+                                      ? Container(
+                                          margin: EdgeInsets.only(top: 10),
+                                          child: Job_TextField(
+                                            controller: partT_Sub_Cat_Controller,
+                                            keyboardType: partTime_Sub_Cat == "Time Slot" ? TextInputType.text : TextInputType.number,
+                                            Text_Hint: partTime_Sub_Cat == "Time Slot" ? "09:30 AM - 6:30 PM" : "Amount (INR)",
+                                            onChanged: (value) {},
+                                          ))
+                                      : Container(),
+                                ],
                               )
-                            ],
-                          ),
+                            : Container(),
 
-                          // Job Details ExpansionTile
-                          heightSpacer(),
-                          Custom_ExpansionTile(
-                            collapsedBackgroundColor: detailsErrorColor != null
-                                ? detailsErrorColor
-                                : Color(0x47BEDFFF),
-                            backgroundColor: detailsErrorColor != null
-                                ? detailsErrorColor
-                                : Colors.grey.shade50,
-                            title: Row(
-                              children: [
-                                Text(
-                                  "Job Details",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  " *",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w800,
-                                      mColor: Colors.red),
-                                ),
-                              ],
-                            ),
-                            children: [
-                              // GARMENT TYPE
-                              Custom_DropDownTextField(
-                                hint: "Garment Type *",
-                                controller: garment_value,
-                                dropDownList: garment_Option,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    garment_type =
-                                        garment_value.dropDownValue?.name;
-                                    setState(() {
-                                      detailsErrorColor = null;
-                                    });
-                                  } else {
-                                    // Handle the case when nothing is selected
-                                    garment_type = null;
-                                  }
+                        // Only Show when Selected Production in Department
+                        department == "Production"
+                            ? Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: Custom_DropDownTextField(
+                                      hint: "Tailor Category *",
+                                      controller: category_value,
+                                      dropDownList: currentCategoryOptions,
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          category = category_value.dropDownValue?.name;
+                                        } else {
+                                          // Handle the case when nothing is selected
+                                          category = null;
+                                        }
 
-                                  setState(() {});
-                                },
-                              ),
+                                        String? pro_cat = category_value.dropDownValue?.value;
 
-                              // Garment Order
-                              heightSpacer(),
-                              TextFormField(
-                                controller: garmentQtyController,
-                                maxLength: 5,
-                                keyboardType: TextInputType.number,
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                decoration: mInputDecoration(
-                                  padding: EdgeInsets.only(top: 3, left: 10),
-                                  radius: 5,
-                                  hint: "Garment Order Quantity",
-                                  hintColor: AppColor.textColorLightBlack,
-                                  mCounterText: "",
-                                ),
-                              ),
+                                        if (pro_cat == "Pro_Salary") {
+                                          // Empty Part Rate and Full Pc
+                                          PartRateEmptyFields();
+                                          FullPcEmptyFields();
+                                        } else if (pro_cat == "Part_Rate") {
+                                          // Empty Pro Salary and Full Pc
+                                          ProSalaryEmptyFields();
+                                          FullPcEmptyFields();
+                                        } else {
+                                          // Empty Pro Salary and Part Rate
+                                          ProSalaryEmptyFields();
+                                          PartRateEmptyFields();
+                                        }
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
 
-                              // Job Type
-                              heightSpacer(),
-                              Custom_DropDownTextField(
-                                hint: "Job Type *",
-                                controller: job_type_value,
-                                dropDownList: job_Type_Option,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    job_type =
-                                        job_type_value.dropDownValue?.name;
-                                    setState(() {
-                                      detailsErrorColor = null;
-                                    });
-                                  } else {
-                                    // Handle the case when nothing is selected
-                                    job_type = null;
-                                  }
+                                  // This Salary Part only visible If selected salary in Production Department
+                                  category_value.dropDownValue?.value == "Pro_Salary"
+                                      ? Production_Salary_Widget(
+                                          hint: "Grade Salary",
+                                          list_Controller: grade_Salary_value,
+                                          dropDownList: salary_Option,
+                                          TextController: grade_Salary_Controller,
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              grade_Salary = grade_Salary_value.dropDownValue?.name;
+                                              grade_Salary_Controller.text = "";
+                                            } else {
+                                              grade_Salary = null;
+                                            }
+                                          },
+                                        )
+                                      : Container(),
 
-                                  setState(() {});
-                                },
-                              ),
+                                  // This Option Part only visible If selected Part Rate in Production Department
+                                  category == "Part Rate"
+                                      ? Column(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(top: 10),
+                                              child: Custom_DropDownTextField(
+                                                hint: "Select Option",
+                                                controller: part_Rate_value,
+                                                dropDownList: part_Rate_Option,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    // Close the dropdown list when the education value changes
+                                                    FocusScope.of(context).requestFocus(FocusNode());
 
-                              // Department
-                              heightSpacer(),
-                              Custom_DropDownTextField(
-                                hint: "Tailor Department *",
-                                controller: department_value,
-                                dropDownList: department_Option,
-                                onChanged: (value) {
-                                  // Store department data
-                                  if (value != null) {
-                                    department =
-                                        department_value.dropDownValue?.name;
-                                    setState(() {
-                                      detailsErrorColor = null;
-                                    });
-                                  } else {
-                                    // Handle the case when nothing is selected
-                                    department = null;
-                                  }
+                                                    if (value != null) {
+                                                      String? isPartRateEqTo = part_Rate_value.dropDownValue?.value;
 
-                                  // this line create because i check which selected value in department and Store value in isDepartment
-                                  String? isDepartment =
-                                      department_value.dropDownValue?.value;
+                                                      if (isPartRateEqTo == "part_rate_excel") {
+                                                        part_Rate = "Part rate excel";
+                                                        PartRateImgEmptyFields();
+                                                      } else if (isPartRateEqTo == "part_rate_image") {
+                                                        part_Rate = "Part rate image";
+                                                        PartRateImgEmptyFields();
+                                                      } else if (isPartRateEqTo == "part_rate_text") {
+                                                        part_Rate = "Part rate text";
+                                                        PartRateImgEmptyFields();
+                                                      } else {
+                                                        part_Rate = null;
+                                                      }
+                                                    } else {
+                                                      part_Rate = null;
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
 
-                                  setState(() {
-                                    // Close the dropdown list when the education value changes
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
+                                            // If Selected part Rate Excel and part Rate Image
+                                            part_Rate == "Part rate excel" || part_Rate == "Part rate image"
+                                                ? ImageUpload_field(
+                                                    padding: EdgeInsets.only(top: 10),
+                                                    ImageName: partRateUrlName,
+                                                    selected_pic: partRateUrl,
+                                                    hintText: part_Rate == "Part rate excel" ? "Upload excel file" : "Picture upload",
+                                                    Upload: part_Rate == "Part rate excel"
+                                                        ? () {
+                                                            // Select Excel File
+                                                            _pickExcelFile();
+                                                          }
+                                                        : () {
+                                                            // Select Image
+                                                            Select_Image_BottomSheet();
+                                                          },
+                                                  )
+                                                : Container(),
 
-                                    if (isDepartment == "Simpling") {
-                                      EmptyFields(isDepartment);
-                                      currentCategoryOptions =
-                                          sampling_Alter_Option;
-                                    } else if (isDepartment == "Production") {
-                                      EmptyFields(isDepartment);
-                                      currentCategoryOptions =
-                                          production_Option;
-                                    } else if (isDepartment ==
-                                        "Finishing_Alert_Tailor") {
-                                      EmptyFields(isDepartment);
-                                      currentCategoryOptions =
-                                          sampling_Alter_Option;
-                                    } else {
-                                      // For other education types, you can set a hide branch name and Option text field.
-                                      currentCategoryOptions;
-                                    }
-                                  });
-                                },
-                              ),
+                                            // If Selected part Rate Text
+                                            part_Rate == "Part rate text"
+                                                ? Container(
+                                                    margin: EdgeInsets.only(top: 10),
+                                                    child: Job_TextField(
+                                                      controller: part_Rate_Text_Controller,
+                                                      Text_Hint: "Part Rate Text",
+                                                      keyboardType: TextInputType.multiline,
+                                                      onChanged: (value) {},
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ],
+                                        )
+                                      : Container(),
 
-                              // This Container Only Show when Select Simpling and Finishing_Alert_Tailor in Tailor Department
-                              Container(
-                                child: Column(
-                                  children: [
-                                    // Category dropdown
-                                    heightSpacer(),
-                                    department == "Simpling" ||
-                                            department ==
-                                                "Finishing Alert tailor"
-                                        ? Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 7,
+                                  // This Per PC Rate only visible If selected Full PC in Production Department
+                                  category == "Full PC"
+                                      ? Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Container(
+                                                margin: EdgeInsets.only(top: 10),
                                                 child: Custom_DropDownTextField(
-                                                  hint: "Tailor Category",
-                                                  controller: category_value,
-                                                  dropDownList:
-                                                      currentCategoryOptions,
+                                                  hint: "Select Option",
+                                                  controller: full_Pc_value,
+                                                  dropDownList: full_Pc_Option,
                                                   onChanged: (value) {
                                                     if (value != null) {
-                                                      category = category_value
-                                                          .dropDownValue?.name;
+                                                      full_Pc = full_Pc_value.dropDownValue?.name;
                                                     } else {
-                                                      // Handle the case when nothing is selected
-                                                      category = null;
+                                                      full_Pc = null;
                                                     }
-
                                                     setState(() {});
                                                   },
                                                 ),
                                               ),
-
-                                              // If Salary is Yes then fill Salary in Tailor Category dropdown
-                                              category == "Salary"
-                                                  ? Expanded(
-                                                      flex: 4,
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 10),
-                                                        child: TextFormField(
-                                                          controller:
-                                                              cateSalaryController,
-                                                          keyboardType:
-                                                              TextInputType
-                                                                  .number,
-                                                          style: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
-                                                          decoration:
-                                                              mInputDecoration(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 3,
-                                                                    left: 10),
-                                                            radius: 5,
-                                                            hint:
-                                                                "Amount (INR)",
-                                                            hintColor: AppColor
-                                                                .textColorLightBlack,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          )
-                                        : Container(),
-
-                                    // part_Rate_Department, this only visible when Part Time selected in Tailor Category
-                                    category == "Part Time"
-                                        ? Container(
-                                            margin: EdgeInsets.only(top: 10),
-                                            child: Custom_DropDownTextField(
-                                              hint: "Part Time Department",
-                                              controller: Part_Time_Cate_value,
-                                              dropDownList: part_Time_Option,
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  part_Time_Category =
-                                                      Part_Time_Cate_value
-                                                          .dropDownValue?.name;
-                                                  // print(job_type_value.dropDownValue?.name);
-                                                } else {
-                                                  // Handle the case when nothing is selected
-                                                  part_Time_Category = null;
-                                                }
-
-                                                // this line create because i check which selected value in department and Store value in isDepartment
-                                                String? isPTime_Department =
-                                                    Part_Time_Cate_value
-                                                        .dropDownValue?.value;
-
-                                                setState(() {
-                                                  // Close the dropdown list when the education value changes
-                                                  FocusScope.of(context)
-                                                      .requestFocus(
-                                                          FocusNode());
-
-                                                  if (isPTime_Department ==
-                                                      "PC_Rate") {
-                                                    currentPartTimeCateOptions =
-                                                        pc_Rate_Option;
-                                                    part_Time_Sub_Cate_value
-                                                        .clearDropDown();
-                                                    part_Time_Sub_Category =
-                                                        null;
-                                                  } else if (isPTime_Department ==
-                                                      "Hourly_Basis") {
-                                                    currentPartTimeCateOptions =
-                                                        hourly_Base_Option;
-                                                    part_Time_Sub_Cate_value
-                                                        .clearDropDown();
-                                                    part_Time_Sub_Category =
-                                                        null;
-                                                  } else {
-                                                    currentPartTimeCateOptions;
-                                                  }
-                                                });
-                                              },
                                             ),
-                                          )
-                                        : Container(),
 
-                                    // this Filed show when select any option in Part Time Department
-                                    part_Time_Category == null ||
-                                            department == null
-                                        ? Container()
-                                        : Container(
-                                            margin: EdgeInsets.only(top: 10),
-                                            child: Custom_DropDownTextField(
-                                              hint: part_Time_Category ==
-                                                      "PC Rate"
-                                                  ? "Select PC Rate"
-                                                  : "Select Hourly Basis",
-                                              controller:
-                                                  part_Time_Sub_Cate_value,
-                                              dropDownList:
-                                                  currentPartTimeCateOptions,
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  part_Time_Sub_Category =
-                                                      part_Time_Sub_Cate_value
-                                                          .dropDownValue?.name;
-                                                  // print(part_Time_value.dropDownValue?.name);
-                                                } else {
-                                                  // Handle the case when nothing is selected
-                                                  part_Time_Sub_Category = null;
-                                                }
-
-                                                setState(() {});
-                                              },
-                                            ),
-                                          ),
-                                  ],
-                                ),
-                              ),
-
-                              // This Container Show Only when Select Production in Tailor Department
-                              Container(
-                                child: Column(
-                                  children: [
-                                    department == "Production"
-                                        ? Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 7,
-                                                child: Custom_DropDownTextField(
-                                                  hint: "Tailor Category",
-                                                  controller: category_value,
-                                                  dropDownList:
-                                                      currentCategoryOptions,
-                                                  onChanged: (value) {
-                                                    if (value != null) {
-                                                      category = category_value
-                                                          .dropDownValue?.name;
-                                                      // print(category_value.dropDownValue?.name);
-                                                    } else {
-                                                      // Handle the case when nothing is selected
-                                                      category = null;
-                                                    }
-                                                    setState(() {
-                                                      EmptyFields(category);
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : Container(),
-
-                                    // This Salary Part only visible If selected salary in Production Department
-                                    category == "Salary" &&
-                                            department == "Production"
-                                        ? Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child: Container(
-                                                  margin:
-                                                      EdgeInsets.only(top: 10),
-                                                  child:
-                                                      Custom_DropDownTextField(
-                                                    hint: "Grade Salary",
-                                                    controller:
-                                                        grade_Salary_value,
-                                                    dropDownList: salary_Option,
-                                                    onChanged: (value) {
-                                                      if (value != null) {
-                                                        grade_Salary =
-                                                            grade_Salary_value
-                                                                .dropDownValue
-                                                                ?.name;
-                                                      } else {
-                                                        // Handle the case when nothing is selected
-                                                        grade_Salary = null;
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                              widthSpacer(),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 10),
-                                                  child: TextFormField(
-                                                    controller:
-                                                        grade_Salary_Controller,
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    maxLength: 5,
-                                                    style: TextStyle(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                    decoration:
-                                                        mInputDecoration(
-                                                      padding: EdgeInsets.only(
-                                                          top: 3, left: 10),
-                                                      radius: 5,
-                                                      hint: "Amount *",
-                                                      hintColor: AppColor
-                                                          .textColorLightBlack,
-                                                      mCounterText: "",
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : Container(),
-
-                                    // This Option Part only visible If selected Part Rate in Production Department
-                                    category == "Part Rate" &&
-                                            department == "Production"
-                                        ? Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 7,
+                                            // ======== If Per_PC_Rate selected ==================
+                                            full_Pc != null
+                                                ? Expanded(
+                                                    flex: 4,
                                                     child: Container(
-                                                      margin: EdgeInsets.only(
-                                                          top: 10),
-                                                      child:
-                                                          Custom_DropDownTextField(
-                                                        hint: "Select Option",
-                                                        controller:
-                                                            part_Rate_value,
-                                                        dropDownList:
-                                                            part_Rate_Option,
-                                                        onChanged: (value) {
-                                                          setState(() {
-                                                            // Close the dropdown list when the education value changes
-                                                            FocusScope.of(
-                                                                    context)
-                                                                .requestFocus(
-                                                                    FocusNode());
-
-                                                            if (value != null) {
-                                                              String?
-                                                                  isPart_Rate =
-                                                                  part_Rate_value
-                                                                      .dropDownValue
-                                                                      ?.value;
-                                                              if (isPart_Rate ==
-                                                                  "part_rate_excel") {
-                                                                part_Rate =
-                                                                    "part_Rate_Excel";
-                                                              } else if (isPart_Rate ==
-                                                                  "part_rate_image") {
-                                                                part_Rate =
-                                                                    "part_Rate_Image";
-                                                              } else if (isPart_Rate ==
-                                                                  "part_rate_text") {
-                                                                part_Rate =
-                                                                    "part_Rate_Text";
-                                                              } else {
-                                                                part_Rate =
-                                                                    null;
-                                                              }
-                                                            } else {
-                                                              part_Rate_value;
-                                                            }
-                                                          });
-                                                        },
+                                                      margin: EdgeInsets.only(top: 10, left: 5),
+                                                      child: Job_TextField(
+                                                        controller: full_Pc_Controller,
+                                                        Text_Hint: "Amount",
+                                                        onChanged: (value) {},
                                                       ),
-                                                    ),
-                                                  ),
+                                                    ))
+                                                : Container(),
+                                          ],
+                                        )
+                                      : Container(),
+                                ],
+                              )
+                            : Container(),
+                      ],
+                    ),
 
-                                                  // PartRate Upload Button not Visible if not select any option and select Part Rate Text option
-                                                  part_Rate == null ||
-                                                          part_Rate ==
-                                                              "part_Rate_Text"
-                                                      ? Container()
-                                                      : Expanded(
-                                                          flex: 2,
-                                                          child: part_Rate ==
-                                                                  "part_Rate_Excel"
-                                                              ? Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          top:
-                                                                              10),
-                                                                  child:
-                                                                      InkWell(
-                                                                    onTap:
-                                                                        () {},
-                                                                    child: Upload_btn(
-                                                                        padding: EdgeInsets.symmetric(
-                                                                            vertical:
-                                                                                14,
-                                                                            horizontal:
-                                                                                5),
-                                                                        btnName:
-                                                                            "Upload"),
-                                                                  ),
-                                                                )
-                                                              : Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          top:
-                                                                              10),
-                                                                  child:
-                                                                      InkWell(
-                                                                    onTap:
-                                                                        () {},
-                                                                    child: Upload_btn(
-                                                                        padding: EdgeInsets.symmetric(
-                                                                            vertical:
-                                                                                14,
-                                                                            horizontal:
-                                                                                5),
-                                                                        btnName:
-                                                                            "Upload"),
-                                                                  ),
-                                                                ),
-                                                        ),
-                                                ],
-                                              ),
+                    // ============= Total Tailor & Skills =============
+                    heightSpacer(),
+                    Custom_ExpansionTile(
+                      collapsedBackgroundColor: totalTailorErrorColor != null ? totalTailorErrorColor : Color(0x47BEDFFF),
+                      backgroundColor: totalTailorErrorColor != null ? totalTailorErrorColor : Colors.grey.shade50,
+                      title: RichText(
+                        text: TextSpan(
+                          text: "Required Tailor as Per Skills",
+                          style: mTextStyle14(mFontWeight: FontWeight.w600),
+                          children: [
+                            TextSpan(
+                              text: " *",
+                              style: mTextStyle14(mFontWeight: FontWeight.w800, mColor: Colors.red),
+                            )
+                          ],
+                        ),
+                      ),
+                      children: [
+                        // Total Tailor
+                        Job_TextField(
+                          controller: totalTailorController,
+                          Text_Hint: "Total Tailor *",
+                          onChanged: (value) {
+                            setState(() {
+                              totalTailorErrorColor = null;
+                            });
+                          },
+                        ),
 
-                                              // This TextField is Show when selected part_Rate_Text in part_Rate_Option]
-                                              part_Rate == "part_Rate_Text"
-                                                  ? Container(
-                                                      margin: EdgeInsets.only(
-                                                          top: 10),
-                                                      child: TextFormField(
-                                                        controller:
-                                                            part_Rate_Text_Controller,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .multiline,
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                        decoration:
-                                                            mInputDecoration(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 3,
-                                                                  left: 10),
-                                                          radius: 5,
-                                                          hint:
-                                                              "Part Rate Text",
-                                                          hintColor: AppColor
-                                                              .textColorLightBlack,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          )
-                                        : Container(),
-
-                                    // This Fer PC Rate only visible If selected Full PC in Production Department
-                                    category == "Full PC" &&
-                                            department == "Production"
-                                        ? Container(
-                                            margin: EdgeInsets.only(top: 10),
-                                            child: Custom_DropDownTextField(
-                                              hint: "Select Option",
-                                              controller: full_Pc_value,
-                                              dropDownList: full_Pc_Option,
-                                              onChanged: (value) {
-                                                if (value != null) {
-                                                  full_Pc = full_Pc_value
-                                                      .dropDownValue?.name;
-                                                }
-                                                setState(() {});
-                                              },
-                                            ),
-                                          )
-                                        : Container(),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          //Total Tailor & Skills
-                          heightSpacer(),
-                          Custom_ExpansionTile(
-                            collapsedBackgroundColor: totalErrorColor != null
-                                ? totalErrorColor
-                                : Color(0x47BEDFFF),
-                            backgroundColor: totalErrorColor != null
-                                ? totalErrorColor
-                                : Colors.grey.shade50,
-                            title: Row(
-                              children: [
-                                Text(
-                                  "Total Tailor & Skills",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  " *",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w800,
-                                      mColor: Colors.red),
-                                ),
-                              ],
-                            ),
-                            children: [
-                              // Total Tailor
-                              TextFormField(
-                                controller: totalTailorController,
-                                keyboardType: TextInputType.number,
-                                maxLength: 5,
-                                onChanged: (value) {
-                                  setState(() {
-                                    totalErrorColor = null;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                decoration: mInputDecoration(
-                                  padding: EdgeInsets.only(top: 3, left: 10),
-                                  radius: 5,
-                                  hint: "Total Tailor *",
-                                  hintColor: AppColor.textColorLightBlack,
-                                  mCounterText: "",
-                                ),
-                              ),
-
-                              // Stitching price
-                              heightSpacer(),
-                              TextFormField(
-                                controller: stitchingPriceController,
-                                keyboardType: TextInputType.number,
-                                maxLength: 5,
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                decoration: mInputDecoration(
-                                  padding: EdgeInsets.only(top: 3, left: 10),
-                                  radius: 5,
-                                  hint: "Stitching Price (INR)",
-                                  hintColor: AppColor.textColorLightBlack,
-                                  mCounterText: "",
-                                ),
-                              ),
-
-                              /// Skills Button
-                              heightSpacer(),
-                              Card_Container_Widget(
+                        /// Only Show if jobType null and tailor selected Skills Button
+                        job_Type == "Tailor" || job_Type == null
+                            ? Card_Container_Widget(
+                                margin: EdgeInsets.only(top: 10),
                                 padding: EdgeInsets.all(8),
                                 mBorderColor: AppColor.textColorLightBlack,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Select Tailor Skills",
-                                          style: mTextStyle13(
-                                              mFontWeight: FontWeight.w600),
-                                        ),
-                                        Text(
-                                          " *",
-                                          style: mTextStyle14(
-                                              mFontWeight: FontWeight.w800,
-                                              mColor: Colors.red),
-                                        ),
-                                      ],
+                                    RichText(
+                                      text: TextSpan(
+                                        text: "Select Tailor Skills ",
+                                        style: mTextStyle14(mFontWeight: FontWeight.w600),
+                                      ),
                                     ),
+
+                                    // Skills
                                     heightSpacer(),
                                     GroupButton(
                                       options: mAdminPageGroupButtonOptions(),
@@ -851,612 +607,141 @@ class _Post_JobState extends State<Post_Job> {
                                         "Overlock Operator",
                                         "Other"
                                       ],
-                                      onSelected:
-                                          (skills_btn_name, index, isSelected) {
-                                        if (isSelected) {
-                                          selectedSkills.add(skills_btn_name);
-                                          setState(() {
-                                            totalErrorColor = null;
-                                          });
-                                        } else {
-                                          selectedSkills
-                                              .remove(skills_btn_name);
-                                        }
-
-                                        print(selectedSkills);
+                                      onSelected: (skills_btn_name, index, isSelected) {
+                                        // call This Method
+                                        _SelectedSkillMethod(skills_btn_name, index, isSelected);
                                       },
+                                    ),
+
+                                    // Show Skills TextController list
+                                    Container(
+                                      child: Column(
+                                        children: List.generate(selectedSkills.length, (index) {
+                                          final skill = selectedSkills[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.only(top: 10),
+                                            child: Job_TextField(
+                                              controller: selectedSkillsControllers[index],
+                                              Text_Hint: "${skill} Employee",
+                                              onChanged: (value) {
+                                                // Update the corresponding value in the enteredTexts list
+                                                selectedSkillsEmployee[index] = value;
+                                              },
+                                            ),
+                                          );
+                                        }),
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-
-                              /// Salary
-                              // heightSpacer(),
-                              // Card_Container_Widget(
-                              //   padding: EdgeInsets.all(8),
-                              //   mBorderColor: AppColor.textColorLightBlack,
-                              //   child: Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: [
-                              //       Row(
-                              //         children: [
-                              //           Text(
-                              //             "Enter Salary",
-                              //             style: mTextStyle13(
-                              //                 mFontWeight: FontWeight.w600),
-                              //           ),
-                              //           Text(
-                              //             " *",
-                              //             style: mTextStyle14(
-                              //                 mFontWeight: FontWeight.w800,
-                              //                 mColor: Colors.red),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //       heightSpacer(),
-                              //       Row(
-                              //         children: [
-                              //           // minimum Salary
-                              //           Expanded(
-                              //             child: TextFormField(
-                              //               controller: minimumSalaryController,
-                              //               keyboardType: TextInputType.number,
-                              //               maxLength: 5,
-                              //               validator: (value) {
-                              //                 if (value == null ||
-                              //                     value.isEmpty) {
-                              //                   return 'Please enter minimum Salary';
-                              //                 }
-                              //                 return null;
-                              //               },
-                              //               style: TextStyle(
-                              //                   fontSize: 13,
-                              //                   fontWeight: FontWeight.w400),
-                              //               decoration: mInputDecoration(
-                              //                 padding: EdgeInsets.only(
-                              //                     top: 3, left: 10),
-                              //                 radius: 5,
-                              //                 hint: "Minimum (INR)",
-                              //                 mCounterText: "",
-                              //                 hintColor:
-                              //                     AppColor.textColorLightBlack,
-                              //               ),
-                              //             ),
-                              //           ),
-                              //           widthSpacer(),
-                              //           // maxmimum Salary
-                              //           Expanded(
-                              //             child: TextFormField(
-                              //               controller:
-                              //                   maxmimumSalaryController,
-                              //               keyboardType: TextInputType.number,
-                              //               maxLength: 5,
-                              //               style: TextStyle(
-                              //                   fontSize: 13,
-                              //                   fontWeight: FontWeight.w400),
-                              //               decoration: mInputDecoration(
-                              //                 padding: EdgeInsets.only(
-                              //                     top: 3, left: 10),
-                              //                 radius: 5,
-                              //                 hint: "Maxmimum (INR)",
-                              //                 mCounterText: "",
-                              //                 hintColor:
-                              //                     AppColor.textColorLightBlack,
-                              //               ),
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                            ],
-                          ),
-
-                          // Upload Image
-                          heightSpacer(),
-                          Custom_ExpansionTile(
-                              collapsedBackgroundColor: Color(0x47BEDFFF),
-                              title: Text(
-                                "Upload Image",
-                                style:
-                                    mTextStyle14(mFontWeight: FontWeight.w600),
-                              ),
-                              children: [
-                                //Garment Image upload
-                                heightSpacer(),
-                                TextFormField(
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
-                                  readOnly: true,
-                                  decoration: mInputDecoration(
-                                    padding: EdgeInsets.only(top: 3),
-                                    prefixIcon: garment_pic == null
-                                        ? Icon(Icons.file_upload_outlined)
-                                        : Icon(Icons.done_all),
-                                    preFixColor: garment_pic == null
-                                        ? AppColor.textColorLightBlack
-                                        : AppColor.btnBgColorGreen,
-                                    mIconSize: 18,
-                                    radius: 5,
-                                    hint: garment_pic == null
-                                        ? "Garment Images"
-                                        : "${garmentImageName}",
-                                    hintColor: garment_pic == null
-                                        ? AppColor.textColorLightBlack
-                                        : AppColor.btnBgColorGreen,
-                                    suffixIcon: InkWell(
-                                      onTap: () {
-                                        showBottomSheet();
-                                        isGarmentImage = true;
-                                      },
-                                      child: Upload_btn(btnName: "Upload"),
-                                    ),
-                                  ),
-                                ),
-
-                                // TextField Part Rate
-                                heightSpacer(),
-                                TextFormField(
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
-                                  readOnly: true,
-                                  decoration: mInputDecoration(
-                                    padding: EdgeInsets.only(top: 3),
-                                    prefixIcon: partRateImage == null
-                                        ? Icon(Icons.file_upload_outlined)
-                                        : Icon(Icons.done_all),
-                                    preFixColor: partRateImage == null
-                                        ? AppColor.textColorLightBlack
-                                        : AppColor.btnBgColorGreen,
-                                    mIconSize: 18,
-                                    radius: 5,
-                                    hint: partRateImage == null
-                                        ? "Part Rate Image"
-                                        : "${partRateImageName}",
-                                    hintColor: partRateImage == null
-                                        ? AppColor.textColorLightBlack
-                                        : AppColor.btnBgColorGreen,
-                                    suffixIcon: InkWell(
-                                      onTap: () {
-                                        showBottomSheet();
-                                        isGarmentImage = false;
-                                      },
-                                      child: Upload_btn(btnName: "Upload"),
-                                    ),
-                                  ),
-                                ),
-                              ]),
-
-                          // Work Type & Experience
-                          heightSpacer(),
-                          Custom_ExpansionTile(
-                            collapsedBackgroundColor: moreInfoErrorColor != null
-                                ? moreInfoErrorColor
-                                : Color(0x47BEDFFF),
-                            backgroundColor: moreInfoErrorColor != null
-                                ? moreInfoErrorColor
-                                : Colors.grey.shade50,
-                            title: Row(
-                              children: [
-                                Text(
-                                  "Work & Experience",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  " *",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w800,
-                                      mColor: Colors.red),
-                                ),
-                              ],
-                            ),
-                            children: [
-                              // job Worked Type
-                              Custom_DropDownTextField(
-                                hint: "Job worked type *",
-                                controller: workType_value,
-                                dropDownList: workType_Option,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    workType =
-                                        workType_value.dropDownValue?.name;
-                                    setState(() {
-                                      moreInfoErrorColor = null;
-                                    });
-                                  } else {
-                                    // Handle the case when nothing is selected
-                                    workType = null;
-                                  }
-
-                                  setState(() {});
-                                },
-                              ),
-
-                              // job Worked Shift
-                              heightSpacer(),
-                              Custom_DropDownTextField(
-                                hint: "Worked shift type *",
-                                controller: workShift_value,
-                                dropDownList: workShift_Option,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    workShift =
-                                        workShift_value.dropDownValue?.name;
-                                    setState(() {
-                                      moreInfoErrorColor = null;
-                                    });
-                                  } else {
-                                    // Handle the case when nothing is selected
-                                    workShift = null;
-                                  }
-
-                                  setState(() {});
-                                },
-                              ),
-
-                              //Work Experience
-                              heightSpacer(),
-                              Container(
-                                width: double.infinity,
-                                child: Text(
-                                  "Experiences",
-                                  style: mTextStyle13(
-                                      mFontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              heightSpacer(),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Minimum",
-                                          style: mTextStyle13(
-                                              mFontWeight: FontWeight.w400),
-                                        ),
-                                        TextFormField(
-                                          controller: expMinimumController,
-                                          keyboardType: TextInputType.number,
-                                          maxLength: 3,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400),
-                                          decoration: mInputDecoration(
-                                            padding: EdgeInsets.only(
-                                                top: 3, left: 10),
-                                            radius: 5,
-                                            hint: "In Years ",
-                                            mCounterText: "",
-                                            hintColor:
-                                                AppColor.textColorLightBlack,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  widthSpacer(),
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "Maximum",
-                                          style: mTextStyle13(
-                                              mFontWeight: FontWeight.w400),
-                                        ),
-                                        TextFormField(
-                                          controller: expMaximumController,
-                                          keyboardType: TextInputType.number,
-                                          maxLength: 3,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400),
-                                          decoration: mInputDecoration(
-                                            padding: EdgeInsets.only(
-                                                top: 3, left: 10),
-                                            radius: 5,
-                                            hint: "In Years",
-                                            mCounterText: "",
-                                            hintColor:
-                                                AppColor.textColorLightBlack,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
                               )
-                            ],
-                          ),
-
-                          // Job more Information & Details
-                          heightSpacer(),
-                          Custom_ExpansionTile(
-                            collapsedBackgroundColor: moreInfoErrorColor != null
-                                ? moreInfoErrorColor
-                                : Color(0x47BEDFFF),
-                            backgroundColor: moreInfoErrorColor != null
-                                ? moreInfoErrorColor
-                                : Colors.grey.shade50,
-                            title: Row(
-                              children: [
-                                Text(
-                                  "Job more information & details",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  " *",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w800,
-                                      mColor: Colors.red),
-                                ),
-                              ],
-                            ),
-                            children: [
-                              // Need Education
-                              Card_Container_Widget(
-                                padding: EdgeInsets.all(8),
-                                mBorderColor: AppColor.textColorLightBlack,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Select Tailor Education",
-                                          style: mTextStyle13(
-                                              mFontWeight: FontWeight.w600),
-                                        ),
-                                        Text(
-                                          " *",
-                                          style: mTextStyle14(
-                                              mFontWeight: FontWeight.w800,
-                                              mColor: Colors.red),
-                                        ),
-                                      ],
-                                    ),
-                                    heightSpacer(),
-                                    GroupButton(
-                                      options: mAdminPageGroupButtonOptions(),
-                                      isRadio: false,
-                                      buttons: [
-                                        "10th or Below 10th",
-                                        "12th Pass",
-                                        "Diploma",
-                                        "ITI",
-                                        "Graduate",
-                                        "Post Graduate",
-                                        "Other"
-                                      ],
-                                      onSelected: (education_btn_name, index,
-                                          isSelected) {
-                                        if (isSelected) {
-                                          selectedEducation
-                                              .add(education_btn_name);
-                                          setState(() {
-                                            moreInfoErrorColor = null;
-                                          });
-                                        } else {
-                                          selectedEducation
-                                              .remove(education_btn_name);
-                                        }
-
-                                        // print(selectedEducation);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              // Job Responsibilities
-                              heightSpacer(),
-                              TextFormField(
-                                controller: job_Responsibilities,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                decoration: mInputDecoration(
-                                  padding: EdgeInsets.only(top: 3, left: 10),
-                                  radius: 5,
-                                  hint: "Job Responsibilities",
-                                  hintColor: AppColor.textColorLightBlack,
-                                ),
-                              ),
-
-                              // Job Description
-                              heightSpacer(),
-                              TextFormField(
-                                controller: jobDesController,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                onChanged: (value) {
-                                  setState(() {
-                                    moreInfoErrorColor = null;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                decoration: mInputDecoration(
-                                  padding: EdgeInsets.only(top: 3, left: 10),
-                                  radius: 5,
-                                  hint: "Job Description *",
-                                  hintColor: AppColor.textColorLightBlack,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          // InterView & address Details
-                          heightSpacer(),
-                          Custom_ExpansionTile(
-                              collapsedBackgroundColor:
-                                  interviewErrorColor != null
-                                      ? interviewErrorColor
-                                      : Color(0x47BEDFFF),
-                              backgroundColor: interviewErrorColor != null
-                                  ? interviewErrorColor
-                                  : Colors.grey.shade50,
-                              title: Row(
-                                children: [
-                                  Text(
-                                    "Interview & address details",
-                                    style: mTextStyle14(
-                                        mFontWeight: FontWeight.w600),
-                                  ),
-                                  Text(
-                                    " *",
-                                    style: mTextStyle14(
-                                        mFontWeight: FontWeight.w800,
-                                        mColor: Colors.red),
-                                  ),
-                                ],
-                              ),
-                              children: [
-                                // job InterView mode
-                                heightSpacer(),
-                                Custom_DropDownTextField(
-                                  hint: "Interview mode *",
-                                  controller: interviewMode_value,
-                                  dropDownList: interviewMode_Option,
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      interviewMode = interviewMode_value
-                                          .dropDownValue?.name;
-                                      setState(() {
-                                        interviewErrorColor = null;
-                                      });
-                                    } else {
-                                      // Handle the case when nothing is selected
-                                      interviewMode = null;
-                                    }
-
-                                    setState(() {});
-                                  },
-                                ),
-
-                                // Work Location
-                                heightSpacer(),
-                                Custom_DropDownTextField(
-                                  hint: "Work Location *",
-                                  controller: workLocation_value,
-                                  dropDownList: workLocation_Option,
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      workLocation = workLocation_value
-                                          .dropDownValue?.name;
-                                      setState(() {
-                                        interviewErrorColor = null;
-                                      });
-                                      // print(interviewMode_value.dropDownValue?.name);
-                                    } else {
-                                      // Handle the case when nothing is selected
-                                      workLocation = null;
-                                    }
-                                  },
-                                ),
-
-                                // Interview Address
-                                heightSpacer(),
-                                TextFormField(
-                                  controller: interviewAddressController,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  readOnly: workLocation == "Company address"
-                                      ? true
-                                      : false,
-                                  onChanged: (value) {
-                                    interviewErrorColor = null;
-                                    setState(() {});
-                                  },
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
-                                  decoration: mInputDecoration(
-                                    padding: EdgeInsets.only(top: 3, left: 10),
-                                    radius: 5,
-                                    hint: workLocation == "Company address"
-                                        ? "${widget.companyModel.address}"
-                                        : "Interview Address/Contact *",
-                                    hintColor: workLocation == "Company address"
-                                        ? Colors.black
-                                        : AppColor.textColorLightBlack,
-                                  ),
-                                ),
-
-                                // State
-                                heightSpacer(),
-                                TextFormField(
-                                  controller: stateController,
-                                  keyboardType: TextInputType.streetAddress,
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
-                                  decoration: mInputDecoration(
-                                    padding: EdgeInsets.only(top: 3, left: 10),
-                                    radius: 5,
-                                    hint: "State *",
-                                    hintColor: AppColor.textColorLightBlack,
-                                  ),
-                                ),
-                              ]),
-
-                          // btn
-                          heightSpacer(mHeight: 20),
-                          BlocConsumer<JobPostCubit, JobPostState>(
-                            listener: (context, state) {
-                              // TODO: implement listener
-                              showSnackBar_Widget(context,
-                                  mHeading: "Success",
-                                  title: "Your form is submitted successfully");
-                              clearForm();
-                              setState(() {});
-                            },
-                            builder: (context, state) {
-                              if (state is JobPostLoadingState ||
-                                  isLodding == true) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              }
-                              return Rounded_Btn_Widget(
-                                mfontSize: 15,
-                                mAlignment: Alignment.center,
-                                borderRadius: 5,
-                                onPress: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _uploadFileData();
-                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   const SnackBar(
-                                    //       content: Text('Processing Data')),
-                                    // );
-                                  }
-                                },
-                                title: "Submit ",
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                            : Container(),
+                      ],
                     ),
-                  )
-                ],
+
+                    // ======== Experience ============
+                    heightSpacer(),
+                    Custom_ExpansionTile(
+                      collapsedBackgroundColor: Color(0x47BEDFFF),
+                      backgroundColor: Colors.grey.shade50,
+                      title: RichText(
+                        text: TextSpan(
+                          text: "Experience",
+                          style: mTextStyle14(mFontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      children: [
+                        Row(
+                          children: [
+                            Experience_Filed_Widget(
+                              mTitle: "Minimum",
+                              mHintText: "Mini. (in years)",
+                              textController: expMiniController,
+                              onChanged: (value) {},
+                            ),
+                            widthSpacer(),
+                            Experience_Filed_Widget(
+                              mTitle: "Maximum",
+                              mHintText: "Maxi. (in years)",
+                              textController: expMaxiController,
+                              onChanged: (value) {},
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    // Job Submit Button
+                    heightSpacer(mHeight: 10),
+                    BlocConsumer<JobPostCubit, JobPostState>(
+                      listener: (context, state) {
+                        // TODO: implement listener
+                        showSnackBar_Widget(
+                          context,
+                          mHeading: "Success",
+                          title: "Your form is submitted successfully",
+                        );
+                        isSubmit_ClearFormFields();
+                        setState(() {});
+                      },
+                      builder: (context, state) {
+
+                        if (state is JobPostLoadingState || isLodding == true) {
+                          return Center(
+                            child: Lottie.asset("assets/images/lottie_animation/loading-2.json", width: 60),
+                          );
+                        }
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          child: Rounded_Btn_Widget(
+                            mfontSize: 15,
+                            mAlignment: Alignment.center,
+                            borderRadius: 5,
+                            onPress: () {
+                              if (_formKey.currentState!.validate()) {
+                                _SubmitPostButton();
+                              }
+                            },
+                            title: "Submit ",
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  // TODO: ============ Pick select Option ================
-  Future<void> showBottomSheet() {
+  //============ Skills Selected function ==========
+  void _SelectedSkillMethod(skills_btn_name, index, isSelected) {
+    setState(() {
+      if (isSelected) {
+        selectedSkills.add(skills_btn_name);
+        selectedSkillsControllers.add(TextEditingController()); // Add TextEditingController for each selected skill
+        selectedSkillsEmployee.add('0'); // Add an 0 string for each selected skill
+        detailsErrorColor = null;
+      } else {
+        final selectedIndex = selectedSkills.indexOf(skills_btn_name);
+        if (selectedIndex != -1) {
+          selectedSkills.removeAt(selectedIndex);
+          selectedSkillsControllers[selectedIndex].dispose();
+          selectedSkillsControllers.removeAt(selectedIndex);
+          selectedSkillsEmployee.removeAt(selectedIndex); // Remove the corresponding entered text
+        }
+      }
+
+      // log(selectedSkills.toString());
+      // log(selectedSkillsEmployee.toString());
+    });
+  }
+
+// TODO: ============ Pick select Option ================
+  Future<void> Select_Image_BottomSheet() {
     return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -1511,22 +796,18 @@ class _Post_JobState extends State<Post_Job> {
     );
   }
 
-  // TODO: ============ Pick Image Function ================
-  String? garmentImagePath;
-  String? garmentImageName;
-  String? partRateImagePath;
-  String? partRateImageName;
+// TODO: ============ Pick Image Function ================
 
   pickImage(ImageSource imageSource) async {
     XFile? pickedFile = await ImagePicker().pickImage(source: imageSource);
 
     if (pickedFile != null) {
-      if (isGarmentImage == true) {
-        garmentImagePath = pickedFile.path;
-        garmentImageName = pickedFile.name;
-      } else {
+      if (part_Rate == "Part rate image") {
         partRateImagePath = pickedFile.path;
-        partRateImageName = pickedFile.name;
+        partRateUrlName = pickedFile.name;
+      } else {
+        garmentImagePath = pickedFile.path;
+        garmentPicName = pickedFile.name;
       }
       cropImage(pickedFile);
     }
@@ -1541,239 +822,135 @@ class _Post_JobState extends State<Post_Job> {
 
     if (croppedImage != null) {
       File newFile = File(croppedImage.path);
+
       setState(() {
-        if (isGarmentImage == true) {
-          log("croped garment ${isGarmentImage}");
-          garment_pic = newFile;
+        if (part_Rate == "Part rate image") {
+          partRateUrl = newFile;
         } else {
-          log("croped partRateImage ${isGarmentImage}");
-          partRateImage = newFile;
+          garment_Pic = newFile;
         }
       });
     }
   }
 
-// Upload File and all data
-  void _uploadFileData() async {
-    String? part_rate_downloadUrl;
-    String? garment_downloadUrl;
-    UploadTask? logoUploadTask;
-    UploadTask? gstFileUploadTask;
+  //TODO ==================== Pick Excel File ================
+  void _pickExcelFile() async {
+    final pickedFile = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
 
+    if (pickedFile != null) {
+      partRateUrl = File(pickedFile.files.single.path!);
+      partRateImagePath = pickedFile.files[0].path;
+
+      // Check if the file size is less than or equal to 2 MB
+      if (partRateUrl!.lengthSync() <= 2 * 1024 * 1024) {
+        setState(() {
+          partRateUrlName = pickedFile.files[0].name;
+          partRateExcelError = null;
+        });
+      } else {
+        setState(() {
+          partRateExcelError = "Please Upload file less than 2 MB";
+        });
+      }
+    }
+  }
+
+  //TODO ============ Upload File and all data ================
+  void _SubmitPostButton() async {
     try {
-      if (garment_type != null &&
+      if (garment != null &&
+          work_Type != null &&
+          work_Shift != null &&
+          job_Type != null &&
           department != null &&
-          job_type != null &&
-          selectedSkills.isNotEmpty &&
-          totalTailorController.text.isNotEmpty &&
-          minimumSalaryController.text.isNotEmpty &&
-          workType != null &&
-          workShift != null &&
-          selectedEducation.isNotEmpty &&
-          jobDesController.text.isNotEmpty &&
-          interviewMode != null &&
-          workLocation != null &&
-          stateController.text.isNotEmpty) {
-        // condition true
+          category != null &&
+          totalTailorController.text.isNotEmpty) {
         setState(() {
           isLodding = true;
         });
 
         // upload Garment Image and Part Rate image
-        if (garment_pic != null || partRateImage != null) {
-          // uploadGarment Image
-          logoUploadTask = FirebaseStorage.instance
+        if (garment_Pic != null) {
+          garmentUploadTask = FirebaseStorage.instance
               .ref()
               .child("job_documents")
               .child("garment_images")
-              .child(garmentImageName!)
+              .child(garmentPicName!)
               .putFile(File(garmentImagePath!));
 
-          TaskSnapshot garmentTaskSnapshot = await logoUploadTask;
-          garment_downloadUrl = await garmentTaskSnapshot.ref.getDownloadURL();
+          TaskSnapshot? garmentTaskSnapshot = await garmentUploadTask;
+          garment_downloadUrl = await garmentTaskSnapshot?.ref.getDownloadURL();
+        }
 
-          // upload Part Rate  Image
-          gstFileUploadTask = FirebaseStorage.instance
+        // upload Part Rate  Image
+        if (partRateUrl != null) {
+          pTFileUploadTask = FirebaseStorage.instance
               .ref()
               .child("job_documents")
               .child("part_rate_images")
-              .child(partRateImageName!)
+              .child(partRateUrlName!)
               .putFile(File(partRateImagePath!));
 
-          TaskSnapshot partRateTaskSnapshot = await gstFileUploadTask;
-          part_rate_downloadUrl =
-              await partRateTaskSnapshot.ref.getDownloadURL();
+          TaskSnapshot? partRateTaskSnapshot = await pTFileUploadTask;
+          partRate_downloadUrl = await partRateTaskSnapshot?.ref.getDownloadURL();
         }
 
         /// upload in CompanyModel data
+        JobPostModel newJobPost = JobPostModel(
+            dateTime: DateTime.now(),
+            uid: widget.companyModel.uid,
+            jobId: Uuid().v4(),
+            company_logo: widget.companyModel.company_logo,
+            company_name: widget.companyModel.company_name,
+            company_address: widget.companyModel.address,
+            garment_type: garment,
+            garment_image: garment_downloadUrl,
+            garmentPicName: garmentPicName,
+            garment_order: garmentQtyController.text,
+            work_type: work_Type,
+            work_shift: work_Shift,
+            job_type: job_Type,
+            department: department,
+            category: category,
+            samp_salary: sampling_SalaryController.text,
+            part_time_category: partTime_Cat,
+            part_time_sub_cat: partTime_Sub_Cat,
+            pt_sub_cat_text: partT_Sub_Cat_Controller.text,
+            grade_salary: grade_Salary,
+            grade_salary_amount: grade_Salary_Controller.text,
+            part_rate: part_Rate,
+            part_rate_text: part_Rate_Text_Controller.text,
+            part_rate_url: partRate_downloadUrl,
+            part_rate_url_name: partRateUrlName,
+            full_pc: full_Pc,
+            full_pc_amount: full_Pc_Controller.text,
+            total_tailor: totalTailorController.text,
+            minimum_experience: expMiniController.text,
+            maximum_experience: expMaxiController.text,
+            tailor_skill: selectedSkills,
+            skills_tailor_employee: selectedSkillsEmployee);
 
-        // JobPostModel newJobPost = JobPostModel(
-        //   uid: widget.companyModel.uid,
-        //   dateTime: DateTime.now(),
-        //   company_logo: widget.companyModel.company_logo,
-        //   company_name: widget.companyModel.company_name,
-        //   address: widget.companyModel.address,
-        //   garment_type: garment_type,
-        //   garment_order_qty: garmentQtyController.text.toString(),
-        //   tailor_department: department,
-        //   job_type: job_type,
-        //   tailor_skill: selectedSkills,
-        //   total_employee: totalTailorController.text.toString(),
-        //   tailor_category: category,
-        //   categorySalary: cateSalaryController.text,
-        //   stitching_price: stitchingPriceController.text,
-        //   minimun_Salary: minimumSalaryController.text.toString(),
-        //   maxmimum_Salary: maxmimumSalaryController.text.toString(),
-        //   garment_image: garment_downloadUrl,
-        //   part_rate_image: part_rate_downloadUrl,
-        //   worked_type: workType,
-        //   worked_shift: workShift,
-        //   minimum_experience: expMinimumController.text.toString(),
-        //   maxmimum_experience: expMaximumController.text.toString(),
-        //   tailor_education: selectedEducation,
-        //   job_responsibilities: job_Responsibilities.text.toString(),
-        //   job_description: jobDesController.text.toString(),
-        //   interview_mode: interviewMode,
-        //   interviewAddress: interviewAddressController.text.toString(),
-        //   workLocation: workLocation,
-        //   state: stateController.text.toString(),
-        // );
-        //
-        // BlocProvider.of<JobPostCubit>(context).addJobPostModel(newJobPost);
+        BlocProvider.of<JobPostCubit>(context).addJobPostModel(newJobPost);
 
-        isLodding = false;
-        setState(() {});
-        //
+        setState(() {
+          isLodding = false;
+        });
       } else {
         //first check filed is not empty then change Expansion color
         CheckFieldThenChangeColor();
 
-        showSnackBar_Widget(context,
-            mHeading: "Error", title: "Some field is empty");
+        showSnackBar_Widget(
+          context,
+          mHeading: "Error",
+          title: "Some field is empty",
+        );
         setState(() {});
       }
     } catch (ex) {
       log(ex.toString());
-    }
-  }
-
-  // All form field are Clear after Submit job
-  void clearForm() {
-    garment_value.clearDropDown();
-    garment_type = null;
-    garmentQtyController.text = "";
-    department_value.clearDropDown();
-    department = null;
-    job_type_value.clearDropDown();
-    job_type = null;
-    selectedSkills.clear();
-    totalTailorController.text = "";
-    // category_value.clearDropDown();
-    category = null;
-    cateSalaryController.text = "";
-    stitchingPriceController.text = "";
-    minimumSalaryController.text = "";
-    maxmimumSalaryController.text = "";
-    garment_pic = null;
-    partRateImage = null;
-    workType_value.clearDropDown();
-    workType = null;
-    workShift_value.clearDropDown();
-    workShift = null;
-    expMinimumController.text = "";
-    expMaximumController.text = "";
-    selectedEducation.clear();
-    job_Responsibilities.text = "";
-    jobDesController.text = "";
-    interviewMode_value.clearDropDown();
-    interviewMode = null;
-    interviewAddressController.text = "";
-    workLocation_value.clearDropDown();
-    workLocation = null;
-    stateController.text = "";
-
-    setState(() {});
-  }
-
-  //first check filed is not empty then change Expansion color
-  void CheckFieldThenChangeColor() {
-    // Job Details
-    if (garment_type == null ||
-        department == null ||
-        job_type == null ||
-        selectedSkills.isEmpty) {
-      detailsErrorColor = Colors.red.shade50;
-    } else {
-      detailsErrorColor = null;
-    }
-
-    // Total Tailor & Salary
-    if (totalTailorController.text.isEmpty || selectedSkills.isEmpty) {
-      totalErrorColor = Colors.red.shade50;
-    } else {
-      totalErrorColor = null;
-    }
-
-    // Work & Experience
-    if (workType == null || workShift == null) {
-      experienceErrorColor = Colors.red.shade50;
-    } else {
-      experienceErrorColor = null;
-    }
-
-    //Job more information & details
-    if (selectedEducation.isEmpty || jobDesController.text.isEmpty) {
-      moreInfoErrorColor = Colors.red.shade50;
-    } else {
-      moreInfoErrorColor = null;
-    }
-
-    // Interview & address details
-    if (interviewMode == null ||
-        interviewAddressController.text.isEmpty ||
-        workLocation == null ||
-        stateController.text.isEmpty) {
-      interviewErrorColor = Colors.red.shade50;
-    } else {
-      interviewErrorColor = null;
-    }
-  }
-
-  // When Change dropdown Option in Tailor Department Filed then Empty Filed according options
-  void EmptyFields(isTextEqualTo) {
-    if (isTextEqualTo == "Production") {
-      category = null;
-      category_value.clearDropDown();
-      cateSalaryController.text = "";
-      Part_Time_Cate_value.clearDropDown();
-      part_Time_Category = null;
-      part_Time_Sub_Cate_value.clearDropDown();
-      part_Time_Sub_Category = null;
-    }
-
-    if (category == "Salary") {
-      part_Rate_value.clearDropDown();
-      part_Rate = null;
-      part_Rate_Text_Controller.text.isEmpty;
-      full_Pc_value.clearDropDown();
-      full_Pc = null;
-    }
-
-    if (category == "Part Rate") {
-      grade_Salary = null;
-      grade_Salary_value.clearDropDown();
-      grade_Salary_Controller.text.isEmpty;
-      full_Pc_value.clearDropDown();
-      full_Pc = null;
-    }
-
-    if (category == "Full PC") {
-      part_Rate_value.clearDropDown();
-      part_Rate = null;
-      part_Rate_Text_Controller.text.isEmpty;
-      grade_Salary = null;
-      grade_Salary_value.clearDropDown();
-      grade_Salary_Controller.text.isEmpty;
     }
   }
 }

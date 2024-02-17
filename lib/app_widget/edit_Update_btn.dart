@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tailor/Screen/Users_Screens/navigation_screen/Tailor_profile_Edit_Widget/Update_Button_widget.dart';
 import 'package:tailor/ui_helper.dart';
 
 class Edit_Update_Btn extends StatelessWidget {
-  String hintText;
-  String? gstFileName;
-  String? gstFileError;
+  final String hintText;
+  final String? gstFileName;
+  final String? gstFileError;
   bool? isGst_no = false;
   TextEditingController Controller;
   TextInputType keyboardType;
@@ -51,30 +52,20 @@ class Edit_Update_Btn extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: TextFormField(
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         readOnly: true,
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3),
-                          prefixIcon: gstFileName == null
-                              ? Icon(Icons.file_upload_outlined)
-                              : Icon(Icons.done_all),
-                          preFixColor: gstFileName == null
-                              ? AppColor.textColorLightBlack
-                              : AppColor.btnBgColorGreen,
+                          prefixIcon: gstFileName == null ? Icon(Icons.file_upload_outlined) : Icon(Icons.done_all),
+                          preFixColor: gstFileName == null ? AppColor.textColorLightBlack : AppColor.btnBgColorGreen,
                           mIconSize: 18,
                           radius: 5,
-                          hint: gstFileName == null
-                              ? "Upload GST File"
-                              : "${gstFileName}",
-                          hintColor: gstFileName == null
-                              ? AppColor.textColorLightBlack
-                              : AppColor.btnBgColorGreen,
+                          hint: gstFileName == null ? "Upload GST File" : "${gstFileName}",
+                          hintColor: gstFileName == null ? AppColor.textColorLightBlack : AppColor.btnBgColorGreen,
                           suffixIcon: InkWell(
                             onTap: onUploadFile,
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 14, horizontal: 15),
+                              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 15),
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade100,
                                 borderRadius: BorderRadius.circular(5),
@@ -102,75 +93,23 @@ class Edit_Update_Btn extends StatelessWidget {
                     ),
                     gstFileError != null
                         ? Container(
-                           margin: EdgeInsets.only(top: 5),
-                          child: Text(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
                               "${gstFileError}",
                               style: mTextStyle12(mColor: Colors.red),
                             ),
-                        )
+                          )
                         : Container(),
                   ],
                 )
               : Container(),
 
-          // Update button
+          // =========== Update button ================
           heightSpacer(mHeight: 15),
-          Row(
-            children: [
-              Expanded(flex: 2, child: Container()),
-              Expanded(
-                child: SizedBox(
-                  height: 35,
-                  child: ElevatedButton(
-                    child: FittedBox(
-                      child: Text(
-                        "Cancel",
-                        style: mTextStyle13(
-                            mFontWeight: FontWeight.w500,
-                            mColor: AppColor.textColorWhite),
-                      ),
-                    ),
-                    onPressed: onCancelPress,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(7),
-                            bottomLeft: Radius.circular(7)),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              widthSpacer(mWidth: 1),
-              Expanded(
-                child: SizedBox(
-                  height: 35,
-                  child: ElevatedButton(
-                    child: FittedBox(
-                      child: Text(
-                        "Update",
-                        style: mTextStyle13(
-                            mFontWeight: FontWeight.w500,
-                            mColor: AppColor.textColorWhite),
-                      ),
-                    ),
-                    onPressed: onUpdatePress,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      backgroundColor: AppColor.cardBtnBgGreen,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(7),
-                            bottomRight: Radius.circular(7)),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          Update_button_Widget(
+            onCancelPress: onCancelPress,
+            onUpdatePress: onUpdatePress,
+          )
         ],
       ),
     );

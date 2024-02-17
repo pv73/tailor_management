@@ -583,8 +583,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
         widget.companyModel.address = address;
         widget.companyModel.final_submit = true;
 
-        BlocProvider.of<CompanyCubit>(context)
-            .addCompanyModel(widget.companyModel);
+        BlocProvider.of<CompanyCubit>(context).addCompanyModel(widget.companyModel);
 
         isLodding = false;
         //

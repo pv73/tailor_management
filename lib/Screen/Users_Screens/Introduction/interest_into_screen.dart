@@ -16,8 +16,7 @@ class Interest_Into_Screen extends StatefulWidget {
   final User firebaseUser;
   final UserModel userModel;
 
-  const Interest_Into_Screen(
-      {super.key, required this.firebaseUser, required this.userModel});
+  const Interest_Into_Screen({super.key, required this.firebaseUser, required this.userModel});
 
   @override
   State<Interest_Into_Screen> createState() => _Interest_Into_ScreenState();
@@ -25,9 +24,10 @@ class Interest_Into_Screen extends StatefulWidget {
 
 class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
   List<String> interest = [];
-  List<String> category = [];
   List<String> garment_category = [];
-  // String? groupNo;
+  String? job_type;
+  String? tailor;
+  String? category;
   String? group_btn;
   String? totalExpYears;
   String? totalExpMonths;
@@ -41,8 +41,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
   SingleValueDropDownController expYearsValue = SingleValueDropDownController();
   List<DropDownValueModel> expYearsNoList = [];
 
-  SingleValueDropDownController expMonthsValue =
-  SingleValueDropDownController();
+  SingleValueDropDownController expMonthsValue = SingleValueDropDownController();
   List<DropDownValueModel> expMonthsNoList = [];
 
   //
@@ -125,9 +124,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                   heightSpacer(mHeight: 20),
                   Text(
                     "Garment Category",
-                    style: mTextStyle19(
-                        mColor: AppColor.textColorBlack,
-                        mFontWeight: FontWeight.w700),
+                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                   ),
 
                   /// Garment Category Button
@@ -153,9 +150,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                   heightSpacer(mHeight: 5),
                   Text(
                     "Department of Interest",
-                    style: mTextStyle19(
-                        mColor: AppColor.textColorBlack,
-                        mFontWeight: FontWeight.w700),
+                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                   ),
 
                   /// Interest Button
@@ -163,12 +158,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                   GroupButton(
                     options: mGroupButtonOptions(),
                     isRadio: false,
-                    buttons: [
-                      "Sampling",
-                      "Alter Tailor for Finishing",
-                      "Production",
-                      "Other"
-                    ],
+                    buttons: ["Sampling", "Finishing", "Production", "Other"],
                     onSelected: (Interest_btn_name, index, isSelected) {
                       if (isSelected) {
                         interest.add(Interest_btn_name);
@@ -183,192 +173,222 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                   heightSpacer(mHeight: 10),
                   Divider(),
 
-                  /// Category Details
+                  /// ============= Job Type =================
                   heightSpacer(mHeight: 5),
                   Text(
-                    "Category of Tailor",
-                    style: mTextStyle19(
-                        mColor: AppColor.textColorBlack,
-                        mFontWeight: FontWeight.w700),
+                    "Job type",
+                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                   ),
-
-                  ///  Category Button
-                  heightSpacer(mHeight: 10),
-                  GroupButton(
-                    options: mGroupButtonOptions(),
-                    isRadio: false,
-                    buttons: [
-                      "Full Piece",
-                      "Part Rate",
-                      "Salary",
-                      "Other"
-                    ],
-                    onSelected: (cat_btn_name, index, isSelected) {
-                      if (isSelected) {
-                        category.add(cat_btn_name);
-                      } else {
-                        category.remove(cat_btn_name);
-                      }
-                      // print(category);
-                    },
-                  ),
-
-                  heightSpacer(mHeight: 10),
-                  Divider(),
-
-                  /// Group or individual
-                  heightSpacer(mHeight: 5),
-                  Text(
-                    "Group or Individual",
-                    style: mTextStyle19(
-                        mColor: AppColor.textColorBlack,
-                        mFontWeight: FontWeight.w700),
-                  ),
-
-                  ///  Category Button
                   heightSpacer(mHeight: 10),
                   GroupButton(
                     options: mGroupButtonOptions(),
                     isRadio: true,
                     buttons: [
-                      "Group",
+                      "Tailor",
+                      "Cutting Machine Operator",
+                      "Helper",
+                      "Supervisor",
+                      "Line In Charge",
+                      "Quality Controller",
+                      "Pressman",
+                      "Thread Cutter"
+                    ],
+                    onSelected: (type_btn_name, index, isSelected) {
+                      if (isSelected) {
+                        job_type = type_btn_name;
+                      } else {
+                        job_type = null;
+                      }
+                      setState(() {});
+                    },
+                  ),
+
+                  /// ============ If Tailor Selected ================
+
+                  job_type == "Tailor"
+                      ? Divider(
+                          height: 40,
+                        )
+                      : Container(),
+
+                  /// ============= Category Button =================
+                  job_type == "Tailor"
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Category of Tailor",
+                              style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                            ),
+                            heightSpacer(mHeight: 10),
+                            GroupButton(
+                              options: mGroupButtonOptions(),
+                              isRadio: true,
+                              buttons: ["Full Piece", "Part Rate", "Salary", "Other"],
+                              onSelected: (tailor_btn_name, index, isSelected) {
+                                if (isSelected) {
+                                  category = tailor_btn_name;
+                                } else {
+                                  category = null;
+                                }
+                                setState(() {});
+                              },
+                            ),
+                          ],
+                        )
+                      : Container(),
+
+                  heightSpacer(mHeight: 10),
+                  Divider(),
+
+                  /// ============  Group or Individual ================
+                  heightSpacer(mHeight: 5),
+                  Text(
+                    "Group or Individual",
+                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                  ),
+                  heightSpacer(mHeight: 10),
+                  GroupButton(
+                    options: mGroupButtonOptions(),
+                    isRadio: true,
+                    buttons: [
                       "individual",
+                      "Group",
                     ],
                     onSelected: (btn_name, index, isSelected) {
                       if (isSelected) {
                         group_btn = btn_name;
                       }
-                      print(group_btn);
+                      // print(group_btn);
                       setState(() {});
                     },
                   ),
 
                   /// Category Details
-                  heightSpacer(mHeight: 20),
                   group_btn != "Group"
                       ? Container()
-                      : Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            // flex: 6,
-                            child: SizedBox(
-                              height: 45,
-                              child: TextFormField(
-                                controller: leaderNameController,
-                                style: mTextStyle13(),
-                                keyboardType: TextInputType.text,
-                                decoration: mInputDecoration(
-                                  hint: "Group leader name",
-                                  radius: 5,
-                                  padding: EdgeInsets.only(left: 15),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // widthSpacer(),
-                          // Expanded(
-                          //   flex: 2,
-                          //   child: DropDownTextField(
-                          //     clearOption: true,
-                          //     dropDownItemCount: 10,
-                          //     listTextStyle: TextStyle(
-                          //         fontSize: 13,
-                          //         fontWeight: FontWeight.w400),
-                          //     textStyle: TextStyle(
-                          //         fontSize: 13,
-                          //         fontWeight: FontWeight.w400),
-                          //     controller: groupNoValue,
-                          //     readOnly: true,
-                          //     dropdownRadius: 5,
-                          //     listPadding: ListPadding(bottom: 8, top: 8),
-                          //     textFieldDecoration: mInputDecoration(
-                          //       padding:
-                          //       EdgeInsets.only(top: 3, left: 10),
-                          //       radius: 5,
-                          //       hint: "No",
-                          //       hintColor: AppColor.textColorLightBlack,
-                          //     ),
-                          //     dropDownList: groupNoList,
-                          //     onChanged: (value) {
-                          //       if (value != null) {
-                          //         groupNo =
-                          //             groupNoValue.dropDownValue?.value;
-                          //         print(groupNoValue.dropDownValue?.name);
-                          //       } else {
-                          //         // Handle the case when nothing is selected
-                          //         groupNo = null;
-                          //       }
-                          //
-                          //       setState(() {});
-                          //     },
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                      heightSpacer(mHeight: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Container(
-                              child: Text(
-                                "Then Invite group members",
-                                style: mTextStyle16(
-                                    mFontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Rounded_Btn_Widget(
-                              title: "Invite Group",
-                              mAlignment: Alignment.center,
-                              btnBgColor: AppColor.activeColor,
-                              mHeight: 35,
-                              onPress: () {
-                                /// Show Dialog
-                                ///
-                                showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Alert'),
-                                        content: const Text(
-                                          'Now This Button is not Working',
+                      : Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    // flex: 6,
+                                    child: SizedBox(
+                                      height: 45,
+                                      child: TextFormField(
+                                        controller: leaderNameController,
+                                        style: mTextStyle13(),
+                                        keyboardType: TextInputType.text,
+                                        decoration: mInputDecoration(
+                                          hint: "Group leader name",
+                                          radius: 5,
+                                          padding: EdgeInsets.only(left: 15),
                                         ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(
-                                                  context, 'Cancel');
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(
-                                                  context, 'OK');
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              },
-                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  // widthSpacer(),
+                                  // Expanded(
+                                  //   flex: 2,
+                                  //   child: DropDownTextField(
+                                  //     clearOption: true,
+                                  //     dropDownItemCount: 10,
+                                  //     listTextStyle: TextStyle(
+                                  //         fontSize: 13,
+                                  //         fontWeight: FontWeight.w400),
+                                  //     textStyle: TextStyle(
+                                  //         fontSize: 13,
+                                  //         fontWeight: FontWeight.w400),
+                                  //     controller: groupNoValue,
+                                  //     readOnly: true,
+                                  //     dropdownRadius: 5,
+                                  //     listPadding: ListPadding(bottom: 8, top: 8),
+                                  //     textFieldDecoration: mInputDecoration(
+                                  //       padding:
+                                  //       EdgeInsets.only(top: 3, left: 10),
+                                  //       radius: 5,
+                                  //       hint: "No",
+                                  //       hintColor: AppColor.textColorLightBlack,
+                                  //     ),
+                                  //     dropDownList: groupNoList,
+                                  //     onChanged: (value) {
+                                  //       if (value != null) {
+                                  //         groupNo =
+                                  //             groupNoValue.dropDownValue?.value;
+                                  //         print(groupNoValue.dropDownValue?.name);
+                                  //       } else {
+                                  //         // Handle the case when nothing is selected
+                                  //         groupNo = null;
+                                  //       }
+                                  //
+                                  //       setState(() {});
+                                  //     },
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                              heightSpacer(mHeight: 15),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      child: Text(
+                                        "Then Invite group members",
+                                        style: mTextStyle16(mFontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Rounded_Btn_Widget(
+                                      title: "Invite Group",
+                                      mAlignment: Alignment.center,
+                                      btnBgColor: AppColor.activeColor,
+                                      mHeight: 35,
+                                      onPress: () {
+                                        /// Show Dialog
+                                        ///
+                                        showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('Alert'),
+                                                content: const Text(
+                                                  'Now This Button is not Working',
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context, 'Cancel');
+                                                    },
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context, 'OK');
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
 
                   heightSpacer(mHeight: 10),
                   Divider(),
 
-                  /// Experience
+                  /// ===========  Experience ================
                   heightSpacer(mHeight: 5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,8 +413,6 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                       ),
                     ],
                   ),
-
-                  /// Experience
                   heightSpacer(mHeight: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,10 +431,8 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                               child: DropDownTextField(
                                 clearOption: true,
                                 dropDownItemCount: 10,
-                                listTextStyle: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                textStyle: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
+                                listTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                                textStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                                 controller: expYearsValue,
                                 readOnly: true,
                                 dropdownRadius: 5,
@@ -430,8 +446,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                                 dropDownList: expYearsNoList,
                                 onChanged: (value) {
                                   if (value != null) {
-                                    totalExpYears =
-                                        expYearsValue.dropDownValue?.value;
+                                    totalExpYears = expYearsValue.dropDownValue?.value;
                                     // print(expYearsValue.dropDownValue?.name);
                                   } else {
                                     // Handle the case when nothing is selected
@@ -449,10 +464,8 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                               child: DropDownTextField(
                                 clearOption: true,
                                 dropDownItemCount: 10,
-                                listTextStyle: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
-                                textStyle: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
+                                listTextStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                                textStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                                 controller: expMonthsValue,
                                 readOnly: true,
                                 dropdownRadius: 5,
@@ -466,8 +479,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                                 dropDownList: expMonthsNoList,
                                 onChanged: (value) {
                                   if (value != null) {
-                                    totalExpMonths =
-                                        expMonthsValue.dropDownValue?.value;
+                                    totalExpMonths = expMonthsValue.dropDownValue?.value;
                                     // print(expMonthsValue.dropDownValue?.name);
                                   } else {
                                     // Handle the case when nothing is selected
@@ -493,16 +505,14 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                Skills_Into_Screen(
-                                  userModel: widget.userModel,
-                                  firebaseUser: widget.firebaseUser,
-                                ),
+                            builder: (context) => Skills_Into_Screen(
+                              userModel: widget.userModel,
+                              firebaseUser: widget.firebaseUser,
+                            ),
                           ),
                         );
                       } else if (state is UserErrorState) {
-                        return showSnackBar_Widget(context,
-                            mHeading: "Error", title: "${state.error}");
+                        return showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                       }
                     },
                     builder: (context, state) {
@@ -534,16 +544,14 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
 
   // TODO: checkValues =========================
   void checkValue() {
-    if (garment_category.isNotEmpty &&
-        interest.isNotEmpty &&
-        category.isNotEmpty &&
-        group_btn != null) {
+    if (garment_category.isNotEmpty && interest.isNotEmpty && category == null && group_btn != null) {
       if (group_btn != "Group") {
         // if all field is not empty then store data
 
         widget.userModel.garment_category = garment_category;
         widget.userModel.interest = interest;
         widget.userModel.category = category;
+        widget.userModel.job_type = job_type;
         widget.userModel.tailor_type = group_btn;
         widget.userModel.experience_company = experienceCompany.text.toString();
         widget.userModel.totalExpYears = totalExpYears;
@@ -554,37 +562,30 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
       } else if (group_btn == "Group") {
         if (leaderNameController.text.isNotEmpty
             // && groupNo != null
-        ) {
+            ) {
           // if client selete Group then required both field
           widget.userModel.garment_category = garment_category;
           widget.userModel.interest = interest;
           widget.userModel.category = category;
+          widget.userModel.job_type = job_type;
           widget.userModel.tailor_type = group_btn;
-          widget.userModel.experience_company =
-              experienceCompany.text.toString();
+          widget.userModel.experience_company = experienceCompany.text.toString();
           widget.userModel.totalExpYears = totalExpYears;
           widget.userModel.totalExpMonths = totalExpMonths;
-          widget.userModel.line_leader_name =
-              leaderNameController.text.toString();
+          widget.userModel.line_leader_name = leaderNameController.text.toString();
           // widget.userModel.group_no = groupNo;
 
           BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
         } else {
-          showSnackBar_Widget(context,
-              mHeading: "Error",
-              title: "Please fill group leader name and group no.");
+          showSnackBar_Widget(context, mHeading: "Error", title: "Please fill group leader name and group no.");
         }
       } else {
-        showSnackBar_Widget(context,
-            mHeading: "Error",
-            title: "Please fill group leader name and group no.");
+        showSnackBar_Widget(context, mHeading: "Error", title: "Please fill group leader name and group no.");
       }
 
       // BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
     } else {
-      showSnackBar_Widget(context,
-          mHeading: "Error",
-          title: "Some fields are empty");
+      showSnackBar_Widget(context, mHeading: "Error", title: "Some fields are empty");
     }
   }
 }

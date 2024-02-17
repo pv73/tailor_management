@@ -10,6 +10,7 @@ class UserModel {
   String? tailor_type;
   String? totalExpYears;
   String? totalExpMonths;
+  String? salary;
   String? email;
   String? dob;
   bool? final_submit;
@@ -19,8 +20,9 @@ class UserModel {
   String? education;
   String? course;
   String? passing_year;
+  String? job_type;
+  String? category;
   List<String>? garment_category;
-  List<String>? category;
   List<String>? interest;
   List<String>? skills;
   List<String>? language;
@@ -46,6 +48,7 @@ class UserModel {
     this.tailor_type,
     this.totalExpYears,
     this.totalExpMonths,
+    this.salary,
     this.email,
     this.dob,
     this.gender,
@@ -54,9 +57,10 @@ class UserModel {
     this.education,
     this.course,
     this.passing_year,
+    this.job_type,
+    this.category,
     this.interest,
     this.garment_category,
-    this.category,
     this.skills,
     this.profile_pic,
     this.bank_name,
@@ -81,6 +85,7 @@ class UserModel {
     tailor_type = map['tailor_type'];
     totalExpYears = map['totalExpYears'];
     totalExpMonths = map['totalExpMonths'];
+    salary = map['salary'];
     email = map['email'];
     dob = map['dob'];
     gender = map['gender'];
@@ -89,8 +94,9 @@ class UserModel {
     education = map['education'];
     course = map['course'];
     passing_year = map['passing_year'];
+    job_type = map['job_type'];
+    category = map['category'];
     garment_category = List<String>.from(map['garment_category'] ?? []);
-    category = List<String>.from(map['category'] ?? []);
     interest = List<String>.from(map['interest'] ?? []);
     skills = List<String>.from(map['skills'] ?? []);
     language = List<String>.from(map['language'] ?? []);
@@ -119,6 +125,7 @@ class UserModel {
       'tailor_type': tailor_type,
       'totalExpYears': totalExpYears,
       'totalExpMonths': totalExpMonths,
+      'salary' : salary,
       'email': email,
       'dob': dob,
       'gender': gender,
@@ -127,9 +134,10 @@ class UserModel {
       'education': education,
       'course': course,
       'passing_year': passing_year,
+      'job_type' : job_type,
+      'category' : category,
       'interest': interest,
       'garment_category': garment_category,
-      'category': category,
       'skills': skills,
       'profile_pic': profile_pic,
       'bank_name': bank_name,

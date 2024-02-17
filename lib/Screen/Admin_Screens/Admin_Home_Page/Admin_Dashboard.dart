@@ -1,11 +1,10 @@
-import 'dart:ffi';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Admin_Profile.dart';
-import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Total_Posted_Job.dart';
 import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Post_Job.dart';
+import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Total_Posted_Job.dart';
 import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Admin_Home_Page.dart';
 import 'package:tailor/modal/CompanyModel.dart';
 import 'package:tailor/ui_helper.dart';

@@ -1,10 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/activity_widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
+import 'package:tailor/modal/UserModel.dart';
 import 'package:tailor/ui_helper.dart';
 
 class Attendance_Screen extends StatefulWidget {
+   final User firebaseUser;
+  final UserModel userModel;
+
+  const Attendance_Screen({super.key, required this.firebaseUser, required this.userModel});
+
   @override
   State<Attendance_Screen> createState() => _Attendance_ScreenState();
 }
@@ -46,7 +53,11 @@ class _Attendance_ScreenState extends State<Attendance_Screen> {
           ),
         ],
       ),
-      drawer: Drawer_Widget(),
+      drawer: Drawer_Widget(
+         firebaseUser: widget.firebaseUser,
+          userModel: widget.userModel,
+          isCurUserCom: false,
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
