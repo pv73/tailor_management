@@ -190,88 +190,88 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                   ),
                 ),
 
-                /// search job
+
+                // =============== Show all jobs ===================
                 Container(
                   child: BlocBuilder<JobPostCubit, JobPostState>(
                     builder: (context, state) {
-                     return StreamBuilder<QuerySnapshot>(
-                      stream: BlocProvider.of<JobPostCubit>(context).getDataFilterByOrder(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          // first get jobPosts List from JobPostCubit file the store getJobPostList variable
-                          var getJobPostList = BlocProvider.of<JobPostCubit>(context).jobPosts;
+                      return StreamBuilder<QuerySnapshot>(
+                        stream: BlocProvider.of<JobPostCubit>(context).getDataFilterByOrder(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            // first get jobPosts List from JobPostCubit file the store getJobPostList variable
+                            var getJobPostList = BlocProvider.of<JobPostCubit>(context).jobPosts;
 
-                          getJobPostList.clear();
+                            getJobPostList.clear();
 
-                          // var jobPosts = snapshot.data!.docs;
-                          for (DocumentSnapshot doc in snapshot.data!.docs) {
-                            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                            // var jobPosts = snapshot.data!.docs;
+                            for (DocumentSnapshot doc in snapshot.data!.docs) {
+                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-                            // Add all Data in jobPosts list
-                            getJobPostList.add(data);
-                          }
+                              // Add all Data in jobPosts list
+                              getJobPostList.add(data);
+                            }
 
-                          return ListView.builder(
-                            itemCount: getJobPostList.length > 5 ? 5 : getJobPostList.length,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              var jobPost = getJobPostList[index];
-                              JobID =  getJobPostList[index]['jobId'];
+                            return ListView.builder(
+                              itemCount: getJobPostList.length > 5 ? 5 : getJobPostList.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                var jobPost = getJobPostList[index];
+                                JobID = getJobPostList[index]['jobId'];
 
-                              // Assuming 'dateTime' is the field storing DateTime in Firestore
-                              DateTime jobDateTime = jobPost['dateTime'].toDate();
-                              // Calculate the difference in days
-                              int daysDifference = DateTime.now().difference(jobDateTime).inDays;
+                                // Assuming 'dateTime' is the field storing DateTime in Firestore
+                                DateTime jobDateTime = jobPost['dateTime'].toDate();
+                                // Calculate the difference in days
+                                int daysDifference = DateTime.now().difference(jobDateTime).inDays;
 
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // ============== Job list view Widget ==============
-                                  View_Job_List_Widget(
-                                    date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
-                                    daysAgo: "${daysDifference}",
-                                    jobPost: jobPost,
-                                    applyPress: () {
-                                      JobApplyFunction();
-                                    },
-                                    onPress: () {
-
-                                      Navigator.push(
-                                        context,
-                                        PageTransition(
-                                          child: View_Jobs_Details(
-                                            jobId: getJobPostList[index]['jobId'],
-                                            isTailorJobView: true,
-                                            userModel: widget.userModel,
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // ============== Job list view Widget ==============
+                                    View_Job_List_Widget(
+                                      date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
+                                      daysAgo: "${daysDifference}",
+                                      jobPost: jobPost,
+                                      applyPress: () {
+                                        JobApplyFunction();
+                                      },
+                                      onPress: () {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            child: View_Jobs_Details(
+                                              jobId: getJobPostList[index]['jobId'],
+                                              isTailorJobView: true,
+                                              userModel: widget.userModel,
+                                            ),
+                                            type: PageTransitionType.rightToLeftWithFade,
+                                            duration: Duration(milliseconds: 500),
                                           ),
-                                          type: PageTransitionType.rightToLeftWithFade,
-                                          duration: Duration(milliseconds: 500),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                        );
+                                      },
+                                    ),
 
-                                  // ======= If index is 2 then Show this Business image ===========
-                                  if (index == 1)
-                                    Container(
-                                      margin: EdgeInsets.symmetric(vertical: 10),
-                                      child: Image.asset("assets/images/banner/img_business.jpg"),
-                                    )
-                                  else
-                                    Container(),
-                                ],
-                              );
-                            },
+                                    // ======= If index is 2 then Show this Business image ===========
+                                    if (index == 1)
+                                      Container(
+                                        margin: EdgeInsets.symmetric(vertical: 10),
+                                        child: Image.asset("assets/images/banner/img_business.jpg"),
+                                      )
+                                    else
+                                      Container(),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                          return Center(
+                            child: Lottie.asset("assets/images/lottie_animation/loading_animation.json", width: 130),
                           );
-                        }
-                        return Center(
-                          child: Lottie.asset("assets/images/lottie_animation/loading_animation.json", width: 130),
-                        );
-                      },
-                    );
+                        },
+                      );
                     },
                   ),
                 ),
@@ -283,7 +283,7 @@ class _Jobs_Screen extends State<Jobs_Screen> {
     );
   }
 
-   // ========== JobApplyFunction button clicked ===============
+  // ========== JobApplyFunction button clicked ===============
   void JobApplyFunction() async {
     try {
       // ========== store value in variable ==========
@@ -295,9 +295,11 @@ class _Jobs_Screen extends State<Jobs_Screen> {
         jobId: jobId,
         userId: userId,
         user_name: widget.userModel.user_name,
+        emailId: widget.userModel.email,
         isApplied: true,
         garment_category: widget.userModel.garment_category,
         skills: widget.userModel.skills,
+        profilePicUrl: widget.userModel.profile_pic,
       );
 
       await FirebaseFirestore.instance.collection("jobs").doc(jobId).collection("apply_job").doc(userId).set(newApplyJob.toMap());
@@ -318,6 +320,4 @@ class _Jobs_Screen extends State<Jobs_Screen> {
           spacing: 4.0, radius: 8.0, dotWidth: 8.0, dotHeight: 5.0, paintStyle: PaintingStyle.stroke, activeDotColor: Colors.indigo),
     );
   }
-
-
 }

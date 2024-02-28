@@ -1,7 +1,4 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
-import 'package:flutter/material.dart';
-
-import '../ui_helper.dart';
 
 // TODO : ========== Job Post Dropdown list UI Part Widget & etc =====================
 
@@ -18,13 +15,14 @@ List<DropDownValueModel> garment_Option = [
 //    List for department_Option
 List<DropDownValueModel> job_Type_Option = [
   DropDownValueModel(name: "Tailor", value: "Tailor"),
-  DropDownValueModel(name: "Cutting Machine Operator", value: "Cutting"),
+  DropDownValueModel(name: "Pattern Master", value: "Pattern"),
+  DropDownValueModel(name: "Cutting Master", value: "Cutting"),
   DropDownValueModel(name: "Helper", value: "Helper"),
   DropDownValueModel(name: "Supervisor", value: "Supervisor"),
-  DropDownValueModel(name: "Line In-charge", value: "Line_In"),
-  DropDownValueModel(name: "Quality Controller", value: "Quality"),
   DropDownValueModel(name: "Pressman", value: "Pressman"),
+  DropDownValueModel(name: "Line In Charge", value: "Line_In"),
   DropDownValueModel(name: "Thread Cutter", value: "Thread"),
+  DropDownValueModel(name: "Quality Controller", value: "Quality"),
 ];
 
 // ==================================================================

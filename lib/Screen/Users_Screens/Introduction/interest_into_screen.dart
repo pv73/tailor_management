@@ -25,12 +25,14 @@ class Interest_Into_Screen extends StatefulWidget {
 class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
   List<String> interest = [];
   List<String> garment_category = [];
+  List<String> category = [];
+
   String? job_type;
   String? tailor;
-  String? category;
   String? group_btn;
   String? totalExpYears;
   String? totalExpMonths;
+  String? leaderNameError;
 
   TextEditingController experienceCompany = TextEditingController();
   TextEditingController leaderNameController = TextEditingController();
@@ -53,12 +55,6 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
   }
 
   void generateDropDownList() {
-    // for (int i = 1; i <= 50; i++) {
-    //   String number = i.toString().padLeft(2, '0');
-    //   // Convert number to two-digit format
-    //   groupNoList.add(DropDownValueModel(name: number, value: number));
-    // }
-
     for (int expyear = 0; expyear <= 20; expyear++) {
       String year = expyear.toString().padLeft(2, '0');
       // Convert number to two-digit format
@@ -75,6 +71,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 1,
@@ -120,14 +117,17 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                     firebaseUser: widget.firebaseUser,
                   ),
 
-                  // Garment Category Details
+                  //============ Garment Category Details ===============
                   heightSpacer(mHeight: 20),
-                  Text(
-                    "Garment Category",
-                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                  RichText(
+                    text: TextSpan(text: "Garment Category", style: mTextStyle15(mFontWeight: FontWeight.w700), children: [
+                      TextSpan(
+                        text: " *",
+                        style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                      )
+                    ]),
                   ),
 
-                  /// Garment Category Button
                   heightSpacer(mHeight: 10),
                   GroupButton(
                     options: mGroupButtonOptions(),
@@ -139,21 +139,22 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                       } else {
                         garment_category.remove(Garment_btn_name);
                       }
-
-                      // print(garment_category);
                     },
                   ),
                   heightSpacer(mHeight: 10),
                   Divider(),
 
-                  // Interest Details
+                  //============ Interest Details===============
                   heightSpacer(mHeight: 5),
-                  Text(
-                    "Department of Interest",
-                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                  RichText(
+                    text: TextSpan(text: "Department of Interest", style: mTextStyle15(mFontWeight: FontWeight.w700), children: [
+                      TextSpan(
+                        text: " *",
+                        style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                      )
+                    ]),
                   ),
 
-                  /// Interest Button
                   heightSpacer(mHeight: 10),
                   GroupButton(
                     options: mGroupButtonOptions(),
@@ -165,8 +166,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                       } else {
                         interest.remove(Interest_btn_name);
                       }
-
-                      // print(interest);
+                      setState(() {});
                     },
                   ),
 
@@ -175,23 +175,29 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
 
                   /// ============= Job Type =================
                   heightSpacer(mHeight: 5),
-                  Text(
-                    "Job type",
-                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                  RichText(
+                    text: TextSpan(text: "Job type", style: mTextStyle15(mFontWeight: FontWeight.w500), children: [
+                      TextSpan(
+                        text: " *",
+                        style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                      )
+                    ]),
                   ),
+
                   heightSpacer(mHeight: 10),
                   GroupButton(
                     options: mGroupButtonOptions(),
                     isRadio: true,
                     buttons: [
                       "Tailor",
-                      "Cutting Machine Operator",
+                      "Pattern Master",
+                      "Cutting Master",
                       "Helper",
                       "Supervisor",
-                      "Line In Charge",
-                      "Quality Controller",
                       "Pressman",
-                      "Thread Cutter"
+                      "Line In Charge",
+                      "Thread Cutter",
+                      "Quality Controller"
                     ],
                     onSelected: (type_btn_name, index, isSelected) {
                       if (isSelected) {
@@ -203,50 +209,47 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                     },
                   ),
 
-                  /// ============ If Tailor Selected ================
-
-                  job_type == "Tailor"
-                      ? Divider(
-                          height: 40,
-                        )
-                      : Container(),
+                  Divider(height: 40),
 
                   /// ============= Category Button =================
-                  job_type == "Tailor"
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Category of Tailor",
-                              style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
-                            ),
-                            heightSpacer(mHeight: 10),
-                            GroupButton(
-                              options: mGroupButtonOptions(),
-                              isRadio: true,
-                              buttons: ["Full Piece", "Part Rate", "Salary", "Other"],
-                              onSelected: (tailor_btn_name, index, isSelected) {
-                                if (isSelected) {
-                                  category = tailor_btn_name;
-                                } else {
-                                  category = null;
-                                }
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        )
-                      : Container(),
+                  RichText(
+                    text: TextSpan(text: "Category of Tailor", style: mTextStyle15(mFontWeight: FontWeight.w500), children: [
+                      TextSpan(
+                        text: " *",
+                        style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                      )
+                    ]),
+                  ),
+
+                  heightSpacer(mHeight: 10),
+                  GroupButton(
+                    options: mGroupButtonOptions(),
+                    isRadio: false,
+                    buttons: ["Salary", "Full Piece", "Part Rate", "Part Time", "Hours Basis"],
+                    onSelected: (tailor_btn_name, index, isSelected) {
+                      if (isSelected) {
+                        category.add(tailor_btn_name);
+                      } else {
+                        category.remove(tailor_btn_name);
+                      }
+                      setState(() {});
+                    },
+                  ),
 
                   heightSpacer(mHeight: 10),
                   Divider(),
 
                   /// ============  Group or Individual ================
                   heightSpacer(mHeight: 5),
-                  Text(
-                    "Group or Individual",
-                    style: mTextStyle15(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                  RichText(
+                    text: TextSpan(text: "Group or Individual", style: mTextStyle15(mFontWeight: FontWeight.w500), children: [
+                      TextSpan(
+                        text: " *",
+                        style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                      )
+                    ]),
                   ),
+
                   heightSpacer(mHeight: 10),
                   GroupButton(
                     options: mGroupButtonOptions(),
@@ -270,22 +273,29 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                       : Container(
                           margin: EdgeInsets.only(top: 20),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
                                   Expanded(
                                     // flex: 6,
-                                    child: SizedBox(
-                                      height: 45,
-                                      child: TextFormField(
-                                        controller: leaderNameController,
-                                        style: mTextStyle13(),
-                                        keyboardType: TextInputType.text,
-                                        decoration: mInputDecoration(
-                                          hint: "Group leader name",
-                                          radius: 5,
-                                          padding: EdgeInsets.only(left: 15),
-                                        ),
+                                    child: TextFormField(
+                                      controller: leaderNameController,
+                                      style: mTextStyle13(),
+                                      keyboardType: TextInputType.text,
+                                      textCapitalization: TextCapitalization.words,
+                                      onChanged: (value) {
+                                        if (value.isNotEmpty) {
+                                          leaderNameError = null;
+                                        } else {
+                                          leaderNameController.text = value;
+                                        }
+                                        setState(() {});
+                                      },
+                                      decoration: mInputDecoration(
+                                        hint: "Group leader name",
+                                        radius: 5,
+                                        padding: EdgeInsets.only(left: 15),
                                       ),
                                     ),
                                   ),
@@ -329,6 +339,12 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
                                   // ),
                                 ],
                               ),
+                              leaderNameError == null
+                                  ? Container()
+                                  : Text(
+                                      "${leaderNameError}",
+                                      style: mTextStyle13(mColor: Colors.red),
+                                    ),
                               heightSpacer(mHeight: 15),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -544,7 +560,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
 
   // TODO: checkValues =========================
   void checkValue() {
-    if (garment_category.isNotEmpty && interest.isNotEmpty && category == null && group_btn != null) {
+    if (garment_category.isNotEmpty && interest.isNotEmpty && category.isNotEmpty && group_btn != null) {
       if (group_btn != "Group") {
         // if all field is not empty then store data
 
@@ -577,15 +593,15 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
 
           BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
         } else {
+          leaderNameError = "Please fill group leader name";
           showSnackBar_Widget(context, mHeading: "Error", title: "Please fill group leader name and group no.");
+          setState(() {});
         }
       } else {
         showSnackBar_Widget(context, mHeading: "Error", title: "Please fill group leader name and group no.");
       }
-
-      // BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
     } else {
-      showSnackBar_Widget(context, mHeading: "Error", title: "Some fields are empty");
+      showSnackBar_Widget(context, mHeading: "Error", title: "Please fill all required fields");
     }
   }
 }

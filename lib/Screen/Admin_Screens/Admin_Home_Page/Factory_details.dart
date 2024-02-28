@@ -47,6 +47,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
   String? gstFileName;
   String? gstFileError;
   bool? isLodding = false;
+  String? logoError;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +69,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
               },
               child: Form(
                 key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction, // or AutovalidateMode.always,
                 child: Padding(
                   padding: EdgeInsets.all(15),
                   child: Column(
@@ -75,9 +77,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
                       heightSpacer(mHeight: 20),
                       Text(
                         "Factory Details",
-                        style: mTextStyle24(
-                            mFontWeight: FontWeight.w900,
-                            mColor: AppColor.textColorBlue),
+                        style: mTextStyle24(mFontWeight: FontWeight.w900, mColor: AppColor.textColorBlue),
                       ),
 
                       heightSpacer(),
@@ -92,63 +92,95 @@ class _Factory_DetailsState extends State<Factory_Details> {
 
                       // profile Pic
                       heightSpacer(mHeight: 15),
-                      Stack(
+                      Column(
                         children: [
-                          company_logo == null
-                              ? CircleAvatar(
-                                  backgroundColor: Colors.grey.shade300,
-                                  radius: 40,
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 50,
-                                    color: Colors.grey.shade500,
+                          Stack(
+                            children: [
+                              company_logo == null
+                                  ? CircleAvatar(
+                                      backgroundColor: logoError == null ? Colors.transparent : Colors.red.shade300,
+                                      radius: 42,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.grey.shade300,
+                                        radius: 40,
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: Colors.grey.shade500,
+                                        ),
+                                      ),
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage: FileImage(company_logo!),
+                                      radius: 40,
+                                    ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: InkWell(
+                                  onTap: () {
+                                    Image_Picker_showBottomSheet(context, fromCameraPress: () {
+                                      pickImage(ImageSource.camera);
+                                      Navigator.pop(context);
+                                    }, fromGalleryPress: () {
+                                      pickImage(ImageSource.gallery);
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 13,
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      size: 15,
+                                    ),
                                   ),
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: FileImage(company_logo!),
-                                  radius: 40,
-                                ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: InkWell(
-                              onTap: () {
-                                showBottomSheet();
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 13,
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  size: 15,
                                 ),
                               ),
-                            ),
+                            ],
                           ),
+
+                          // ============ Logo Error message  ===============
+                          logoError == null
+                              ? Container()
+                              : Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    "${logoError}",
+                                    style: mTextStyle13(mColor: Colors.red),
+                                  ),
+                                ),
                         ],
                       ),
 
+                      // ============= Company name ============
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         controller: companyNameController,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        textCapitalization: TextCapitalization.words,
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter company name!';
+                          }
+                          return null;
+                        },
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3),
                           prefixIcon: Icon(Icons.business_sharp),
                           preFixColor: AppColor.textColorLightBlack,
                           mIconSize: 18,
                           radius: 5,
-                          hint: "Company Name",
+                          hint: "Company Name *",
                           hintColor: AppColor.textColorLightBlack,
                         ),
                       ),
 
+                      // ============ Company User name ===================
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         readOnly: true,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3),
                           prefixIcon: Icon(Icons.person),
@@ -160,11 +192,18 @@ class _Factory_DetailsState extends State<Factory_Details> {
                         ),
                       ),
 
+                      // ============ Company email ================
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         readOnly: true,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                        // validator: (value) {
+                        //   if (value!.isEmpty ||
+                        //       !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+                        //     return 'Enter a valid email!';
+                        //   }
+                        //   return null;
+                        // },
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3),
                           prefixIcon: Icon(Icons.email_outlined),
@@ -176,11 +215,11 @@ class _Factory_DetailsState extends State<Factory_Details> {
                         ),
                       ),
 
+                      // =========== Phone =====================
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         readOnly: true,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3),
                           prefixIcon: Icon(Icons.mobile_friendly),
@@ -192,29 +231,35 @@ class _Factory_DetailsState extends State<Factory_Details> {
                         ),
                       ),
 
+                      // ================ Company other number ====================
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         controller: companyPhoneController,
                         keyboardType: TextInputType.number,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         maxLength: 10,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter phone number!';
+                          }
+                          return null;
+                        },
                         decoration: mInputDecoration(
                             padding: EdgeInsets.only(top: 3),
                             prefixIcon: Icon(Icons.phone),
                             preFixColor: AppColor.textColorLightBlack,
                             mIconSize: 18,
                             radius: 5,
-                            hint: "Company Phone number",
+                            hint: "Company Phone number *",
                             hintColor: AppColor.textColorLightBlack,
                             mCounterText: ""),
                       ),
 
+                      // ==================  Gst No. ====================
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         controller: gstNoController,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         maxLength: 15,
                         textCapitalization: TextCapitalization.characters,
                         decoration: mInputDecoration(
@@ -234,38 +279,28 @@ class _Factory_DetailsState extends State<Factory_Details> {
                         },
                       ),
 
-                      // Gst File
+                      // =============== Gst File =============
                       gstNoController.text.isEmpty
                           ? Container()
                           : Padding(
                               padding: EdgeInsets.only(top: 15),
                               child: TextFormField(
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w400),
+                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                                 readOnly: true,
                                 decoration: mInputDecoration(
                                   padding: EdgeInsets.only(top: 3),
-                                  prefixIcon: gstFileName == null
-                                      ? Icon(Icons.file_upload_outlined)
-                                      : Icon(Icons.done_all),
-                                  preFixColor: gstFileName == null
-                                      ? AppColor.textColorLightBlack
-                                      : AppColor.btnBgColorGreen,
+                                  prefixIcon: gstFileName == null ? Icon(Icons.file_upload_outlined) : Icon(Icons.done_all),
+                                  preFixColor: gstFileName == null ? AppColor.textColorLightBlack : AppColor.btnBgColorGreen,
                                   mIconSize: 18,
                                   radius: 5,
-                                  hint: gstFileName == null
-                                      ? "Upload GST File"
-                                      : "${gstFileName}",
-                                  hintColor: gstFileName == null
-                                      ? AppColor.textColorLightBlack
-                                      : AppColor.btnBgColorGreen,
+                                  hint: gstFileName == null ? "Upload GST File" : "${gstFileName}",
+                                  hintColor: gstFileName == null ? AppColor.textColorLightBlack : AppColor.btnBgColorGreen,
                                   suffixIcon: InkWell(
                                     onTap: () {
                                       _pickGstFile();
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 14, horizontal: 15),
+                                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 15),
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade100,
                                         borderRadius: BorderRadius.circular(5),
@@ -292,7 +327,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
                               ),
                             ),
 
-                      // gst File Error message show
+                      // =============  gst File Error message show ============
                       Align(
                         alignment: Alignment.topLeft,
                         child: gstFileError == null
@@ -306,11 +341,11 @@ class _Factory_DetailsState extends State<Factory_Details> {
                               ),
                       ),
 
+                      // ============== Company pan ===============
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         controller: panNoController,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         maxLength: 10,
                         textCapitalization: TextCapitalization.characters,
                         decoration: mInputDecoration(
@@ -333,23 +368,30 @@ class _Factory_DetailsState extends State<Factory_Details> {
                         ),
                       ),
 
+                      // =============== Company Address ===============
                       heightSpacer(mHeight: 15),
                       TextFormField(
                         controller: addressController,
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                        textCapitalization: TextCapitalization.words,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter company address';
+                          }
+                          return null;
+                        },
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3),
                           prefixIcon: Icon(Icons.location_pin),
                           preFixColor: AppColor.textColorLightBlack,
                           mIconSize: 18,
                           radius: 5,
-                          hint: "Address",
+                          hint: "Address *",
                           hintColor: AppColor.textColorLightBlack,
                         ),
                       ),
 
-                      // Login Btn
+                      // =============  Login Btn ====================
                       heightSpacer(mHeight: 25),
 
                       BlocConsumer<CompanyCubit, CompanyState>(
@@ -357,34 +399,31 @@ class _Factory_DetailsState extends State<Factory_Details> {
                           // TODO: implement listener
                           if (state is CompanyLoadedState) {
                             // Navigate Admin Dashboard
-                            Navigator.popUntil(
-                                context, (route) => route.isFirst);
+                            Navigator.popUntil(context, (route) => route.isFirst);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Admin_Dashboard(
-                                        companyModel: widget.companyModel,
-                                        firebaseUser: widget.firebaseUser,
-                                      )),
+                                builder: (context) => Admin_Dashboard(
+                                  companyModel: widget.companyModel,
+                                  firebaseUser: widget.firebaseUser,
+                                ),
+                              ),
                             );
                             //
                             var prefs = await SharedPreferences.getInstance();
                             prefs.setBool("company_final_submit", true);
 
-                            // Show SnackBar
-                            showSnackBar_Widget(context,
-                                mHeading: "Success",
-                                title: "Your form is submitted successfully");
+                            // ========== Show Successfully SnackBar =============
+                            showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully");
 
                             //
                           } else if (state is CompanyErrorState) {
-                            return showSnackBar_Widget(context,
-                                mHeading: "Error", title: "${state.error}");
+                            // ========== Show Error SnackBar =============
+                            return showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                           }
                         },
                         builder: (context, state) {
-                          if (state is CompanyLoadingState ||
-                              isLodding == true) {
+                          if (state is CompanyLoadingState || isLodding == true) {
                             return Center(
                               child: CircularProgressIndicator(),
                             );
@@ -395,6 +434,10 @@ class _Factory_DetailsState extends State<Factory_Details> {
                             btnBgColor: AppColor.btnBgColorGreen,
                             borderColor: AppColor.btnBgColorGreen,
                             onPress: () {
+                              final isValid = _formKey.currentState?.validate();
+                              if (!isValid!) {
+                                return;
+                              }
                               _uploadFileData();
                             },
                             mHeight: 40,
@@ -415,62 +458,6 @@ class _Factory_DetailsState extends State<Factory_Details> {
   }
 
   // TODO: ====================== UI End ===================================
-  // ================== UI end and  Widget and list Start ==================
-
-  Future<void> showBottomSheet() {
-    return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 75.h,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.camera_alt,
-                          size: 35,
-                        ),
-                        Text("Camera")
-                      ],
-                    ),
-                  ),
-                  widthSpacer(mWidth: 50),
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 35,
-                        ),
-                        Text("Gallery")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   // ================== Image Picker ==================
   String? companyLogoPath;
@@ -527,7 +514,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
     }
   }
 
-  // Upload File and all data
+  // ===========  Upload File and all data ============
   void _uploadFileData() async {
     String companyName = companyNameController.text.toString();
     String companyPhone = companyPhoneController.text.toString();
@@ -539,10 +526,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
     UploadTask? gstFileUploadTask;
 
     try {
-      if (companyName.isNotEmpty &&
-          companyPhone.isNotEmpty &&
-          company_logo != null &&
-          address.isNotEmpty) {
+      if (companyName.isNotEmpty && companyPhone.isNotEmpty && company_logo != null && address.isNotEmpty) {
         // condition true
         setState(() {
           isLodding = true;
@@ -553,7 +537,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
             .child("company_documents")
             .child("profile_pic")
             .child(companyLogoName!)
-            .putFile(File(companyLogoPath!));
+            .putFile(company_logo!);
 
         TaskSnapshot logoTaskSnapshot = await logoUploadTask;
         String logo_downloadUrl = await logoTaskSnapshot.ref.getDownloadURL();
@@ -561,12 +545,8 @@ class _Factory_DetailsState extends State<Factory_Details> {
         //
         // upload gst file
         if (gst_file != null) {
-          gstFileUploadTask = FirebaseStorage.instance
-              .ref()
-              .child("company_documents")
-              .child("documents")
-              .child("$gstFileName")
-              .putFile(gst_file!);
+          gstFileUploadTask =
+              FirebaseStorage.instance.ref().child("company_documents").child("documents").child("$gstFileName").putFile(gst_file!);
 
           TaskSnapshot getFileTaskSnapshot = await gstFileUploadTask;
           gst_file_downloadUrl = await getFileTaskSnapshot.ref.getDownloadURL();
@@ -588,8 +568,9 @@ class _Factory_DetailsState extends State<Factory_Details> {
         isLodding = false;
         //
       } else {
-        showSnackBar_Widget(context,
-            mHeading: "Error", title: "Some field is empty");
+        logoError = "Upload company logo";
+        showSnackBar_Widget(context, mHeading: "Error", title: "Fill all required field");
+        setState(() {});
       }
     } catch (ex) {
       log(ex.toString());

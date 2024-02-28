@@ -1,6 +1,11 @@
+import 'dart:developer';
+
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -21,14 +26,32 @@ import 'package:tailor/cubits/user_cubit/user_cubit.dart';
 import 'package:tailor/firebase_options.dart';
 import 'package:tailor/modal/CompanyModel.dart';
 import 'package:tailor/modal/UserModel.dart';
+import 'package:tailor/push_notification/push_notification.dart';
 
 void main() async {
+  // ======== Connecting Firebase datable  ===========
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MyApp());
+  // ========== Set Device screen only portrait up and down ===================
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // =========== FirebaseMessaging ====================
+  await Push_Notification.initNotifications();
+
+  //============== Device Preview ==============
+
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
 }
 
 // Already Logged In
@@ -57,22 +80,25 @@ class _MyAppState extends State<MyApp> {
 
     if (currentUser != null) {
       // LoggedIn
-      thisUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
+     try {
+       thisUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
 
-      // get company data
-      thisCompanyModel =
-          await FirebaseHelper.getCompanyModelById(currentUser!.uid);
+       // get company data
+       thisCompanyModel = await FirebaseHelper.getCompanyModelById(currentUser!.uid);
+     } on FirebaseException catch (error){
+       log(error.message.toString());
+     }
     }
   }
 
   /// get final Submit true or false
   void _getFinalSubmit() async {
     var prefs = await SharedPreferences.getInstance();
-    setState(() {
+    // setState(() {
       final_submit = prefs.getBool('final_submit');
       is_Company = prefs.getBool('is_Company');
       company_final_submit = prefs.getBool('company_final_submit');
-    });
+    // });
   }
 
   @override
@@ -90,6 +116,8 @@ class _MyAppState extends State<MyApp> {
           // I use GetMaterial because in install get package for page animation
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
+            locale: DevicePreview.locale(context),
+            builder: DevicePreview.appBuilder,
             title: 'Tailor Management',
             theme: ThemeData(
               primarySwatch: Colors.blue,

@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,6 +41,7 @@ class _Post_JobState extends State<Post_Job> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late MediaQueryData mq;
 
+
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
@@ -75,6 +75,7 @@ class _Post_JobState extends State<Post_Job> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             // Text
             Padding(
               padding: EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 0),
@@ -158,7 +159,13 @@ class _Post_JobState extends State<Post_Job> {
                           hintText: "Garment Image",
                           ImageName: garmentPicName,
                           Upload: () {
-                            Select_Image_BottomSheet();
+                            Image_Picker_showBottomSheet(context, fromCameraPress: () {
+                              pickImage(ImageSource.camera);
+                              Navigator.pop(context);
+                            }, fromGalleryPress: () {
+                              pickImage(ImageSource.gallery);
+                              Navigator.pop(context);
+                            });
                           },
                         ),
 
@@ -480,7 +487,13 @@ class _Post_JobState extends State<Post_Job> {
                                                           }
                                                         : () {
                                                             // Select Image
-                                                            Select_Image_BottomSheet();
+                                                            Image_Picker_showBottomSheet(context, fromCameraPress: () {
+                                                              pickImage(ImageSource.camera);
+                                                              Navigator.pop(context);
+                                                            }, fromGalleryPress: () {
+                                                              pickImage(ImageSource.gallery);
+                                                              Navigator.pop(context);
+                                                            });
                                                           },
                                                   )
                                                 : Container(),
@@ -554,7 +567,7 @@ class _Post_JobState extends State<Post_Job> {
                       backgroundColor: totalTailorErrorColor != null ? totalTailorErrorColor : Colors.grey.shade50,
                       title: RichText(
                         text: TextSpan(
-                          text: "Required Tailor as Per Skills",
+                          text: "Required workers as per Skills",
                           style: mTextStyle14(mFontWeight: FontWeight.w600),
                           children: [
                             TextSpan(
@@ -566,15 +579,17 @@ class _Post_JobState extends State<Post_Job> {
                       ),
                       children: [
                         // Total Tailor
-                        Job_TextField(
-                          controller: totalTailorController,
-                          Text_Hint: "Total Tailor *",
-                          onChanged: (value) {
-                            setState(() {
-                              totalTailorErrorColor = null;
-                            });
-                          },
-                        ),
+                        job_Type == null
+                            ? Container()
+                            : Job_TextField(
+                                controller: totalTailorController,
+                                Text_Hint: "Total ${job_Type} Employee *",
+                                onChanged: (value) {
+                                  setState(() {
+                                    totalTailorErrorColor = null;
+                                  });
+                                },
+                              ),
 
                         /// Only Show if jobType null and tailor selected Skills Button
                         job_Type == "Tailor" || job_Type == null
@@ -685,7 +700,6 @@ class _Post_JobState extends State<Post_Job> {
                         setState(() {});
                       },
                       builder: (context, state) {
-
                         if (state is JobPostLoadingState || isLodding == true) {
                           return Center(
                             child: Lottie.asset("assets/images/lottie_animation/loading-2.json", width: 60),
@@ -738,62 +752,6 @@ class _Post_JobState extends State<Post_Job> {
       // log(selectedSkills.toString());
       // log(selectedSkillsEmployee.toString());
     });
-  }
-
-// TODO: ============ Pick select Option ================
-  Future<void> Select_Image_BottomSheet() {
-    return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 75.h,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.camera_alt,
-                          size: 35,
-                        ),
-                        Text("Camera")
-                      ],
-                    ),
-                  ),
-                  widthSpacer(mWidth: 50),
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 35,
-                        ),
-                        Text("Gallery")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
 // TODO: ============ Pick Image Function ================
@@ -879,7 +837,7 @@ class _Post_JobState extends State<Post_Job> {
               .child("job_documents")
               .child("garment_images")
               .child(garmentPicName!)
-              .putFile(File(garmentImagePath!));
+              .putFile(garment_Pic!);
 
           TaskSnapshot? garmentTaskSnapshot = await garmentUploadTask;
           garment_downloadUrl = await garmentTaskSnapshot?.ref.getDownloadURL();
@@ -892,7 +850,7 @@ class _Post_JobState extends State<Post_Job> {
               .child("job_documents")
               .child("part_rate_images")
               .child(partRateUrlName!)
-              .putFile(File(partRateImagePath!));
+              .putFile(partRateUrl!);
 
           TaskSnapshot? partRateTaskSnapshot = await pTFileUploadTask;
           partRate_downloadUrl = await partRateTaskSnapshot?.ref.getDownloadURL();

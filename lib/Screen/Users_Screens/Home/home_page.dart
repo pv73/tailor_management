@@ -356,9 +356,11 @@ class _Home_PageState extends State<Home_Page> {
         jobId: jobId,
         userId: userId,
         user_name: widget.userModel.user_name,
+        emailId: widget.userModel.email,
         isApplied: true,
         garment_category: widget.userModel.garment_category,
         skills: widget.userModel.skills,
+        profilePicUrl: widget.userModel.profile_pic,
       );
 
       await FirebaseFirestore.instance.collection("jobs").doc(jobId).collection("apply_job").doc(userId).set(newApplyJob.toMap());

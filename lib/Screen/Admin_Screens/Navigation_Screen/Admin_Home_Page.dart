@@ -8,7 +8,6 @@ import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Post_Job.dart';
 import 'package:tailor/app_widget/Admin_NameCard_Widget.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/admin_Dashboard_widget.dart';
-import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
 import 'package:tailor/modal/CompanyModel.dart';
 import 'package:tailor/ui_helper.dart';
@@ -32,7 +31,7 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         backgroundColor: Colors.grey.shade100,
@@ -132,7 +131,7 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                                       mBgColor: Colors.white,
                                       mImage:
                                           "assets/images/logo/ic_attendence.png",
-                                      mText: "Applied Job",
+                                      mText: "Posted Job",
                                       mTextNo: getJobPostedList.length.isNaN
                                           ? "0"
                                           : "${getJobPostedList.length}",

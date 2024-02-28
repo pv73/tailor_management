@@ -16,24 +16,26 @@ class Location_Into_Screen extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
 
-  const Location_Into_Screen(
-      {super.key, required this.userModel, required this.firebaseUser});
+  const Location_Into_Screen({super.key, required this.userModel, required this.firebaseUser});
 
   @override
   State<Location_Into_Screen> createState() => _Location_Into_Screen();
 }
 
 class _Location_Into_Screen extends State<Location_Into_Screen> {
+  var _formKey = GlobalKey<FormState>();
   TextEditingController permanent_address = TextEditingController();
   double? lat;
   double? long;
   String? address_1;
   String? address_2;
+  String? permanentError;
   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 1,
@@ -66,108 +68,119 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
         child: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Start Profile Box
-                Profile_box_Widget(
-                  userModel: widget.userModel,
-                  firebaseUser: widget.firebaseUser,
-                ),
-
-                //permanent Address
-                heightSpacer(mHeight: 15),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Permanent Address",
-                      style: mTextStyle15(),
-                    ),
-                    heightSpacer(mHeight: 10),
-                    TextFormField(
-                      controller: permanent_address,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      maxLines: null,
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-                      decoration: mInputDecoration(
-                        padding: EdgeInsets.only(top: 3, left: 10),
-                        mIconSize: 18,
-                        radius: 5,
-                        hint: "Permanent Address",
-                        hintColor: AppColor.textColorLightBlack,
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Location Icon
-                heightSpacer(mHeight: 20),
-                Container(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    "assets/images/lottie_animation/location.png",
-                    width: 130,
-                    color: AppColor.textColorLightBlack,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Start Profile Box
+                  Profile_box_Widget(
+                    userModel: widget.userModel,
+                    firebaseUser: widget.firebaseUser,
                   ),
-                ),
-                heightSpacer(mHeight: 25),
 
-                // Location text
-                Container(
-                  alignment: Alignment.center,
-                  child: Column(
+                  //permanent Address
+                  heightSpacer(mHeight: 15),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text Section Start
-                      address_1 == null
-                          ? Container()
-                          : Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                "Your Location",
-                                style: mTextStyle16(
-                                    mFontWeight: FontWeight.w600,
-                                    mColor: AppColor.btnBgColorGreen),
-                              ),
-                            ),
+                      RichText(
+                        text: TextSpan(text: "Permanent Address", style: mTextStyle15(mFontWeight: FontWeight.w500), children: [
+                          TextSpan(
+                            text: " *",
+                            style: mTextStyle16(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                          )
+                        ]),
+                      ),
+                      heightSpacer(mHeight: 10),
+                      TextFormField(
+                        controller: permanent_address,
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        maxLines: null,
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                       onChanged: (value){
+                          if(value.isNotEmpty){
+                            permanentError = null;
+                          }else{
+                            permanent_address.text = value;
+                          }
+                          setState(() {});
+                       },
+                        decoration: mInputDecoration(
+                          padding: EdgeInsets.only(top: 3, left: 10),
+                          mIconSize: 18,
+                          radius: 5,
+                          hint: "Permanent Address",
+                          hintColor: AppColor.textColorLightBlack,
+                        ),
+                      ),
 
-                      address_1 == null
-                          ? Text(
-                              "Discover the best jobs near you",
-                              style: mTextStyle18(mFontWeight: FontWeight.w600),
-                            )
-                          : Text(
-                              "${address_1}",
-                              style: mTextStyle15(
-                                  mFontWeight: FontWeight.w600,
-                                  mColor: AppColor.textColorBlack),
-                            ),
-
-                      //==========================
-                      //     Second Address
-
-                      heightSpacer(mHeight: 5),
-                      address_2 == null
-                          ? Container(
-                              color: Colors.green.shade100,
-                              margin: EdgeInsets.only(top: 5),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2),
-                              child: Text(
-                                "Help us know where you currently live",
-                                style: mTextStyle12(),
-                              ),
-                            )
-                          : Text(
-                              "${address_2}",
-                                style: mTextStyle13(mFontWeight: FontWeight.w500),
-                            )
+                      permanentError == null ? Container() : Text("${permanentError}", style: mTextStyle13(mColor: Colors.red),),
                     ],
                   ),
-                ),
-              ],
+
+                  // Location Icon
+                  heightSpacer(mHeight: 20),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      "assets/images/lottie_animation/location.png",
+                      width: 130,
+                      color: AppColor.textColorLightBlack,
+                    ),
+                  ),
+                  heightSpacer(mHeight: 25),
+
+                  // Location text
+                  Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        // Text Section Start
+                        address_1 == null
+                            ? Container()
+                            : Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  "Your Location",
+                                  style: mTextStyle16(mFontWeight: FontWeight.w600, mColor: AppColor.btnBgColorGreen),
+                                ),
+                              ),
+
+                        address_1 == null
+                            ? Text(
+                                "Discover the best jobs near you",
+                                style: mTextStyle18(mFontWeight: FontWeight.w600),
+                              )
+                            : Text(
+                                "${address_1}",
+                                style: mTextStyle15(mFontWeight: FontWeight.w600, mColor: AppColor.textColorBlack),
+                              ),
+
+                        //==========================
+                        //     Second Address
+
+                        heightSpacer(mHeight: 5),
+                        address_2 == null
+                            ? Container(
+                                color: Colors.green.shade100,
+                                margin: EdgeInsets.only(top: 5),
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                child: Text(
+                                  "Help us know where you currently live",
+                                  style: mTextStyle12(),
+                                ),
+                              )
+                            : Text(
+                                "${address_2}",
+                                style: mTextStyle13(mFontWeight: FontWeight.w500),
+                              )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -196,21 +209,17 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Education_Into_Screen(
-                                    firebaseUser: widget.firebaseUser,
-                                    userModel: widget.userModel),
+                                builder: (context) =>
+                                    Education_Into_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
                               ),
                             );
                           } else if (state is UserErrorState) {
-                            showSnackBar_Widget(context,
-                                mHeading: "Error", title: "${state.error}");
+                            showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                           }
                         },
                         builder: (context, state) {
                           return Rounded_Btn_Widget(
-                            title: address_1 == null
-                                ? "Pick current location"
-                                : "Next",
+                            title: address_1 == null ? "Pick current location" : "Next",
                             btnBgColor: AppColor.btnBgColorGreen,
                             onPress: address_1 == null
                                 ? () {
@@ -220,20 +229,16 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                                     });
                                   }
                                 : () {
-                                    if (permanent_address.text != "" &&
-                                        address_1 != "") {
+                                    if (permanent_address.text != "" && address_1 != "") {
                                       // add data
-                                      widget.userModel.permanent_address =
-                                          permanent_address.text.toString();
-                                      widget.userModel.address =
-                                          ("${address_1} ${address_2}");
+                                      widget.userModel.permanent_address = permanent_address.text.toString();
+                                      widget.userModel.address = ("${address_1} ${address_2}");
 
-                                      BlocProvider.of<UserCubit>(context)
-                                          .addUserModel(widget.userModel);
+                                      BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
                                     } else {
-                                      showSnackBar_Widget(context,
-                                          mHeading: "Error",
-                                          title: "Please enter permanent");
+                                      permanentError = "Please fill permanent address";
+                                      showSnackBar_Widget(context, mHeading: "Error", title: "Please enter permanent address");
+                                      setState(() {});
                                     }
                                   },
                             mHeight: 40,
@@ -288,9 +293,7 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
             flex: 3,
             child: Text(
               "${mText}",
-              style: mTextStyle13(
-                  mFontWeight: FontWeight.w600,
-                  mColor: AppColor.textColorLightBlack),
+              style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: AppColor.textColorLightBlack),
             ),
           ),
           Expanded(child: Container()),
@@ -337,15 +340,13 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        content: Text(
-            "Location permissions are permanently denied, we cannot request permissions."),
+        content: Text("Location permissions are permanently denied, we cannot request permissions."),
       ));
       // return Future.error(
       //     'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   getLatLong() {
@@ -373,13 +374,8 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
   getAddress(lat, long) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
     setState(() {
-      address_1 =
-          placemarks[3].name! + ", " + placemarks[3].subLocality! + ", ";
-      address_2 = placemarks[3].locality! +
-          ", " +
-          placemarks[3].postalCode! +
-          ", " +
-          placemarks[3].country!;
+      address_1 = placemarks[3].name! + ", " + placemarks[3].subLocality! + ", ";
+      address_2 = placemarks[3].locality! + ", " + placemarks[3].postalCode! + ", " + placemarks[3].country!;
 
 // Set loading state to false once address is obtained
       isLoading = false;

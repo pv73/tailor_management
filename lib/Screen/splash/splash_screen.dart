@@ -18,8 +18,7 @@ class _Splash_ScreenState extends State<Splash_Screen> {
 
     Timer(Duration(seconds: 2), () {
       if (currentUser == null) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => First_Dashboard()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => First_Dashboard()));
       }
     });
   }
@@ -28,10 +27,9 @@ class _Splash_ScreenState extends State<Splash_Screen> {
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColor.bgColorWhite,
-      body: mq.orientation == Orientation.portrait
-          ? _PortraitLay(context)
-          : _LandscapeLay(context),
+      body: mq.orientation == Orientation.portrait ? _PortraitLay(context) : _LandscapeLay(context),
     );
   }
 
@@ -46,8 +44,7 @@ class _Splash_ScreenState extends State<Splash_Screen> {
           image: AssetImage("assets/images/banner/splash_bg.jpg"),
         )),
         child: Center(
-          child: Image.asset("assets/images/logo/logo.png",
-              width: mq.size.width * 0.6),
+          child: Image.asset("assets/images/logo/logo.png", width: mq.size.width * 0.6),
         ),
       );
     });
@@ -60,8 +57,7 @@ class _Splash_ScreenState extends State<Splash_Screen> {
     return LayoutBuilder(builder: (_, constraints) {
       return Container(
         child: Center(
-          child: Image.asset("assets/images/logo/logo.png",
-              width: mq.size.width * 0.3),
+          child: Image.asset("assets/images/logo/logo.png", width: mq.size.width * 0.3),
         ),
       );
     });

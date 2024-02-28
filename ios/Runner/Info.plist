@@ -58,5 +58,7 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>To download image</string>
 	</dict>
 </plist>

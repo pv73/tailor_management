@@ -21,7 +21,7 @@ class UserModel {
   String? course;
   String? passing_year;
   String? job_type;
-  String? category;
+  List<String>? category;
   List<String>? garment_category;
   List<String>? interest;
   List<String>? skills;
@@ -95,7 +95,7 @@ class UserModel {
     course = map['course'];
     passing_year = map['passing_year'];
     job_type = map['job_type'];
-    category = map['category'];
+    category = List<String>.from(map['category'] ?? []);
     garment_category = List<String>.from(map['garment_category'] ?? []);
     interest = List<String>.from(map['interest'] ?? []);
     skills = List<String>.from(map['skills'] ?? []);

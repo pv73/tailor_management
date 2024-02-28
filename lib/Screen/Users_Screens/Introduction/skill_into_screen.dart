@@ -17,7 +17,8 @@ import 'package:tailor/app_widget/intro_number_widget.dart';
 import 'package:tailor/app_widget/profile_box_widget.dart';
 import 'package:tailor/cubits/user_cubit/user_cubit.dart';
 import 'package:tailor/modal/UserModel.dart';
-import 'package:tailor/ui_Helper.dart';
+
+import '../../../ui_helper.dart';
 
 class Skills_Into_Screen extends StatefulWidget {
   final User firebaseUser;
@@ -37,10 +38,12 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
   String? profilePicName;
   double upload_Percentage = 0.0;
   bool isLodding = false;
+  String? profilePicError;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 1,
@@ -89,10 +92,15 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
 
                 /// ========== Skills Button ============
                 heightSpacer(mHeight: 20),
-                Text(
-                  "Personal Skills",
-                  style: mTextStyle17(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                RichText(
+                  text: TextSpan(text: "Personal Skills", style: mTextStyle17(mFontWeight: FontWeight.w600), children: [
+                    TextSpan(
+                      text: " *",
+                      style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                    )
+                  ]),
                 ),
+
                 heightSpacer(mHeight: 10),
                 GroupButton(
                   options: mGroupButtonOptions(),
@@ -118,17 +126,23 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                   },
                 ),
 
-                /// Profile Photo details
+                ///========== Profile Photo details ===============
                 heightSpacer(mHeight: 20),
-                Text(
-                  "Upload Photo",
-                  style: mTextStyle17(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                RichText(
+                  text: TextSpan(text: "Upload Photo", style: mTextStyle17(mFontWeight: FontWeight.w600), children: [
+                    TextSpan(
+                      text: " *",
+                      style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                    )
+                  ]),
                 ),
+
 
                 heightSpacer(mHeight: 10),
                 Container(
                   width: double.infinity,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       heightSpacer(mHeight: 5),
                       Container(
@@ -139,20 +153,32 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
                       ),
                       InkWell(
                         onTap: () {
-                          // _pickImageFromGallery();
-                          showBottomSheet();
+                          Image_Picker_showBottomSheet(
+                            context,
+                            fromCameraPress: (){
+                               pickImage(ImageSource.camera);
+                            },
+                            fromGalleryPress: (){
+                               pickImage(ImageSource.gallery);
+                            },
+                          );
                         },
                         child: Container(
                           height: 140,
                           child: Lottie.asset("assets/images/lottie_animation/upload_photo.json"),
                         ),
+
                       ),
+
+                       profilePicError == null ? Container() : Padding(
+                         padding: const EdgeInsets.only(bottom: 15),
+                         child: Text("${profilePicError}", style: mTextStyle13(mColor: Colors.red),),
+                       ),
                     ],
                   ),
                 ),
 
-                // Submit button
-                // heightSpacer(mHeight: 15),
+                //=========== Submit button====================
                 BlocConsumer<UserCubit, UserState>(
                   listener: (context, state) {
                     // TODO: implement listener
@@ -210,67 +236,8 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
     );
   }
 
-  // ========================================================================
-  // ================== UI end and  Widget and list Start ==================
-
-  Future<void> showBottomSheet() {
-    return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 90,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.camera_alt,
-                          size: 35,
-                        ),
-                        Text("Camera")
-                      ],
-                    ),
-                  ),
-                  widthSpacer(mWidth: 50),
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 35,
-                        ),
-                        Text("Gallery")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   // TODO: =========================================================
 
-  // ========================================================================
   // ================== Image Picker ==================
   String? profilePicPath;
 
@@ -295,6 +262,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
       setState(() {
         profile_pic = newFile;
       });
+      Navigator.pop(context);
     }
   }
 
@@ -303,20 +271,15 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
   //
 
   void _uploadProfile() async {
-    // Store Firebase Storage. first create folder which is name document then
-    // Store file
+    // Store Firebase Storage. first create folder which is name document then Store file
 
     try {
       if (selectedSkills.isNotEmpty && profile_pic != null) {
         setState(() {
           isLodding = true;
         });
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref()
-            .child("tailor_documents")
-            .child("profile_pic")
-            .child(profilePicName!)
-            .putFile(File(profilePicPath!));
+        UploadTask uploadTask =
+            FirebaseStorage.instance.ref().child("tailor_documents").child("profile_pic").child(profilePicName!).putFile(profile_pic!);
 
         // this get how many % upload
         uploadTask.snapshotEvents.listen((snapshot) {
@@ -339,7 +302,11 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
         showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully");
         //
       } else {
-        showSnackBar_Widget(context, mHeading: "Error", title: "Plz. Select skills and upload profile pic");
+        if(profile_pic == null){
+           profilePicError = "Plz. upload profile pic";
+        }
+        showSnackBar_Widget(context, mHeading: "Error", title: "Plz. select min. one skills");
+        setState(() {});
       }
     } catch (ex) {
       log(ex.toString());

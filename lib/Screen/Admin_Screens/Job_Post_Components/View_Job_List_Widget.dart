@@ -9,6 +9,8 @@ class View_Job_List_Widget extends StatelessWidget {
   var jobPost;
   String? daysAgo;
   bool? isApplied;
+  Widget? morePopupButton;
+
 
   View_Job_List_Widget({
     required this.date,
@@ -17,6 +19,7 @@ class View_Job_List_Widget extends StatelessWidget {
     required this.jobPost,
     required this.daysAgo,
     this.isApplied = false,
+    this.morePopupButton,
   });
 
   @override
@@ -27,7 +30,6 @@ class View_Job_List_Widget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-            // color: Colors.blueGrey.shade100,
             color: Colors.green.shade200),
       ),
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -58,7 +60,7 @@ class View_Job_List_Widget extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "$date ",
+                        "${date}",
                         style: mTextStyle13(
                           mFontWeight: FontWeight.w600,
                           mColor: AppColor.btnBgColorGreen,
@@ -70,6 +72,7 @@ class View_Job_List_Widget extends StatelessWidget {
 
           // ===========  Image & JobType & company_name ============
           InkWell(
+            splashColor: Colors.transparent,
             onTap: onPress,
             child: Container(
               margin: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
@@ -102,6 +105,7 @@ class View_Job_List_Widget extends StatelessWidget {
                       backgroundImage: NetworkImage("${jobPost['company_logo']}"),
                     ),
                   ),
+                  morePopupButton == null ? Container() : Container(child: morePopupButton),
                 ],
               ),
             ),

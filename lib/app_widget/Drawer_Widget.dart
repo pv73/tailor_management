@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,10 +42,6 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
   UserModel? currentUserModel;
   CompanyModel? currentCompanyModel;
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +69,9 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
                     }
                   } else if (state is AuthLoggedOutState) {
                     return loggedOutWidget();
+                  } else {
+                    return Text("Both not logging");
                   }
-                  return Text("print else");
                 },
               ),
             ),
@@ -185,13 +184,9 @@ class _Drawer_WidgetState extends State<Drawer_Widget> {
                         const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                     child: Column(
                       children: [
-                        // List_Name(
-                        //   onPres: () {},
-                        //   mIcon: Icons.person,
-                        //   mText: "profile",
-                        // ),
                         List_Name(
                           onPres: () async {
+
                             BlocProvider.of<AuthCubit>(context).logOut();
                             var prefs = await SharedPreferences.getInstance();
                             prefs.setBool("is_Company", false);

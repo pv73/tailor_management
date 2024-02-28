@@ -60,7 +60,7 @@ class Edit_Update_Btn extends StatelessWidget {
                           preFixColor: gstFileName == null ? AppColor.textColorLightBlack : AppColor.btnBgColorGreen,
                           mIconSize: 18,
                           radius: 5,
-                          hint: gstFileName == null ? "Upload GST File" : "${gstFileName}",
+                          hint: gstFileName == null || gstFileName == "" ? "Upload GST File" : "${gstFileName}",
                           hintColor: gstFileName == null ? AppColor.textColorLightBlack : AppColor.btnBgColorGreen,
                           suffixIcon: InkWell(
                             onTap: onUploadFile,

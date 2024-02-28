@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,28 +27,6 @@ class Applications_Screen extends StatefulWidget {
 class _Applications_Screen extends State<Applications_Screen> {
   late Future<List<Map<String, dynamic>>> appliedJobs;
 
-  // Future<List<Map<String, dynamic>>> getAppliedJobs() async {
-  //   List<Map<String, dynamic>> jobsData = [];
-  //
-  //   QuerySnapshot querySnapshot =
-  //       await FirebaseFirestore.instance.collection('jobs').get(); // Retrieves all documents from the "jobs" collection
-  //
-  //   for (QueryDocumentSnapshot jobDoc in querySnapshot.docs) {
-  //     // For each job document
-  //     QuerySnapshot applyJobQuerySnapshot = await jobDoc.reference
-  //         .collection('apply_job')
-  //         .get(); // Retrieves documents from "apply_job" subcollection where user_Id matches
-  //
-  //     for (QueryDocumentSnapshot applyJobDoc in applyJobQuerySnapshot.docs) {
-  //       // Process each document from apply_job subcollection
-  //       // Here you can access applyJobDoc.data() to get the data
-  //       jobsData.add(applyJobDoc.data() as Map<String, dynamic>);
-  //     }
-  //   }
-  //
-  //   return jobsData;
-  // }
-
   Future<List<Map<String, dynamic>>> getAppliedJobs() async {
     List<Map<String, dynamic>> jobsData = [];
 
@@ -57,9 +37,7 @@ class _Applications_Screen extends State<Applications_Screen> {
       if (applyJobDoc.get('userId') == widget.userModel.uid) {
         // For each document in apply_job subCollection and  Get the parent document reference
         DocumentReference jobRef = applyJobDoc.reference.parent.parent!;
-
         DocumentSnapshot jobSnapshot = await jobRef.get(); // Retrieve the parent document data from the jobs collection
-
         jobsData.add(jobSnapshot.data() as Map<String, dynamic>); // Add the parent document data to the jobsData list
       } else {
         // ====== If UserId not same current logged user then skip ============
@@ -189,157 +167,158 @@ class _Applied_Job_TabState extends State<Applied_Job_Tab> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.textColorWhite,
-      body: Container(
-        width: double.infinity,
-        child: FutureBuilder(
-          future: widget.appliedJobs,
-          builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else {
-              // ======= Store list length ===========
-               totalLength = (snapshot.data!.length).toString();
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          child: FutureBuilder(
+            future: widget.appliedJobs,
+            builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else {
+                // ======= Store list length ===========
+                totalLength = (snapshot.data!.length).toString();
 
-              return totalLength == "0"
-                  // ===== This Column show when user not applied any job ==========
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 20),
-                          child: Text(
-                            "You haven't applied any job",
-                            style: mTextStyle18(mFontWeight: FontWeight.w600),
+                return totalLength == "0"
+                    // ===== This Column show when user not applied any job ==========
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              "You haven't applied any job",
+                              style: mTextStyle18(mFontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Image.asset(
-                            "assets/images/banner/apply.jpg",
-                            width: 200,
+                          Container(
+                            child: Image.asset(
+                              "assets/images/banner/apply.jpg",
+                              width: 200,
+                            ),
                           ),
-                        ),
-                        heightSpacer(),
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          child: Text(
-                            "Everything you need in one app",
-                            style: mTextStyle22(mFontWeight: FontWeight.w800, mColor: AppColor.textColorBlack),
-                            textAlign: TextAlign.center,
+                          heightSpacer(),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              "Everything you need in one app",
+                              style: mTextStyle22(mFontWeight: FontWeight.w800, mColor: AppColor.textColorBlack),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 40),
-                          child: Text(
-                            "Finding your dream job in the tailor field is more easiler and faster than ever with Tailor Management",
-                            style: mTextStyle14(mFontWeight: FontWeight.normal, mColor: AppColor.textColorBlack),
-                            textAlign: TextAlign.center,
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 40),
+                            child: Text(
+                              "Finding your dream job in the tailor field is more easiler and faster than ever with Tailor Management",
+                              style: mTextStyle14(mFontWeight: FontWeight.normal, mColor: AppColor.textColorBlack),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                        heightSpacer(mHeight: 25),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.green.withOpacity(0.5), // Shadow color
-                                spreadRadius: 3, // Spread radius
-                                blurRadius: 2, // Blur radius
-                                offset: Offset(0, 1), // Offset in x and y directions
-                              ),
-                            ],
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  child: Jobs_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
-                                  type: PageTransitionType.rightToLeftWithFade,
-                                  duration: Duration(milliseconds: 500),
+                          heightSpacer(mHeight: 25),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.5), // Shadow color
+                                  spreadRadius: 3, // Spread radius
+                                  blurRadius: 2, // Blur radius
+                                  offset: Offset(0, 1), // Offset in x and y directions
                                 ),
-                              );
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: AppColor.cardBtnBgGreen,
-                              radius: 35,
+                              ],
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    child: Jobs_Screen(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
+                                    type: PageTransitionType.rightToLeftWithFade,
+                                    duration: Duration(milliseconds: 500),
+                                  ),
+                                );
+                              },
                               child: CircleAvatar(
-                                backgroundColor: AppColor.btnBgColorGreen,
-                                radius: 33,
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  color: AppColor.textColorWhite,
+                                backgroundColor: AppColor.cardBtnBgGreen,
+                                radius: 35,
+                                child: CircleAvatar(
+                                  backgroundColor: AppColor.btnBgColorGreen,
+                                  radius: 33,
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    color: AppColor.textColorWhite,
+                                  ),
                                 ),
                               ),
                             ),
+                          )
+                        ],
+                      )
+
+                    // ===== This Column show when user applied any job ==========
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(10),
+                            child: Text(
+                              "${totalLength} Applied jobs",
+                              style: mTextStyle14(mFontWeight: FontWeight.w500),
+                            ),
                           ),
-                        )
-                      ],
-                    )
+                          ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              var jobPost = snapshot.data![index];
 
-                  // ===== This Column show when user applied any job ==========
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(10),
-                          child: Text(
-                            "${totalLength} Applied jobs",
-                            style: mTextStyle14(mFontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            var jobPost = snapshot.data![index];
+                              // Assuming 'dateTime' is the field storing DateTime in Firestore
+                              DateTime jobDateTime = jobPost['dateTime'].toDate();
+                              // Calculate the difference in days
+                              int daysDifference = DateTime.now().difference(jobDateTime).inDays;
 
-                            // Assuming 'dateTime' is the field storing DateTime in Firestore
-                            DateTime jobDateTime = jobPost['dateTime'].toDate();
-                            // Calculate the difference in days
-                            int daysDifference = DateTime.now().difference(jobDateTime).inDays;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // ============== Job list view Widget ==============
-                                View_Job_List_Widget(
-                                  date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
-                                  daysAgo: "${daysDifference}",
-                                  jobPost: jobPost,
-                                  isApplied: true,
-                                  applyPress: () {},
-                                  onPress: () {
-
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        child: View_Jobs_Details(
-                                          jobId: jobPost['jobId'],
-                                          isTailorJobView: true,
-                                          userModel: widget.userModel,
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // ============== Job list view Widget ==============
+                                  View_Job_List_Widget(
+                                    date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
+                                    daysAgo: "${daysDifference}",
+                                    jobPost: jobPost,
+                                    isApplied: true,
+                                    applyPress: () {},
+                                    onPress: () {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          child: View_Jobs_Details(
+                                            jobId: jobPost['jobId'],
+                                            isTailorJobView: true,
+                                            userModel: widget.userModel,
+                                          ),
+                                          type: PageTransitionType.rightToLeftWithFade,
+                                          duration: Duration(milliseconds: 500),
                                         ),
-                                        type: PageTransitionType.rightToLeftWithFade,
-                                        duration: Duration(milliseconds: 500),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    );
-            }
-          },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      );
+              }
+            },
+          ),
         ),
       ),
     );

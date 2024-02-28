@@ -55,9 +55,7 @@ class _First_Dashboard extends State<First_Dashboard> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Text(
                 "Make the Most of Tailor by creating your Tailor profile",
-                style: mTextStyle19(
-                    mFontWeight: FontWeight.w900,
-                    mColor: AppColor.textColorBlack),
+                style: mTextStyle19(mFontWeight: FontWeight.w900, mColor: AppColor.textColorBlack),
               ),
             ),
 
@@ -67,9 +65,7 @@ class _First_Dashboard extends State<First_Dashboard> {
               padding: EdgeInsets.all(10),
               alignment: Alignment.bottomRight,
               decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/banner/bg_man.png"),
-                    alignment: Alignment.bottomRight),
+                image: DecorationImage(image: AssetImage("assets/images/banner/bg_man.png"), alignment: Alignment.bottomRight),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,9 +135,10 @@ class _First_Dashboard extends State<First_Dashboard> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignUp_page(
-                                    isCompany: _isCompany,
-                                  )),
+                            builder: (context) => SignUp_page(
+                              isCompany: _isCompany,
+                            ),
+                          ),
                         );
                       });
                     },
@@ -214,19 +211,19 @@ class _First_Dashboard extends State<First_Dashboard> {
                 children: [
                   Image(
                     width: 130,
-                    image: AssetImage("assets/images/banner/search_man.png"),
+                    image: AssetImage("assets/images/logo/logo.png"),
                   ),
-                  heightSpacer(),
+                  heightSpacer(mHeight: 4),
                   Text(
-                    "Find your tailor job",
+                    "Find your job with Tailor \nManagement",
                     style: mTextStyle15(),
+                    textAlign: TextAlign.center,
                   ),
                   heightSpacer(mHeight: 25),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         prefixIcon: Icon(Icons.location_city),
@@ -242,8 +239,7 @@ class _First_Dashboard extends State<First_Dashboard> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TextFormField(
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         prefixIcon: Icon(Icons.location_on_outlined),
@@ -293,10 +289,7 @@ class _First_Dashboard extends State<First_Dashboard> {
                         heightSpacer(mHeight: 15),
                         Text(
                           "Top companies on tailor are hiring by directly \nreaching out to jobseeks without osting a job. \nLearn how you can make the best of this opportunity",
-                          style: mTextStyle13(
-                              mFontWeight: FontWeight.w500,
-                              mHeight: 1.4,
-                              mColor: Colors.grey.shade900),
+                          style: mTextStyle13(mFontWeight: FontWeight.w500, mHeight: 1.4, mColor: Colors.grey.shade900),
                         ),
                         heightSpacer(mHeight: 20),
                         InkWell(

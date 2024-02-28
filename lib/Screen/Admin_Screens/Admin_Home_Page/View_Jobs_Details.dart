@@ -557,15 +557,29 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                                                   Expanded(
                                                     child: InkWell(
                                                       onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          PageTransition(
-                                                            child: Pdf_Viewer_Screen(
-                                                              pdfUrl: getFieldByJobId['part_rate_url'],
+                                                        if (getFieldByJobId['part_rate'] == "Part rate image") {
+                                                          Navigator.push(
+                                                            context,
+                                                            PageTransition(
+                                                              child: Image_Viewer_Screen(
+                                                                ImageUrl: getFieldByJobId['part_rate_url'],
+                                                              ),
+                                                              type: PageTransitionType.fade,
                                                             ),
-                                                            type: PageTransitionType.fade,
-                                                          ),
-                                                        );
+                                                          );
+                                                        } else if (getFieldByJobId['part_rate'] == "Part rate excel") {
+                                                          Navigator.push(
+                                                            context,
+                                                            PageTransition(
+                                                              child: Pdf_Viewer_Screen(
+                                                                pdfUrl: getFieldByJobId['part_rate_url'],
+                                                              ),
+                                                              type: PageTransitionType.fade,
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          null;
+                                                        }
                                                       },
                                                       child: Text(
                                                         "${getFieldByJobId['part_rate_url_name']}",
@@ -672,9 +686,11 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
         jobId: jobId,
         userId: userId,
         user_name: widget.userModel!.user_name,
+        emailId: widget.userModel!.email,
         isApplied: true,
         garment_category: widget.userModel!.garment_category,
         skills: widget.userModel!.skills,
+        profilePicUrl: widget.userModel!.profile_pic,
       );
 
       await FirebaseFirestore.instance.collection("jobs").doc(jobId).collection("apply_job").doc(userId).set(newApplyJob.toMap());

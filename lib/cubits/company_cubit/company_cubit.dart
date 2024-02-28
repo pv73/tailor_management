@@ -13,10 +13,7 @@ class CompanyCubit extends Cubit<CompanyState> {
   void addCompanyModel(CompanyModel companyModel) async {
     emit(CompanyLoadingState());
     try {
-      await _fireStore
-          .collection("company")
-          .doc(companyModel.uid)
-          .set(companyModel.toMap());
+      await _fireStore.collection("company").doc(companyModel.uid).set(companyModel.toMap());
       emit(CompanyLoadedState(companyModel));
     } catch (e) {
       emit(CompanyErrorState('Failed to add user: $e'));
@@ -28,14 +25,11 @@ class CompanyCubit extends Cubit<CompanyState> {
 
     try {
       // Fetch all documents from the 'users' collection
-      QuerySnapshot querySnapshot =
-          await _fireStore.collection('company').get();
+      QuerySnapshot querySnapshot = await _fireStore.collection('company').get();
 
       // Convert the documents to a list of UserModel objects
-      List<CompanyModel> companyList = querySnapshot.docs
-          .map(
-              (doc) => CompanyModel.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
+      List<CompanyModel> companyList =
+          querySnapshot.docs.map((doc) => CompanyModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
 
       emit(CompanyLoadedState(companyList as CompanyModel));
     } catch (e) {
@@ -47,10 +41,7 @@ class CompanyCubit extends Cubit<CompanyState> {
     emit(CompanyLoadingState());
 
     try {
-      await _fireStore
-          .collection('company')
-          .doc(updatedCompanyModel.uid)
-          .update(updatedCompanyModel.toMap());
+      await _fireStore.collection('company').doc(updatedCompanyModel.uid).update(updatedCompanyModel.toMap());
 
       emit(CompanyLoadedState(updatedCompanyModel));
     } catch (e) {

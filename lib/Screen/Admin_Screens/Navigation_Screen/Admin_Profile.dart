@@ -18,8 +18,7 @@ class Admin_Profile extends StatefulWidget {
   final User firebaseUser;
   final CompanyModel companyModel;
 
-  const Admin_Profile(
-      {super.key, required this.firebaseUser, required this.companyModel});
+  const Admin_Profile({super.key, required this.firebaseUser, required this.companyModel});
 
   @override
   State<Admin_Profile> createState() => _Admin_ProfileState();
@@ -51,17 +50,13 @@ class _Admin_ProfileState extends State<Admin_Profile> {
         elevation: 0,
         titleSpacing: 0,
         title: RichText(
-          text: TextSpan(text: "Company ", style: mTextStyle20(), children: [
-            TextSpan(
-                text: "Profile",
-                style: mTextStyle20(mColor: AppColor.textColorBlue))
-          ]),
+          text: TextSpan(
+              text: "Company ",
+              style: mTextStyle20(),
+              children: [TextSpan(text: "Profile", style: mTextStyle20(mColor: AppColor.textColorBlue))]),
         ),
       ),
-      drawer: Drawer_Widget(
-          isCurUserCom: true,
-          firebaseUser: widget.firebaseUser,
-          companyModel: widget.companyModel),
+      drawer: Drawer_Widget(isCurUserCom: true, firebaseUser: widget.firebaseUser, companyModel: widget.companyModel),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -110,10 +105,8 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                 setState(() {});
                               },
                               onUpdatePress: () {
-                                widget.companyModel.user_name =
-                                    nameController.text.toString();
-                                BlocProvider.of<CompanyCubit>(context)
-                                    .updateCompanyModel(widget.companyModel);
+                                widget.companyModel.user_name = nameController.text.toString();
+                                BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
                                 isEditByName = null;
                                 setState(() {});
                               },
@@ -135,8 +128,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                     children: [
                       Detail_Box(
                         onPressed: () {
-                          companyNameController.text =
-                              widget.companyModel.company_name!;
+                          companyNameController.text = widget.companyModel.company_name!;
                           isEditByName = "Company";
                           setState(() {});
                         },
@@ -158,10 +150,8 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                 setState(() {});
                               },
                               onUpdatePress: () {
-                                widget.companyModel.company_name =
-                                    companyNameController.text.toString();
-                                BlocProvider.of<CompanyCubit>(context)
-                                    .updateCompanyModel(widget.companyModel);
+                                widget.companyModel.company_name = companyNameController.text.toString();
+                                BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
                                 isEditByName = null;
                                 setState(() {});
                               },
@@ -182,7 +172,10 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Detail_Box(onPressed: () {},mIcon: Icons.edit,title: "Email",buttonName: "Edit",),
-                      Text("Email", style: mTextStyle13(mFontWeight: FontWeight.w700),),
+                      Text(
+                        "Email",
+                        style: mTextStyle13(mFontWeight: FontWeight.w700),
+                      ),
                       heightSpacer(mHeight: 5),
                       Text(
                         "${widget.companyModel.email}",
@@ -202,8 +195,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                           children: [
                             Detail_Box(
                               onPressed: () {
-                                companyNumberController.text =
-                                    widget.companyModel.company_number!;
+                                companyNumberController.text = widget.companyModel.company_number!;
                                 isEditByName = "Company_Number";
                                 setState(() {});
                               },
@@ -215,20 +207,15 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                             isEditByName == "Company_Number"
                                 ? Edit_Update_Btn(
                                     Controller: companyNumberController,
-                                    hintText:
-                                        '${widget.companyModel.company_number}',
+                                    hintText: '${widget.companyModel.company_number}',
                                     keyboardType: TextInputType.number,
                                     onCancelPress: () {
                                       isEditByName = null;
                                       setState(() {});
                                     },
                                     onUpdatePress: () {
-                                      widget.companyModel.company_number =
-                                          companyNumberController.text
-                                              .toString();
-                                      BlocProvider.of<CompanyCubit>(context)
-                                          .updateCompanyModel(
-                                              widget.companyModel);
+                                      widget.companyModel.company_number = companyNumberController.text.toString();
+                                      BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
                                       isEditByName = null;
                                       setState(() {});
                                     },
@@ -242,7 +229,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                       )
                     : Container(),
 
-                // Company Gst No
+                //==============  Company Gst No ===================
                 widget.companyModel.gst_no != null
                     ? Card_Container_Widget(
                         margin: EdgeInsets.only(top: 10),
@@ -252,8 +239,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                           children: [
                             Detail_Box(
                               onPressed: () {
-                                gst_noController.text =
-                                    widget.companyModel.gst_no!;
+                                gst_noController.text = widget.companyModel.gst_no!;
                                 gstFileName = widget.companyModel.gst_fileName;
                                 isEditByName = "gst_no";
                                 setState(() {});
@@ -279,11 +265,11 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                       }
                                       return Edit_Update_Btn(
                                         Controller: gst_noController,
-                                        hintText:
-                                            '${widget.companyModel.gst_no}',
+                                        hintText: widget.companyModel.gst_no == null || widget.companyModel.gst_no == ""
+                                            ? "Enter GST number"
+                                            : '${widget.companyModel.gst_no}',
                                         keyboardType: TextInputType.text,
-                                        textCapitalization:
-                                            TextCapitalization.characters,
+                                        textCapitalization: TextCapitalization.characters,
                                         gstFileName: gstFileName,
                                         isGst_no: true,
                                         gstFileError: gstFileError,
@@ -300,55 +286,49 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                       );
                                     },
                                   )
-                                : Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        heightSpacer(mHeight: 5),
-                                        Text(
-                                          "${widget.companyModel.gst_no}",
-                                          style: mTextStyle13(),
-                                        ),
-                                        heightSpacer(mHeight: 10),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Pdf_Viewer_Screen(
-                                                  pdfUrl:
-                                                      "${widget.companyModel.gst_file}",
-                                                ),
+
+                                // ======= Only view gst Ui ==============
+                                : widget.companyModel.gst_no == null || widget.companyModel.gst_no == ""
+                                    ? Container()
+                                    : Container(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            heightSpacer(mHeight: 5),
+                                            Text(
+                                              "${widget.companyModel.gst_no}",
+                                              style: mTextStyle13(),
+                                            ),
+                                            heightSpacer(mHeight: 10),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => Pdf_Viewer_Screen(
+                                                      pdfUrl: "${widget.companyModel.gst_file}",
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    border: Border.all(color: AppColor.cardBtnBgGreen)),
+                                                child: Text("${widget.companyModel.gst_fileName}",
+                                                    style: mTextStyle10(mColor: AppColor.cardBtnBgGreen)),
                                               ),
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10, vertical: 5),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                border: Border.all(
-                                                    color: AppColor
-                                                        .cardBtnBgGreen)),
-                                            child: Text(
-                                                "${widget.companyModel.gst_fileName}",
-                                                style: mTextStyle10(
-                                                    mColor: AppColor
-                                                        .cardBtnBgGreen)),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                           ],
                         ),
                       )
                     : Container(),
 
-                // Company Pan Card Number
+                // ============ Company Pan Card Number ===========
                 widget.companyModel.pan_no != null
                     ? Card_Container_Widget(
                         margin: EdgeInsets.only(top: 10),
@@ -358,8 +338,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                           children: [
                             Detail_Box(
                               onPressed: () {
-                                panCardController.text =
-                                    widget.companyModel.pan_no!;
+                                panCardController.text = widget.companyModel.pan_no!;
                                 isEditByName = "pan_card";
                                 setState(() {});
                               },
@@ -373,26 +352,24 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                     Controller: panCardController,
                                     hintText: '${widget.companyModel.pan_no}',
                                     keyboardType: TextInputType.text,
-                                    textCapitalization:
-                                        TextCapitalization.characters,
+                                    textCapitalization: TextCapitalization.characters,
                                     onCancelPress: () {
                                       isEditByName = null;
                                       setState(() {});
                                     },
                                     onUpdatePress: () {
-                                      widget.companyModel.pan_no =
-                                          panCardController.text.toString();
-                                      BlocProvider.of<CompanyCubit>(context)
-                                          .updateCompanyModel(
-                                              widget.companyModel);
+                                      widget.companyModel.pan_no = panCardController.text.toString();
+                                      BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
                                       isEditByName = null;
                                       setState(() {});
                                     },
                                   )
-                                : Text(
-                                    "${widget.companyModel.pan_no}",
-                                    style: mTextStyle13(),
-                                  )
+                                : widget.companyModel.pan_no == null || widget.companyModel.pan_no == ""
+                                    ? Container()
+                                    : Text(
+                                        "${widget.companyModel.pan_no}",
+                                        style: mTextStyle13(),
+                                      )
                           ],
                         ),
                       )
@@ -426,10 +403,8 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                 setState(() {});
                               },
                               onUpdatePress: () {
-                                widget.companyModel.address =
-                                    addressController.text.toString();
-                                BlocProvider.of<CompanyCubit>(context)
-                                    .updateCompanyModel(widget.companyModel);
+                                widget.companyModel.address = addressController.text.toString();
+                                BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
                                 isEditByName = null;
                                 setState(() {});
                               },
@@ -452,8 +427,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
   //================================================================
 
   ////   Details Box Widget
-  Widget Detail_Box(
-      {title, required void Function()? onPressed, buttonName, mIcon}) {
+  Widget Detail_Box({title, required void Function()? onPressed, buttonName, mIcon}) {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -476,9 +450,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                 widthSpacer(mWidth: 2),
                 Text(
                   buttonName,
-                  style: mTextStyle12(
-                      mFontWeight: FontWeight.w700,
-                      mColor: AppColor.cardBtnBgGreen),
+                  style: mTextStyle12(mFontWeight: FontWeight.w700, mColor: AppColor.cardBtnBgGreen),
                 ),
               ],
             ),
@@ -520,23 +492,17 @@ class _Admin_ProfileState extends State<Admin_Profile> {
     setState(() {});
     isLodding = true;
     try {
-      UploadTask gstFileUploadTask = FirebaseStorage.instance
-          .ref()
-          .child("company_documents")
-          .child("documents")
-          .child("$gstFileName")
-          .putFile(gst_file!);
+      UploadTask gstFileUploadTask =
+          FirebaseStorage.instance.ref().child("company_documents").child("documents").child("$gstFileName").putFile(gst_file!);
 
       TaskSnapshot getFileTaskSnapshot = await gstFileUploadTask;
-      String gst_file_downloadUrl =
-          await getFileTaskSnapshot.ref.getDownloadURL();
+      String gst_file_downloadUrl = await getFileTaskSnapshot.ref.getDownloadURL();
 
       widget.companyModel.gst_no = gst_noController.text;
       widget.companyModel.gst_file = gst_file_downloadUrl;
       widget.companyModel.gst_fileName = gstFileName;
 
-      BlocProvider.of<CompanyCubit>(context)
-          .updateCompanyModel(widget.companyModel);
+      BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
     } catch (error) {
       log(error.toString());
     }

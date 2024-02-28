@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,8 +21,7 @@ class Aadhar_Card_Screen extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
 
-  const Aadhar_Card_Screen(
-      {super.key, required this.userModel, required this.firebaseUser});
+  const Aadhar_Card_Screen({super.key, required this.userModel, required this.firebaseUser});
 
   @override
   State<Aadhar_Card_Screen> createState() => _Aadhar_Card_ScreenState();
@@ -49,6 +47,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -65,9 +64,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                 heightSpacer(),
                 Text(
                   "Aadhaar Authentication",
-                  style: mTextStyle28(
-                      mColor: AppColor.textColorBlack,
-                      mFontWeight: FontWeight.w500),
+                  style: mTextStyle28(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w500),
                 ),
                 heightSpacer(mHeight: 20),
                 Align(
@@ -99,25 +96,21 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                   ),
                   children: [
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       child: TextFormField(
                         controller: aadhaarController,
                         style: mTextStyle14(),
                         maxLength: 12,
-                        readOnly:
-                            widget.userModel.aadhaar_no != null ? true : false,
+                        readOnly: widget.userModel.aadhaar_no != null ? true : false,
                         onChanged: (aadhaar) {
                           aadhaar_no_length = aadhaar.length;
                           setState(() {});
                         },
                         keyboardType: TextInputType.number,
                         decoration: mInputDecoration(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                          hint: widget.userModel.aadhaar_no != null
-                              ? "${widget.userModel.aadhaar_no}"
-                              : "Enter 12 digit aadhaar number",
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                          hint:
+                              widget.userModel.aadhaar_no != null ? "${widget.userModel.aadhaar_no}" : "Enter 12 digit aadhaar number",
                           hintColor: AppColor.textColorLightBlack,
                           mCounterText: "",
                           radius: 5,
@@ -127,8 +120,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
 
                     /// Submit btn is Enable when aadhaar no is 12
                     heightSpacer(),
-                    aadhaar_no_length != 12 &&
-                            widget.userModel.aadhaar_no == null
+                    aadhaar_no_length != 12 && widget.userModel.aadhaar_no == null
                         ? Rounded_Btn_Widget(
                             title: "Submit",
                             mTextColor: AppColor.textColorBlue,
@@ -146,14 +138,11 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => About_Me(
-                                        firebaseUser: widget.firebaseUser,
-                                        userModel: widget.userModel),
+                                    builder: (context) => About_Me(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
                                   ),
                                 );
                               } else if (state is UserErrorState) {
-                                showSnackBar_Widget(context,
-                                    mHeading: "Error", title: "${state.error}");
+                                showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                               }
                             },
                             builder: (context, state) {
@@ -165,11 +154,9 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                               return Rounded_Btn_Widget(
                                 title: "Submit",
                                 onPress: () {
-                                  widget.userModel.aadhaar_no =
-                                      aadhaarController.text.trim();
+                                  widget.userModel.aadhaar_no = aadhaarController.text.trim();
 
-                                  BlocProvider.of<UserCubit>(context)
-                                      .addUserModel(widget.userModel);
+                                  BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
                                 },
                                 mWidth: 200,
                                 mHeight: 40,
@@ -224,10 +211,8 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                   ),
                   subtitle: Padding(
                     padding: const EdgeInsets.only(top: 6),
-                    child: Text(
-                        "Valid ID Proofs: Aadhaar Card/Passport/Voter ID Card/ Driving License",
-                        style:
-                            mTextStyle12(mColor: AppColor.textColorLightBlack)),
+                    child: Text("Valid ID Proofs: Aadhaar Card/Passport/Voter ID Card/ Driving License",
+                        style: mTextStyle12(mColor: AppColor.textColorLightBlack)),
                   ),
                   children: [
                     // View Image
@@ -239,8 +224,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                               children: [
                                 Text(
                                   "Front Image",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w600),
+                                  style: mTextStyle14(mFontWeight: FontWeight.w600),
                                 ),
                                 heightSpacer(mHeight: 4),
                                 Image.file(
@@ -251,8 +235,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                             )
                           : Container(
                               height: 120,
-                              child: Lottie.asset(
-                                  "assets/images/lottie_animation/file_upload.json"),
+                              child: Lottie.asset("assets/images/lottie_animation/file_upload.json"),
                             ),
                     ),
 
@@ -264,8 +247,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                               children: [
                                 Text(
                                   "Back Image",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w600),
+                                  style: mTextStyle14(mFontWeight: FontWeight.w600),
                                 ),
                                 heightSpacer(mHeight: 4),
                                 Image.file(
@@ -306,20 +288,16 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => About_Me(
-                                              firebaseUser: widget.firebaseUser,
-                                              userModel: widget.userModel),
+                                          builder: (context) =>
+                                              About_Me(firebaseUser: widget.firebaseUser, userModel: widget.userModel),
                                         ),
                                       );
                                     } else if (state is UserErrorState) {
-                                      showSnackBar_Widget(context,
-                                          mHeading: "Error",
-                                          title: "${state.error}");
+                                      showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                                     }
                                   },
                                   builder: (context, state) {
-                                    if (state is UserLoadingState ||
-                                        isLodding == true) {
+                                    if (state is UserLoadingState || isLodding == true) {
                                       return Center(
                                         child: CircularProgressIndicator(),
                                       );
@@ -330,22 +308,17 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                                           _uploadDocument();
                                         },
                                         child: GFProgressBar(
-                                          percentage: upload_Percentage == 0.0
-                                              ? 0.0
-                                              : upload_Percentage / 100,
+                                          percentage: upload_Percentage == 0.0 ? 0.0 : upload_Percentage / 100,
                                           lineHeight: 33,
                                           backgroundColor: AppColor.navBgColor,
                                           progressBarColor: Colors.green,
                                           animation: true,
-                                          progressHeadType:
-                                              GFProgressHeadType.square,
+                                          progressHeadType: GFProgressHeadType.square,
                                           margin: EdgeInsets.zero,
                                           child: Center(
                                             child: Text(
                                               'Submit',
-                                              style: mTextStyle12(
-                                                  mColor:
-                                                      AppColor.bgColorWhite),
+                                              style: mTextStyle12(mColor: AppColor.bgColorWhite),
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -397,7 +370,15 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                         setState(() {
                           isFontDocument = true;
                           Navigator.pop(context);
-                          showBottomSheet();
+                          Image_Picker_showBottomSheet(
+                            context,
+                            fromCameraPress: () {
+                              _pickImage(ImageSource.camera);
+                            },
+                            fromGalleryPress: () {
+                              _pickImage(ImageSource.gallery);
+                            },
+                          );
                         });
                       },
                     ),
@@ -412,7 +393,15 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
                         setState(() {
                           Navigator.pop(context);
                           isFontDocument = false;
-                          showBottomSheet();
+                          Image_Picker_showBottomSheet(
+                            context,
+                            fromCameraPress: () {
+                              _pickImage(ImageSource.camera);
+                            },
+                            fromGalleryPress: () {
+                              _pickImage(ImageSource.gallery);
+                            },
+                          );
                         });
                       },
                     ),
@@ -425,60 +414,6 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
   }
 
   // TODO: Open Image Upload Option
-  Future<void> showBottomSheet() {
-    return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 90,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      _pickImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.camera_alt,
-                          size: 35,
-                        ),
-                        Text("Camera")
-                      ],
-                    ),
-                  ),
-                  widthSpacer(mWidth: 50),
-                  InkWell(
-                    onTap: () {
-                      _pickImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 35,
-                        ),
-                        Text("Gallery")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   /// ============== Image Picker ======================
   String? frontDocumentPath;
@@ -486,8 +421,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
 
   _pickImage(ImageSource imageSource) async {
     //
-    XFile? selectedDocument =
-        await ImagePicker().pickImage(source: imageSource);
+    XFile? selectedDocument = await ImagePicker().pickImage(source: imageSource);
     if (selectedDocument != null) {
       if (isFontDocument == true) {
         frontDocumentName = selectedDocument.name;
@@ -505,7 +439,7 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
     CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: file.path,
       aspectRatio: CropAspectRatio(ratioX: 16, ratioY: 9),
-      compressQuality: 15,
+      compressQuality: 40,
     );
 
     if (croppedImage != null) {
@@ -513,8 +447,10 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
       setState(() {
         if (isFontDocument == true) {
           frontDocument = newFile;
+          Navigator.pop(context);
         } else {
           backDocument = newFile;
+          Navigator.pop(context);
         }
       });
     }
@@ -524,44 +460,32 @@ class _Aadhar_Card_ScreenState extends State<Aadhar_Card_Screen> {
   // Upload Document
   //
   void _uploadDocument() async {
-    UploadTask? uploadTask;
+    UploadTask? frontUploadTask;
+    UploadTask? backUploadTask;
 
     if (frontDocument == null || backDocument == null) {
       // Show Error message
-      showSnackBar_Widget(context,
-          mHeading: "Error", title: "select both side document");
+      showSnackBar_Widget(context, mHeading: "Error", title: "select both side document");
     } else {
       setState(() {
         isLodding = true;
       });
-      uploadTask = FirebaseStorage.instance
+      frontUploadTask = FirebaseStorage.instance
           .ref()
           .child("tailor_documents")
           .child("documents")
           .child(frontDocumentName!)
-          .putFile(File(frontDocumentPath!));
-      uploadTask = FirebaseStorage.instance
-          .ref()
-          .child("tailor_documents")
-          .child("documents")
-          .child(backDocumentName!)
-          .putFile(File(backDocumentPath!));
+          .putFile(frontDocument!);
 
-      // this get how many % upload
-      uploadTask.snapshotEvents.listen((snapshot) {
-        double percentage =
-            snapshot.bytesTransferred / snapshot.totalBytes * 100;
-        setState(() {
-          upload_Percentage = percentage;
-        });
-
-        log(upload_Percentage.toString());
-      });
+      backUploadTask =
+          FirebaseStorage.instance.ref().child("tailor_documents").child("documents").child(backDocumentName!).putFile(backDocument!);
 
       //
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String front_DownloadUrl = await taskSnapshot.ref.getDownloadURL();
-      String back_DownloadUrl = await taskSnapshot.ref.getDownloadURL();
+      TaskSnapshot frontTaskSnapshot = await frontUploadTask;
+      TaskSnapshot backTaskSnapshot = await backUploadTask;
+
+      String front_DownloadUrl = await frontTaskSnapshot.ref.getDownloadURL();
+      String back_DownloadUrl = await backTaskSnapshot.ref.getDownloadURL();
 
       widget.userModel.front_document = front_DownloadUrl;
       widget.userModel.back_document = back_DownloadUrl;

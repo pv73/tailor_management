@@ -16,8 +16,7 @@ class About_Me extends StatefulWidget {
   final User firebaseUser;
   final UserModel userModel;
 
-  const About_Me(
-      {super.key, required this.firebaseUser, required this.userModel});
+  const About_Me({super.key, required this.firebaseUser, required this.userModel});
 
   @override
   State<About_Me> createState() => _About_MeState();
@@ -32,6 +31,7 @@ class _About_MeState extends State<About_Me> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 1,
@@ -68,17 +68,13 @@ class _About_MeState extends State<About_Me> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Start Profile Box
-                Profile_box_Widget(
-                    userModel: widget.userModel,
-                    firebaseUser: widget.firebaseUser),
+                Profile_box_Widget(userModel: widget.userModel, firebaseUser: widget.firebaseUser),
 
                 // Start All Text Field
                 heightSpacer(mHeight: 20),
                 Text(
                   "About Me",
-                  style: mTextStyle19(
-                      mColor: AppColor.textColorBlack,
-                      mFontWeight: FontWeight.w700),
+                  style: mTextStyle19(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
                 ),
 
                 // ============= Name Field =================
@@ -88,26 +84,21 @@ class _About_MeState extends State<About_Me> {
                   children: [
                     Text(
                       "Full Name",
-                        style: mTextStyle13(mFontWeight: FontWeight.w500),
+                      style: mTextStyle13(mFontWeight: FontWeight.w500),
                     ),
                     heightSpacer(mHeight: 10),
                     SizedBox(
                       height: 45,
                       child: TextFormField(
                         controller: userNameController,
-                        enabled:
-                            widget.userModel.user_name == null ? true : false,
+                        enabled: widget.userModel.user_name == null ? true : false,
                         style: mTextStyle14(),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                          hintText: widget.userModel.user_name == null
-                              ? "User Name"
-                              : "${widget.userModel.user_name}",
+                          contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                          hintText: widget.userModel.user_name == null ? "User Name" : "${widget.userModel.user_name}",
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColor.textColorBlack, width: 2),
+                            borderSide: BorderSide(color: AppColor.textColorBlack, width: 2),
                           ),
                         ),
                       ),
@@ -129,19 +120,14 @@ class _About_MeState extends State<About_Me> {
                       height: 45,
                       child: TextFormField(
                         controller: userNameController,
-                        enabled:
-                            widget.userModel.phone == null ? true : false,
+                        enabled: widget.userModel.phone == null ? true : false,
                         style: mTextStyle14(),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                          hintText: widget.userModel.user_name == null
-                              ? "Mobile no."
-                              : "${widget.userModel.phone}",
+                          contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                          hintText: widget.userModel.user_name == null ? "Mobile no." : "${widget.userModel.phone}",
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColor.textColorBlack, width: 2),
+                            borderSide: BorderSide(color: AppColor.textColorBlack, width: 2),
                           ),
                         ),
                       ),
@@ -156,7 +142,7 @@ class _About_MeState extends State<About_Me> {
                   children: [
                     Text(
                       "Email (Optional)",
-                       style: mTextStyle13(mFontWeight: FontWeight.w500),
+                      style: mTextStyle13(mFontWeight: FontWeight.w500),
                     ),
                     heightSpacer(mHeight: 5),
                     SizedBox(
@@ -167,15 +153,14 @@ class _About_MeState extends State<About_Me> {
                         style: mTextStyle14(),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColor.textColorBlack, width: 2),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: AppColor.textColorBlack, width: 2),
                           ),
-                          hintText: widget.userModel.email == null
-                              ? "Email"
-                              : "${widget.userModel.email}",
+                          contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: AppColor.textColorBlack, width: 2),
+                          ),
+                          hintText: widget.userModel.email == null ? "Email" : "${widget.userModel.email}",
                         ),
                       ),
                     ),
@@ -187,10 +172,15 @@ class _About_MeState extends State<About_Me> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Date of birth",
-                        style: mTextStyle13(mFontWeight: FontWeight.w500),
+                    RichText(
+                      text: TextSpan(text: "Date of birth", style: mTextStyle13(mFontWeight: FontWeight.w500), children: [
+                        TextSpan(
+                          text: " *",
+                          style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                        )
+                      ]),
                     ),
+
                     heightSpacer(mHeight: 5),
                     SizedBox(
                       height: 45,
@@ -218,9 +208,13 @@ class _About_MeState extends State<About_Me> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Gender",
-                       style: mTextStyle13(mFontWeight: FontWeight.w500),
+                    RichText(
+                      text: TextSpan(text: "Gender", style: mTextStyle13(mFontWeight: FontWeight.w500), children: [
+                        TextSpan(
+                          text: " *",
+                          style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                        )
+                      ]),
                     ),
                     heightSpacer(mHeight: 5),
                     GroupButton(
@@ -252,14 +246,11 @@ class _About_MeState extends State<About_Me> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Location_Into_Screen(
-                        userModel: widget.userModel,
-                        firebaseUser: widget.firebaseUser),
+                    builder: (context) => Location_Into_Screen(userModel: widget.userModel, firebaseUser: widget.firebaseUser),
                   ),
                 );
               } else if (state is UserErrorState) {
-                showSnackBar_Widget(context,
-                    mHeading: "Error", title: "${state.error}");
+                showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
               }
             },
             builder: (context, state) {
@@ -287,13 +278,11 @@ class _About_MeState extends State<About_Me> {
     String get_email = emailController.text.toString();
 
     // firebase database se check ker rahe h ki ager null nahi h to text field ka store ho nahi to stored data
-    String? user_name =
-        get_user_name.isEmpty ? widget.userModel.user_name : get_user_name;
+    String? user_name = get_user_name.isEmpty ? widget.userModel.user_name : get_user_name;
     String? email = get_email.isEmpty ? widget.userModel.email : get_email;
 
     if (dateInputController.text == "" || gender == null || user_name == null) {
-      showSnackBar_Widget(context,
-          mHeading: "Error", title: "Please fill all the fields");
+      showSnackBar_Widget(context, mHeading: "Error", title: "Fill in the DOB and Gender field");
     } else {
       widget.userModel.user_name = user_name;
       widget.userModel.email = email;
@@ -322,9 +311,7 @@ class _About_MeState extends State<About_Me> {
             flex: 3,
             child: Text(
               "${mText}",
-              style: mTextStyle13(
-                  mFontWeight: FontWeight.w600,
-                  mColor: AppColor.textColorLightBlack),
+              style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: AppColor.textColorLightBlack),
             ),
           ),
           Expanded(child: Container()),
@@ -340,8 +327,7 @@ class _About_MeState extends State<About_Me> {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(
-            1970), //DateTime.now() - not to allow to choose before today.
+        firstDate: DateTime(1970), //DateTime.now() - not to allow to choose before today.
         lastDate: DateTime.now());
 
     if (pickedDate != null) {
@@ -351,8 +337,7 @@ class _About_MeState extends State<About_Me> {
       //     formattedDate); //formatted date output using intl package => October 20, 2023
 
       setState(() {
-        dateInputController.text =
-            formattedDate; //set output date to TextField value.
+        dateInputController.text = formattedDate; //set output date to TextField value.
       });
     } else {
       print("Date is not selected");

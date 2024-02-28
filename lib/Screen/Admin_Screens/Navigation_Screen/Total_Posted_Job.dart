@@ -1,13 +1,19 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/View_Jobs_Applied.dart';
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/View_Jobs_Details.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/View_Job_List_Widget.dart';
+import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Post_Job.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
+import 'package:tailor/app_widget/NoDataFound_ThenShow_Widget.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
 import 'package:tailor/modal/CompanyModel.dart';
 import 'package:tailor/ui_helper.dart';
@@ -28,12 +34,13 @@ class Total_Posted_Job extends StatefulWidget {
 
 class _Total_Posted_Job extends State<Total_Posted_Job> {
   late MediaQueryData mq;
+  var getJobPostList_length;
 
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
     return Scaffold(
-      // backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColor.textColorWhite,
       appBar: AppBar(
         backgroundColor: Colors.grey.shade100,
         elevation: 0,
@@ -79,121 +86,144 @@ class _Total_Posted_Job extends State<Total_Posted_Job> {
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 10, right: 10, bottom: 20),
-                alignment: Alignment.topLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "See ",
-                        style: mTextStyle20(mFontWeight: FontWeight.w600, mColor: AppColor.textColorBlack),
-                        children: [
-                          TextSpan(
-                            text: "all job ",
-                            style: mTextStyle20(mFontWeight: FontWeight.w800, mColor: AppColor.btnBgColorGreen),
-                          ),
-                          TextSpan(
-                            text: "that's your are",
-                          ),
-                          TextSpan(
-                            text: " posted",
-                            style: mTextStyle20(mFontWeight: FontWeight.w800, mColor: AppColor.btnBgColorGreen),
-                          ),
-                        ],
-                      ),
-                    ),
-                    heightSpacer(mHeight: 5),
-                    RichText(
-                      text: TextSpan(
-                        text: "List of all posted job for clients in ",
-                        style: mTextStyle14(mFontWeight: FontWeight.w500, mColor: AppColor.textColorBlack),
-                        children: [
-                          TextSpan(
-                            text: "Tailor Management app ",
-                            style: mTextStyle14(mFontWeight: FontWeight.w500, mColor: AppColor.btnBgColorGreen),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          child: BlocBuilder<JobPostCubit, JobPostState>(
+            builder: (context, state) {
+              return StreamBuilder<QuerySnapshot>(
+                stream: BlocProvider.of<JobPostCubit>(context).getDataFilterByOrder(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    // first get jobPosts List from JobPostCubit file the store getJobPostList variable
+                    var getJobPostList = BlocProvider.of<JobPostCubit>(context).jobPosts;
 
-              // View Job
+                    getJobPostList.clear();
+                    getJobPostList_length = getJobPostList;
 
-              Expanded(
-                child: BlocBuilder<JobPostCubit, JobPostState>(
-                  builder: (context, state) {
-                    return StreamBuilder<QuerySnapshot>(
-                      stream: BlocProvider.of<JobPostCubit>(context).getDataFilterByOrder(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          // first get jobPosts List from JobPostCubit file the store getJobPostList variable
-                          var getJobPostList = BlocProvider.of<JobPostCubit>(context).jobPosts;
+                    // var jobPosts = snapshot.data!.docs;
+                    for (DocumentSnapshot doc in snapshot.data!.docs) {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-                          getJobPostList.clear();
+                      // Check if the UserId isNotEqual to the current user's ID
+                      if (data.containsKey("uid") && data["uid"] != widget.firebaseUser.uid) {
+                        // Skip adding this document to clients_data
+                        continue;
+                      }
 
-                          // var jobPosts = snapshot.data!.docs;
-                          for (DocumentSnapshot doc in snapshot.data!.docs) {
-                            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      // Add all Data in jobPosts list
+                      getJobPostList.add(data);
+                    }
 
-                            // Check if the UserId isNotEqual to the current user's ID
-                            if (data.containsKey("uid") && data["uid"] != widget.firebaseUser.uid) {
-                              // Skip adding this document to clients_data
-                              continue;
-                            }
-
-                            // Add all Data in jobPosts list
-                            getJobPostList.add(data);
-                          }
-
-                          return ListView.builder(
-                            itemCount: getJobPostList.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              var jobPost = getJobPostList[index];
-
-                              // Assuming 'dateTime' is the field storing DateTime in Firestore
-                              DateTime jobDateTime = jobPost['dateTime'].toDate();
-                              // Calculate the difference in days
-                              int daysDifference = DateTime.now().difference(jobDateTime).inDays;
-
-                              return View_Job_List_Widget(
-                                date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
-                                daysAgo: "${daysDifference}",
-                                jobPost: jobPost,
-                                onPress: () {
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      child: View_Jobs_Details(
-                                        jobId: jobPost['jobId'],
-                                          isTailorJobView: false,
+                    return getJobPostList.isNotEmpty
+                        // =========== If job posted list is Empty then first show content then show posted job list ================
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: "See ",
+                                    style: mTextStyle20(mFontWeight: FontWeight.w600, mColor: AppColor.textColorBlack),
+                                    children: [
+                                      TextSpan(
+                                        text: "all job ",
+                                        style: mTextStyle20(mFontWeight: FontWeight.w800, mColor: AppColor.btnBgColorGreen),
                                       ),
-                                      type: PageTransitionType.rightToLeftWithFade,
-                                      duration: Duration(milliseconds: 500),
-                                    ),
+                                      TextSpan(
+                                        text: "that's your are",
+                                      ),
+                                      TextSpan(
+                                        text: " posted",
+                                        style: mTextStyle20(mFontWeight: FontWeight.w800, mColor: AppColor.btnBgColorGreen),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              heightSpacer(mHeight: 5),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 15),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: "List of all posted job for clients in ",
+                                    style: mTextStyle14(mFontWeight: FontWeight.w500, mColor: AppColor.textColorBlack),
+                                    children: [
+                                      TextSpan(
+                                        text: "Tailor Management app ",
+                                        style: mTextStyle14(mFontWeight: FontWeight.w500, mColor: AppColor.btnBgColorGreen),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              // ================== List View builder =============
+                              heightSpacer(),
+                              ListView.builder(
+                                itemCount: getJobPostList.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  var jobPost = getJobPostList[index];
+
+                                  // Assuming 'dateTime' is the field storing DateTime in Firestore
+                                  DateTime jobDateTime = jobPost['dateTime'].toDate();
+                                  // Calculate the difference in days
+                                  int daysDifference = DateTime.now().difference(jobDateTime).inDays;
+
+                                  return View_Job_List_Widget(
+                                    date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
+                                    daysAgo: "${daysDifference}",
+                                    jobPost: jobPost,
+                                    isApplied: true,
+                                    morePopupButton: CustomPopupMenuButton(jobId: jobPost['jobId']),
+                                    onPress: () {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          child: View_Jobs_Applied(
+                                            getJobId: jobPost['jobId'],
+                                          ),
+                                          type: PageTransitionType.rightToLeftWithFade,
+                                          duration: Duration(milliseconds: 500),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
+                              ),
+                            ],
+                          )
+
+                        //======= If List is Equal to empty then show this column widget ==================
+                        : NoDataFound_ThenShow_Widget(
+                            headingText: "You haven't post any job",
+                            image: "assets/images/banner/apply.jpg",
+                            subHeadingText: "Create and upload the new job",
+                            subHeadingParagraph: "More easiler and faster than ever with Tailor Management",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  child: Post_Job(
+                                    companyModel: widget.companyModel,
+                                    firebaseUser: widget.firebaseUser,
+                                    isButtonClick: true,
+                                  ),
+                                  type: PageTransitionType.rightToLeftWithFade,
+                                  duration: Duration(milliseconds: 500),
+                                ),
                               );
                             },
+                            btnName: "Create new",
                           );
-                        }
-                        return Center(
-                          child: Lottie.asset("assets/images/lottie_animation/loading_animation.json", width: 130),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
+                  }
+                  return Center(
+                    child: Lottie.asset("assets/images/lottie_animation/loading_animation.json", width: 130),
+                  );
+                },
+              );
+            },
           ),
         ),
       ),
@@ -201,39 +231,13 @@ class _Total_Posted_Job extends State<Total_Posted_Job> {
   }
 
   // ===============================================
-  // Convert Salary in K
-  // CalculateSalary(jobPost) {
-  //   // Minimun Salary
-  //   var totalMini_salary = int.parse(jobPost['minimun_Salary']);
-  //   var mini_Salary = totalMini_salary / 1000;
-  //
-  //   // If there are no decimal places, display without any decimal places
-  //   // If there are decimal places, display with one decimal place
-  //   var formattedMiniSalary = (mini_Salary % 1 == 0) ? mini_Salary.toStringAsFixed(0) : mini_Salary.toStringAsFixed(1);
-  //
-  //   // Maximum Salary
-  //   var totalMax_salary = int.parse(jobPost['maxmimum_Salary']);
-  //   var maximum_Salary = totalMax_salary / 1000;
-  //
-  //   var formattedMaxSalary = (maximum_Salary % 1 == 0) ? maximum_Salary.toStringAsFixed(0) : maximum_Salary.toStringAsFixed(1);
-  //
-  //   return Container(
-  //     child: Text(
-  //       " INR ${formattedMiniSalary}-${formattedMaxSalary}K",
-  //       style: mTextStyle12(mFontWeight: FontWeight.w600),
-  //     ),
-  //   );
-  // }
-
-  // ===============================================
   //   PopupMenuButton
 
-  CustomPopupMenuButton(jobId) {
+  Widget CustomPopupMenuButton({jobId}) {
     String? value;
     return PopupMenuButton(
-      icon: Icon(
-        Icons.more_vert,
-      ),
+      child: Icon(Icons.more_vert),
+      padding: EdgeInsets.zero,
       itemBuilder: (context) {
         return [
           PopupMenuItem(
@@ -305,7 +309,7 @@ class _Total_Posted_Job extends State<Total_Posted_Job> {
             context,
             MaterialPageRoute(
               builder: (context) => View_Jobs_Details(
-                  jobId: jobId,
+                jobId: jobId,
                 isTailorJobView: false,
               ),
             ),

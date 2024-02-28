@@ -16,8 +16,7 @@ class Bank_Into_Screen extends StatefulWidget {
   final User firebaseUser;
   final UserModel userModel;
 
-  const Bank_Into_Screen(
-      {super.key, required this.firebaseUser, required this.userModel});
+  const Bank_Into_Screen({super.key, required this.firebaseUser, required this.userModel});
 
   @override
   State<Bank_Into_Screen> createState() => _Bank_Into_ScreenState();
@@ -28,13 +27,14 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
   TextEditingController ifsc_code = TextEditingController();
 
   var _Selected_Bank;
-  String? bank_Name;
   bool? bank_request = false;
+  String? accountError;
+  String? ifscError;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.grey.shade100,
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.grey.shade300,
         elevation: 0,
@@ -82,8 +82,8 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                       showOnOff: true,
                       onToggle: (value) {
                         bank_request = value;
+                        _Selected_Bank = null;
                         setState(() {});
-                        print(bank_request);
                       },
                     )
                   ],
@@ -112,8 +112,7 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                               children: [
                                 Text(
                                   "Popular Banks",
-                                  style: mTextStyle14(
-                                      mFontWeight: FontWeight.w700),
+                                  style: mTextStyle14(mFontWeight: FontWeight.w700),
                                 ),
 
                                 /// bank list
@@ -122,38 +121,30 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                                   shrinkWrap: true,
                                   itemCount: bank_list.length,
                                   physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          mainAxisSpacing: 5,
-                                          crossAxisSpacing: 5,
-                                          mainAxisExtent: 115),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3, mainAxisSpacing: 5, crossAxisSpacing: 5, mainAxisExtent: 115),
                                   itemBuilder: (context, bank_Index) {
                                     var bank_list_index = bank_list[bank_Index];
                                     return InkWell(
                                       onTap: () {
                                         _Selected_Bank = bank_Index;
-                                        _Selected_Bank =
-                                            bank_list[_Selected_Bank];
+                                        _Selected_Bank = bank_list[_Selected_Bank];
                                         setState(() {});
                                       },
                                       child: Column(
                                         children: [
                                           CircleAvatar(
                                             radius: 30,
-                                            backgroundColor:
-                                                Colors.blue.shade50,
+                                            backgroundColor: Colors.blue.shade50,
                                             child: Image.asset(
-                                              bank_list[bank_Index]
-                                                  ['bank_Icon']!,
+                                              bank_list[bank_Index]['bank_Icon']!,
                                               width: 38,
                                             ),
                                           ),
                                           heightSpacer(mHeight: 7),
                                           Text(
                                             bank_list_index['bank_Name']!,
-                                            style: mTextStyle13(
-                                                mFontWeight: FontWeight.w600),
+                                            style: mTextStyle13(mFontWeight: FontWeight.w600),
                                             textAlign: TextAlign.center,
                                           ),
                                         ],
@@ -174,6 +165,7 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                   Card_Container_Widget(
                     padding: EdgeInsets.all(10),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -191,15 +183,11 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                               children: [
                                 Text(
                                   "Selected bank",
-                                  style: mTextStyle15(
-                                      mFontWeight: FontWeight.w500,
-                                      mColor: AppColor.textColorLightBlack),
+                                  style: mTextStyle13(mColor: AppColor.textColorLightBlack),
                                 ),
-                                heightSpacer(mHeight: 2),
                                 Text(
                                   _Selected_Bank['bank_Name']!,
-                                  style: mTextStyle17(
-                                      mFontWeight: FontWeight.w500),
+                                  style: mTextStyle14(mFontWeight: FontWeight.w500),
                                 )
                               ],
                             ),
@@ -209,35 +197,47 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                           color: Colors.grey.shade300,
                           height: 25,
                         ),
-                        SizedBox(
-                          height: 45,
-                          child: TextFormField(
-                            controller: account_no,
-                            maxLength: 16,
-                            style: mTextStyle13(),
-                            keyboardType: TextInputType.number,
-                            decoration: mInputDecoration(
-                                hint: "Account Number",
-                                radius: 5,
-                                padding: EdgeInsets.only(left: 15),
-                                mCounterText: ""),
-                          ),
+                        TextFormField(
+                          controller: account_no,
+                          maxLength: 16,
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              accountError = null;
+                            } else {
+                              account_no.text = value;
+                            }
+                            setState(() {});
+                          },
+                          style: mTextStyle13(),
+                          keyboardType: TextInputType.number,
+                          decoration: mInputDecoration(
+                              hint: "Account Number", radius: 5, padding: EdgeInsets.only(left: 15), mCounterText: ""),
                         ),
+
+                        //============= account error message  ===============
+                        accountError == null ? Container() : Text("${accountError}", style: mTextStyle13(mColor: Colors.red)),
+
+                        // =========== Ifsc Code field =============
                         heightSpacer(mHeight: 15),
-                        SizedBox(
-                          height: 45,
-                          child: TextFormField(
-                            controller: ifsc_code,
-                            maxLength: 11,
-                            style: mTextStyle13(),
-                            keyboardType: TextInputType.text,
-                            decoration: mInputDecoration(
-                                hint: "IFSC",
-                                radius: 5,
-                                padding: EdgeInsets.only(left: 15),
-                                mCounterText: ""),
-                          ),
+                        TextFormField(
+                          controller: ifsc_code,
+                          maxLength: 11,
+                          textCapitalization: TextCapitalization.characters,
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              ifscError = null;
+                            } else {
+                              ifsc_code.text = value;
+                            }
+                            setState(() {});
+                          },
+                          style: mTextStyle13(),
+                          keyboardType: TextInputType.text,
+                          decoration: mInputDecoration(hint: "IFSC", radius: 5, padding: EdgeInsets.only(left: 15), mCounterText: ""),
                         ),
+
+                        //============= Ifsc error message  ===============
+                        ifscError == null ? Container() : Text("${ifscError}", style: mTextStyle13(mColor: Colors.red)),
                       ],
                     ),
                   ),
@@ -261,16 +261,21 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                   if (account_no.text.isNotEmpty && ifsc_code.text.isNotEmpty) {
                     _showDialog();
                   } else {
-                    showSnackBar_Widget(context,
-                        mHeading: "Error",
-                        title: "Account Number and IFSC Code are required");
+                    if (account_no.text.isEmpty) {
+                      accountError = "Please fill account no.";
+                    }
+
+                    if (ifsc_code.text.isEmpty) {
+                      ifscError = "Please fill Ifsc code";
+                    }
+                    showSnackBar_Widget(context, mHeading: "Error", title: "Account Number and IFSC Code are required");
+                    setState(() {});
                   }
                 } else {
                   _showDialog();
                 }
               } else {
-                showSnackBar_Widget(context,
-                    mHeading: "Error", title: "Min one field required");
+                showSnackBar_Widget(context, mHeading: "Error", title: "Min one field selected");
               }
             },
             mHeight: 40,
@@ -296,8 +301,7 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
             ),
             contentPadding: EdgeInsets.zero,
             actionsPadding: EdgeInsets.zero,
-            content: Lottie.asset(
-                "assets/images/lottie_animation/form_submited.json"),
+            content: Lottie.asset("assets/images/lottie_animation/form_submited.json"),
             // contentPadding: EdgeInsets.zero,
             actions: <Widget>[
               TextButton(
@@ -310,47 +314,38 @@ class _Bank_Into_ScreenState extends State<Bank_Into_Screen> {
                 listener: (context, state) {
                   // TODO: implement listener
                   if (state is UserLoadedState) {
+                    Navigator.popUntil(context, (route) => route.isFirst);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Navigation_Bar(
-                            userModel: widget.userModel,
-                            firebaseUser: widget.firebaseUser),
+                        builder: (context) => Navigation_Bar(userModel: widget.userModel, firebaseUser: widget.firebaseUser),
                       ),
                     );
                   } else if (state is UserErrorState) {
-                    showSnackBar_Widget(context,
-                        mHeading: "Error", title: "${state.error}");
+                    showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                   }
                 },
                 builder: (context, state) {
-                  if (state is UserLoadingState) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
+                  if(state is UserLoadingState){
+                    return Center(child: CircularProgressIndicator());
                   }
                   return TextButton(
                     onPressed: () async {
-                      // add data in userModel
+                       // add data in userModel
 
                       if (_Selected_Bank == null) {
                         widget.userModel.bank_request = bank_request;
                         widget.userModel.final_submit = true;
                       } else {
-                        widget.userModel.bank_name =
-                            _Selected_Bank['bank_Name'];
-                        widget.userModel.account_number =
-                            account_no.text.toString();
-                        widget.userModel.ifsc_code =
-                            ifsc_code.text.toString().trim();
+                        widget.userModel.bank_name = _Selected_Bank['bank_Name'];
+                        widget.userModel.account_number = account_no.text.toString();
+                        widget.userModel.ifsc_code = ifsc_code.text.toString().trim();
                         widget.userModel.final_submit = true;
                       }
+                      BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
 
                       var prefs = await SharedPreferences.getInstance();
                       prefs.setBool("final_submit", true);
-
-                      BlocProvider.of<UserCubit>(context)
-                          .addUserModel(widget.userModel);
                     },
                     child: const Text('Submit'),
                   );

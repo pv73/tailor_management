@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,8 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
   String? education;
   String? course;
   bool _isDropDownOption = false;
+  String? collageError;
+  String? yearError;
   late SingleValueDropDownController branch_value = SingleValueDropDownController();
 
   //dropdown options
@@ -75,6 +79,7 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
           child: Form(
             key: _formKey,
             child: InkWell(
+              splashColor: Colors.transparent,
               onTap: () {
                 FocusScope.of(context).unfocus();
               },
@@ -89,12 +94,16 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
 
                     // ========= Education Details ============
                     heightSpacer(mHeight: 20),
-                    Text(
-                      "Your Highest Eduction",
-                      style: mTextStyle17(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w700),
+                    RichText(
+                      text: TextSpan(text: "Your Highest Eduction", style: mTextStyle17(mFontWeight: FontWeight.w700), children: [
+                        TextSpan(
+                          text: " *",
+                          style: mTextStyle17(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                        )
+                      ]),
                     ),
 
-                    /// Education Button
+                    /// =======  Education Button ========
                     heightSpacer(mHeight: 10),
                     GroupButton(
                       options: mGroupButtonOptions(),
@@ -171,55 +180,76 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Collage/Institute Name",
-                          style: mTextStyle13(mFontWeight: FontWeight.w500),
+                        RichText(
+                          text: TextSpan(text: "Collage/Institute Name", style: mTextStyle13(mFontWeight: FontWeight.w500), children: [
+                            TextSpan(
+                              text: " *",
+                              style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                            )
+                          ]),
                         ),
                         heightSpacer(mHeight: 10),
-                        SizedBox(
-                          height: 45,
-                          child: TextFormField(
-                            controller: collage_name,
-                            style: mTextStyle14(),
-                            keyboardType: TextInputType.text,
-                            decoration: mInputDecoration(
-                              hint: "",
-                              radius: 5,
-                              padding: EdgeInsets.only(top: 10, left: 15),
-                            ),
-                            validator: (value) {
-                              if (value == null) {
-                                return "please enter institute name";
-                              } else {
-                                return null;
-                              }
-                            },
+                        TextFormField(
+                          controller: collage_name,
+                          style: mTextStyle14(),
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: mInputDecoration(
+                            hint: "Institute name",
+                            radius: 5,
+                            padding: EdgeInsets.only(top: 10, left: 15),
                           ),
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              collageError = null;
+                            } else {
+                              collage_name.text = value;
+                            }
+                            setState(() {});
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return "please enter institute name";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
+                        collageError == null ? Container() : Text("${collageError}", style: mTextStyle13(mColor: Colors.red)),
                       ],
                     ),
 
-                    ///  Passing Year
+                    /// ============ Passing Year =============
                     heightSpacer(mHeight: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Passing Year",
-                          style: mTextStyle13(mFontWeight: FontWeight.w500),
+                        RichText(
+                          text: TextSpan(text: "Passing Year", style: mTextStyle13(mFontWeight: FontWeight.w500), children: [
+                            TextSpan(
+                              text: " *",
+                              style: mTextStyle14(mFontWeight: FontWeight.w700, mColor: Colors.red),
+                            )
+                          ]),
                         ),
                         heightSpacer(mHeight: 10),
-                        SizedBox(
-                          height: 45,
-                          child: TextFormField(
-                            controller: pass_year,
-                            style: mTextStyle14(),
-                            keyboardType: TextInputType.number,
-                            maxLength: 4,
-                            decoration: mInputDecoration(
-                                hint: "Passing Year", radius: 5, padding: EdgeInsets.only(top: 10, left: 15), mCounterText: ""),
-                          ),
+                        TextFormField(
+                          controller: pass_year,
+                          style: mTextStyle14(),
+                          keyboardType: TextInputType.number,
+                          maxLength: 4,
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              yearError = null;
+                            } else {
+                              pass_year.text = value;
+                            }
+                            setState(() {});
+                          },
+                          decoration: mInputDecoration(
+                              hint: "Passing Year", radius: 5, padding: EdgeInsets.only(top: 10, left: 15), mCounterText: ""),
                         ),
+                        yearError == null ? Container() : Text("${yearError}", style: mTextStyle13(mColor: Colors.red)),
                       ],
                     ),
                   ],
@@ -287,7 +317,15 @@ class _Education_Into_ScreenState extends State<Education_Into_Screen> {
       BlocProvider.of<UserCubit>(context).addUserModel(widget.userModel);
       showSnackBar_Widget(context, mHeading: "Success", title: "Your form is submitted successfully");
     } else {
+      if (collage_name.text.isEmpty) {
+        collageError = "Please fill institute name";
+      }
+      if (pass_year.text.isEmpty) {
+        yearError = "Please fill field and year less then 2023";
+      }
+
       showSnackBar_Widget(context, mHeading: "Error", title: "Please filled all field and year less then 2023");
+      setState(() {});
     }
   }
 

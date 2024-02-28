@@ -1,5 +1,6 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:group_button/group_button.dart';
 
 // ------------------------------------ //
@@ -202,6 +203,8 @@ InputDecoration mInputDecoration({
     suffixIconColor: suffixColor,
     enabledBorder: mGetBorder(radius: radius),
     focusedBorder: mGetBorder(radius: radius),
+    errorBorder: mGetBorder(radius: radius),
+    focusedErrorBorder: mGetBorder(radius: radius),
   );
 }
 
@@ -565,5 +568,86 @@ Widget Privacy_Policy_Helper({
         ReadMoreAndLessMore_Btn(onPress: onPress, mText: "${btn_Name}"),
       ],
     ),
+  );
+}
+
+// =======================================================
+//  show Modal Bottom Sheet for Image Picker
+// =======================================================
+Future<void> Image_Picker_showBottomSheet(context, {Function()? fromCameraPress, Function()? fromGalleryPress}) {
+  return showModalBottomSheet(
+    backgroundColor: AppColor.bgColorBlue,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        height: 135.h,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Select Option for image",
+                  style: mTextStyle16(mFontWeight: FontWeight.w600),
+                ),
+                heightSpacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      children: [
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          onTap: fromCameraPress,
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(color: AppColor.navBgColor),
+                            ),
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 35,
+                            ),
+                          ),
+                        ),
+                        heightSpacer(mHeight: 3),
+                        Text("Camera")
+                      ],
+                    ),
+                    widthSpacer(mWidth: 50),
+                    Column(
+                      children: [
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          onTap: fromGalleryPress,
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(color: AppColor.navBgColor),
+                            ),
+                            child: Icon(
+                              Icons.image,
+                              size: 35,
+                            ),
+                          ),
+                        ),
+                        heightSpacer(mHeight: 3),
+                        Text("Gallery")
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
   );
 }

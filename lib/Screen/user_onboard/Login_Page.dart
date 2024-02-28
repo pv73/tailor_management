@@ -58,9 +58,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
                     heightSpacer(mHeight: 30),
                     Text(
                       "Login Here",
-                      style: mTextStyle24(
-                          mFontWeight: FontWeight.w900,
-                          mColor: AppColor.textColorBlue),
+                      style: mTextStyle24(mFontWeight: FontWeight.w900, mColor: AppColor.textColorBlue),
                     ),
 
                     // heightSpacer(),
@@ -84,8 +82,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
                     TextFormField(
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         prefixIcon: Icon(Icons.email_outlined),
@@ -103,8 +100,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
                       obscureText: _isPassHide,
                       autocorrect: false,
                       keyboardType: TextInputType.visiblePassword,
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                       decoration: mInputDecoration(
                         padding: EdgeInsets.only(top: 3),
                         preFixColor: AppColor.textColorLightBlack,
@@ -113,9 +109,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
                         hint: "Password",
                         hintColor: AppColor.textColorLightBlack,
                         prefixIcon: IconButton(
-                          icon: _isPassHide != false
-                              ? Icon(Icons.visibility_off)
-                              : Icon(Icons.visibility),
+                          icon: _isPassHide != false ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
                           onPressed: () {
                             if (_isPassHide == false) {
                               _isPassHide = true;
@@ -160,36 +154,25 @@ class _LogIn_PageState extends State<LogIn_Page> {
                             String uid = credential!.user!.uid;
 
                             // Check in the "client" table
-                            DocumentSnapshot userDoc = await FirebaseFirestore
-                                .instance
-                                .collection('clients')
-                                .doc(uid)
-                                .get();
+                            DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('clients').doc(uid).get();
 
                             if (userDoc.exists) {
-                              userModel = UserModel.fromMap(
-                                  userDoc.data() as Map<String, dynamic>);
+                              userModel = UserModel.fromMap(userDoc.data() as Map<String, dynamic>);
                               //
                               CheckAndNavigate(userModel);
                             } else {
                               // Check in the "company" table
-                              DocumentSnapshot companyDoc =
-                                  await FirebaseFirestore.instance
-                                      .collection('company')
-                                      .doc(uid)
-                                      .get();
+                              DocumentSnapshot companyDoc = await FirebaseFirestore.instance.collection('company').doc(uid).get();
 
                               if (companyDoc.exists) {
-                                companyModel = CompanyModel.fromMap(
-                                    companyDoc.data() as Map<String, dynamic>);
+                                companyModel = CompanyModel.fromMap(companyDoc.data() as Map<String, dynamic>);
                                 //
                                 CheckAndNavigate(companyModel);
                               }
                             }
                           }
                         } else if (state is AuthErrorState) {
-                          showSnackBar_Widget(context,
-                              mHeading: "Error", title: "${state.error}");
+                          showSnackBar_Widget(context, mHeading: "Error", title: "${state.error}");
                         }
                       },
                       builder: (context, state) {
@@ -217,24 +200,17 @@ class _LogIn_PageState extends State<LogIn_Page> {
                       child: RichText(
                         text: TextSpan(
                           text: "You have not account?  ",
-                          style: mTextStyle13(
-                              mColor: AppColor.textColorBlack,
-                              mFontWeight: FontWeight.w400),
+                          style: mTextStyle13(mColor: AppColor.textColorBlack, mFontWeight: FontWeight.w400),
                           children: [
                             TextSpan(
                               text: "Employer Create",
-                              style: mTextStyle13(
-                                  mColor: AppColor.textColorBlue,
-                                  mFontWeight: FontWeight.w700),
+                              style: mTextStyle13(mColor: AppColor.textColorBlue, mFontWeight: FontWeight.w700),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.popUntil(
-                                      context, (route) => route.isFirst);
+                                  Navigator.popUntil(context, (route) => route.isFirst);
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            First_Dashboard()),
+                                    MaterialPageRoute(builder: (context) => First_Dashboard()),
                                   );
                                 },
                             )
@@ -269,15 +245,13 @@ class _LogIn_PageState extends State<LogIn_Page> {
                         alertBox(
                           context,
                           title: "Be careful if you are company",
-                          content:
-                              "Phone login for tailors only: If you login by phone then your are tailor",
+                          content: "Phone login for tailors only: If you login by phone then your are tailor",
                           titleColor: Colors.red,
                           okayPress: () {
                             Navigator.pop(context);
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => Number_login_Screen()),
+                              MaterialPageRoute(builder: (context) => Number_login_Screen()),
                             );
                           },
                         );
@@ -299,9 +273,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
     String password = passwordController.text.trim();
 
     if (email == "" || password == "") {
-      showSnackBar_Widget(context,
-          mHeading: "Error",
-          title: "Incomplete Data, Please fill all the fields");
+      showSnackBar_Widget(context, mHeading: "Error", title: "Incomplete Data, Please fill all the fields");
     } else {
       BlocProvider.of<AuthCubit>(context).logIn(email, password);
     }
@@ -311,8 +283,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
   void CheckAndNavigate(model) async {
     if (model == userModel) {
       if (userModel!.final_submit == true) {
-        showSnackBar_Widget(context,
-            mHeading: "Success", title: "Your are login successfully");
+        showSnackBar_Widget(context, mHeading: "Success", title: "Your are login successfully");
         Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.pushReplacement(
             context,
@@ -328,8 +299,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
         var prefs = await SharedPreferences.getInstance();
         prefs.setBool("final_submit", true);
       } else {
-        showSnackBar_Widget(context,
-            mHeading: "Success", title: "Your are login successfully");
+        showSnackBar_Widget(context, mHeading: "Success", title: "Your are login successfully");
         Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.pushReplacement(
           context,
@@ -345,8 +315,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
       }
     } else {
       if (companyModel!.final_submit == true) {
-        showSnackBar_Widget(context,
-            mHeading: "Success", title: "Your are login successfully");
+        showSnackBar_Widget(context, mHeading: "Success", title: "Your are login successfully");
 
         Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.pushReplacement(
@@ -364,8 +333,7 @@ class _LogIn_PageState extends State<LogIn_Page> {
         prefs.setBool("company_final_submit", true);
         prefs.setBool("is_Company", true);
       } else {
-        showSnackBar_Widget(context,
-            mHeading: "Success", title: "Your are login successfully");
+        showSnackBar_Widget(context, mHeading: "Success", title: "Your are login successfully");
         Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.pushReplacement(
           context,

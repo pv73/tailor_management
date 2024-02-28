@@ -40,7 +40,6 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -73,23 +72,20 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
                       style: mTextStyle13(mColor: widget.mTextColor),
                     ),
 
-                    // Email
+                    //========== Gst NO. ================
                     heightSpacer(mHeight: 3),
-                    widget.companyModel.gst_no == null
+                    widget.companyModel.gst_no == null || widget.companyModel.gst_no == ""
                         ? Container()
                         : Row(
                             children: [
                               Text(
                                 "GST No. ",
-                                style: mTextStyle13(
-                                    mFontWeight: FontWeight.w600,
-                                    mColor: widget.mTextColor),
+                                style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: widget.mTextColor),
                               ),
                               Expanded(
                                 child: Text(
                                   "${widget.companyModel.gst_no}",
-                                  style:
-                                      mTextStyle13(mColor: widget.mTextColor),
+                                  style: mTextStyle13(mColor: widget.mTextColor),
                                 ),
                               )
                             ],
@@ -122,12 +118,21 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
                             }
                             return InkWell(
                               onTap: () {
-                                showBottomSheet();
+                                Image_Picker_showBottomSheet(
+                                  context,
+                                  fromCameraPress: () {
+                                    pickImage(ImageSource.camera);
+                                    Navigator.pop(context);
+                                  },
+                                  fromGalleryPress: () {
+                                    pickImage(ImageSource.gallery);
+                                    Navigator.pop(context);
+                                  },
+                                );
                               },
                               child: CircleAvatar(
                                 radius: 30,
-                                backgroundImage: NetworkImage(
-                                    "${widget.companyModel.company_logo}"),
+                                backgroundImage: NetworkImage("${widget.companyModel.company_logo}"),
                               ),
                             );
                           },
@@ -146,7 +151,7 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
           ],
         ),
 
-        // Number and Address
+        // ============== Number and Address =============
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -156,9 +161,7 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
                   child: RichText(
                     text: TextSpan(
                       text: "Mobile No: ",
-                      style: mTextStyle13(
-                          mFontWeight: FontWeight.w600,
-                          mColor: widget.mTextColor),
+                      style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: widget.mTextColor),
                       children: [
                         TextSpan(
                           text: "${widget.companyModel.phone}",
@@ -174,9 +177,7 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
                         child: RichText(
                           text: TextSpan(
                             text: "Phone No: ",
-                            style: mTextStyle13(
-                                mFontWeight: FontWeight.w600,
-                                mColor: widget.mTextColor),
+                            style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: widget.mTextColor),
                             children: [
                               TextSpan(
                                 text: "${widget.companyModel.company_number}",
@@ -196,9 +197,9 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
               children: [
                 Text(
                   "Address: ",
-                  style: mTextStyle13(
-                      mFontWeight: FontWeight.w600, mColor: widget.mTextColor),
+                  style: mTextStyle13(mFontWeight: FontWeight.w600, mColor: widget.mTextColor),
                 ),
+                widthSpacer(mWidth: 5),
                 Expanded(
                   child: Text(
                     "${widget.companyModel.address}",
@@ -229,62 +230,6 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
   }
 
   // TODO: ====================== UI End ===================================
-  // ================== UI end and  Widget and list Start ==================
-
-  Future<void> showBottomSheet() {
-    return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 75.h,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.camera_alt,
-                          size: 35,
-                        ),
-                        Text("Camera")
-                      ],
-                    ),
-                  ),
-                  widthSpacer(mWidth: 50),
-                  InkWell(
-                    onTap: () {
-                      pickImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 35,
-                        ),
-                        Text("Gallery")
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   // ================== Image Picker ==================
   String? companyLogoPath;
@@ -326,19 +271,17 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
           .child("company_documents")
           .child("profile_pic")
           .child(companyLogoName!)
-          .putFile(File(companyLogoPath!));
+          .putFile(company_logo!);
 
       TaskSnapshot logoTaskSnapshot = await logoUploadTask;
       String logo_downloadUrl = await logoTaskSnapshot.ref.getDownloadURL();
 
       // === Hear Update company logo Url in Company Model
       widget.companyModel.company_logo = logo_downloadUrl;
-      BlocProvider.of<CompanyCubit>(context)
-          .updateCompanyModel(widget.companyModel);
+      BlocProvider.of<CompanyCubit>(context).updateCompanyModel(widget.companyModel);
 
       // yeha job table me company ka logo update ho raha h
       getJobs(logo_downloadUrl);
-
     } catch (error) {
       log(error.toString());
     }
