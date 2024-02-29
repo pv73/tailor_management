@@ -80,14 +80,14 @@ class _MyAppState extends State<MyApp> {
 
     if (currentUser != null) {
       // LoggedIn
-     try {
-       thisUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
+      try {
+        thisUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
 
-       // get company data
-       thisCompanyModel = await FirebaseHelper.getCompanyModelById(currentUser!.uid);
-     } on FirebaseException catch (error){
-       log(error.message.toString());
-     }
+        // get company data
+        thisCompanyModel = await FirebaseHelper.getCompanyModelById(currentUser!.uid);
+      } on FirebaseException catch (error) {
+        log(error.message.toString());
+      }
     }
   }
 
@@ -95,9 +95,9 @@ class _MyAppState extends State<MyApp> {
   void _getFinalSubmit() async {
     var prefs = await SharedPreferences.getInstance();
     // setState(() {
-      final_submit = prefs.getBool('final_submit');
-      is_Company = prefs.getBool('is_Company');
-      company_final_submit = prefs.getBool('company_final_submit');
+    final_submit = prefs.getBool('final_submit');
+    is_Company = prefs.getBool('is_Company');
+    company_final_submit = prefs.getBool('company_final_submit');
     // });
   }
 

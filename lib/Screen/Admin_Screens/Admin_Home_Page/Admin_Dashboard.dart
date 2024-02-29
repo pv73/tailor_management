@@ -1,4 +1,3 @@
-
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,7 @@ class Admin_Dashboard extends StatefulWidget {
 }
 
 class _Admin_Dashboard extends State<Admin_Dashboard> {
-int index = 0;
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +49,13 @@ int index = 0;
 
     final items = <Widget>[
       // Videos
-      if (index == 0)
-        Nav_Icon_Text(mIcon: Icons.home)
-      else
-        Nav_Icon_Text(mIcon: Icons.home, mTitle: "Home"),
+      if (index == 0) Nav_Icon_Text(mIcon: Icons.home) else Nav_Icon_Text(mIcon: Icons.home, mTitle: "Home"),
 
       // Post Job
-      if (index == 1)
-        Nav_Icon_Text(mIcon: Icons.shopping_bag)
-      else
-        Nav_Icon_Text(mIcon: Icons.shopping_bag, mTitle: "Post Job"),
+      if (index == 1) Nav_Icon_Text(mIcon: Icons.shopping_bag) else Nav_Icon_Text(mIcon: Icons.shopping_bag, mTitle: "Post Job"),
 
       //Invite
-      if (index == 2)
-        Nav_Icon_Text(mIcon: Icons.poll)
-      else
-        Nav_Icon_Text(mIcon: Icons.poll, mTitle: "Posted post"),
+      if (index == 2) Nav_Icon_Text(mIcon: Icons.poll) else Nav_Icon_Text(mIcon: Icons.poll, mTitle: "Posted post"),
 
       // Profile
       if (index == 3)
