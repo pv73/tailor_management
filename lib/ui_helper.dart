@@ -565,7 +565,7 @@ Widget Privacy_Policy_Helper({
         ),
 
         heightSpacer(mHeight: 5),
-        ReadMoreAndLessMore_Btn(onPress: onPress, mText: "${btn_Name}"),
+        ReadMoreAndLessMore_Btn(onPress: onPress, mText: btn_Name == null ? "" : "${btn_Name}"),
       ],
     ),
   );

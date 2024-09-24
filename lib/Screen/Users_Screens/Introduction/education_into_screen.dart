@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';

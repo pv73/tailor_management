@@ -253,7 +253,7 @@ class _Skills_Into_ScreenState extends State<Skills_Into_Screen> {
   void cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: file.path,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      // aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
       compressQuality: 15,
     );
 

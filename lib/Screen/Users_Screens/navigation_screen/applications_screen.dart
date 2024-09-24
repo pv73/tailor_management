@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +13,8 @@ import 'package:tailor/modal/UserModel.dart';
 import 'package:tailor/ui_helper.dart';
 
 class Applications_Screen extends StatefulWidget {
-  final User firebaseUser;
-  final UserModel userModel;
+  final User? firebaseUser;
+  final UserModel? userModel;
 
   const Applications_Screen({super.key, required this.firebaseUser, required this.userModel});
 
@@ -34,7 +32,7 @@ class _Applications_Screen extends State<Applications_Screen> {
     QuerySnapshot applyJobQuerySnapshot = await FirebaseFirestore.instance.collectionGroup('apply_job').get();
 
     for (QueryDocumentSnapshot applyJobDoc in applyJobQuerySnapshot.docs) {
-      if (applyJobDoc.get('userId') == widget.userModel.uid) {
+      if (applyJobDoc.get('userId') == widget.userModel!.uid) {
         // For each document in apply_job subCollection and  Get the parent document reference
         DocumentReference jobRef = applyJobDoc.reference.parent.parent!;
         DocumentSnapshot jobSnapshot = await jobRef.get(); // Retrieve the parent document data from the jobs collection
@@ -133,8 +131,8 @@ class _Applications_Screen extends State<Applications_Screen> {
                 children: [
                   Applied_Job_Tab(
                     appliedJobs: appliedJobs,
-                    userModel: widget.userModel,
-                    firebaseUser: widget.firebaseUser,
+                    userModel: widget.userModel!,
+                    firebaseUser: widget.firebaseUser!,
                   ),
                   Interview_Tab(),
                 ],
@@ -290,6 +288,7 @@ class _Applied_Job_TabState extends State<Applied_Job_Tab> {
                                 children: [
                                   // ============== Job list view Widget ==============
                                   View_Job_List_Widget(
+                                    isAdmin: true,
                                     date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
                                     daysAgo: "${daysDifference}",
                                     jobPost: jobPost,

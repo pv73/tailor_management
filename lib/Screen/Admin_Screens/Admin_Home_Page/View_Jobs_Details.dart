@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/Image_Viewer_Screen.dart';
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/Pdf_Viewer_Screen.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Show_Experience_Widget.dart';
+import 'package:tailor/Screen/Users_Screens/Home/home_page.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
 import 'package:tailor/modal/ApplyJobModel.dart';
@@ -33,7 +34,7 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
   @override
   void initState() {
     super.initState();
-    // First get all List data which is Stored all jobsData then fetch data by Using JoId
+    // First get all List data which is Stored all jobsData then fetch data by Using JobId
     jobIdData = BlocProvider.of<JobPostCubit>(context).getAllDataByJobId(widget.jobId!);
   }
 
@@ -41,7 +42,7 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: AppColor.textColorWhite,
+      // backgroundColor: AppColor.textColorWhite,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Row(
@@ -89,9 +90,9 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
       body: SingleChildScrollView(
         child: Container(
           width: mq.size.width,
-          child: FutureBuilder(
+          child: FutureBuilder<Map<String, dynamic>>(
             future: jobIdData,
-            builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -100,7 +101,7 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                 return Center(
                   child: Text('Error: ${snapshot.error}'),
                 );
-              } else {
+              } else if (snapshot.hasData) {
                 // ====== Store Data in getFieldByJobId var ============
                 var getFieldByJobId = snapshot.data!;
 
@@ -122,7 +123,61 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                     Text("${getFieldByJobId['job_type']}", style: mTextStyle18(mFontWeight: FontWeight.w600)),
                     heightSpacer(mHeight: 3),
                     Text("at ${getFieldByJobId['company_name']}", style: mTextStyle14()),
-                    heightSpacer(mHeight: 3),
+                    heightSpacer(mHeight: 10),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              openGoogleMaps("${getFieldByJobId['company_address']}");
+                            },
+                            child: Container(
+                              height: 70,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: AppColor.textColorLightBlack),
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.directions,
+                                    color: AppColor.textColorBlue,
+                                  ),
+                                  Text("Direction", style: mTextStyle12(mFontWeight: FontWeight.w700)),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // widthSpacer(),
+                          // InkWell(
+                          //   onTap: () {
+                          //     openGoogleMaps("${getFieldByJobId['company_address']}");
+                          //   },
+                          //   child: Container(
+                          //     height: 70,
+                          //     width: 70,
+                          //     decoration: BoxDecoration(
+                          //         color: Colors.white,
+                          //         border: Border.all(color: AppColor.textColorLightBlack),
+                          //         borderRadius: BorderRadius.circular(50)),
+                          //     child: Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.center,
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         Icon(Icons.call, color: AppColor.btnBgColorGreen),
+                          //         Text("Call", style: mTextStyle12(mFontWeight: FontWeight.w700)),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ),
 
                     // ==== Experience, vacancy and shift ==============
                     Card_Container_Widget(
@@ -604,6 +659,10 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                     heightSpacer(mHeight: 80),
                   ],
                 );
+              } else {
+                return Center(
+                  child: Text('No data found'),
+                );
               }
             },
           ),
@@ -743,3 +802,4 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
     );
   }
 }
+

@@ -586,7 +586,7 @@ class _Profile_Screen extends State<Profile_Screen> {
                 Card_Container_Widget(
                   padding: EdgeInsets.all(10),
                   child: isEditedByName == "GarmentCateEdit"
-                  //======== Edit Garment category, Job type, and Category of tailor ===============
+                      //======== Edit Garment category, Job type, and Category of tailor ===============
                       ? JobType_Edit_Widget(
                           selected_JobType: job_type,
                           EditGarmentPress: (Garment_btn_name, index, isSelected) {
@@ -1504,7 +1504,7 @@ class _Profile_Screen extends State<Profile_Screen> {
   void cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: file.path,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      // aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
       compressQuality: 15,
     );
 

@@ -128,7 +128,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                     children: [
                       Detail_Box(
                         onPressed: () {
-                          companyNameController.text = widget.companyModel.company_name!;
+                          companyNameController.text = "${widget.companyModel.company_name}";
                           isEditByName = "Company";
                           setState(() {});
                         },
@@ -157,7 +157,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                               },
                             )
                           : Text(
-                              "${widget.companyModel.company_name}",
+                              widget.companyModel.company_name == null ? "" : "${widget.companyModel.company_name}",
                               style: mTextStyle13(),
                             ),
                     ],
@@ -186,7 +186,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                 ),
 
                 // ================= Company Number =================
-                widget.companyModel.company_number != null
+                widget.companyModel.company_number == null || widget.companyModel.company_number != null
                     ? Card_Container_Widget(
                         margin: EdgeInsets.only(top: 10),
                         padding: EdgeInsets.all(10),
@@ -195,7 +195,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                           children: [
                             Detail_Box(
                               onPressed: () {
-                                companyNumberController.text = widget.companyModel.company_number!;
+                                companyNumberController.text = "${widget.companyModel.company_number}";
                                 isEditByName = "Company_Number";
                                 setState(() {});
                               },
@@ -221,7 +221,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                                     },
                                   )
                                 : Text(
-                                    "${widget.companyModel.company_number}",
+                                    widget.companyModel.company_number == null ? "" : "${widget.companyModel.company_number}",
                                     style: mTextStyle13(),
                                   )
                           ],
@@ -230,7 +230,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                     : Container(),
 
                 //==============  Company Gst No ===================
-                widget.companyModel.gst_no != null
+                widget.companyModel.gst_no != null || widget.companyModel.gst_no == null
                     ? Card_Container_Widget(
                         margin: EdgeInsets.only(top: 10),
                         padding: EdgeInsets.all(10),
@@ -239,7 +239,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                           children: [
                             Detail_Box(
                               onPressed: () {
-                                gst_noController.text = widget.companyModel.gst_no!;
+                                gst_noController.text = "${widget.companyModel.gst_no}";
                                 gstFileName = widget.companyModel.gst_fileName;
                                 isEditByName = "gst_no";
                                 setState(() {});
@@ -329,7 +329,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                     : Container(),
 
                 // ============ Company Pan Card Number ===========
-                widget.companyModel.pan_no != null
+                widget.companyModel.pan_no != null || widget.companyModel.pan_no == null
                     ? Card_Container_Widget(
                         margin: EdgeInsets.only(top: 10),
                         padding: EdgeInsets.all(10),
@@ -338,7 +338,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                           children: [
                             Detail_Box(
                               onPressed: () {
-                                panCardController.text = widget.companyModel.pan_no!;
+                                panCardController.text = "${widget.companyModel.pan_no}";
                                 isEditByName = "pan_card";
                                 setState(() {});
                               },
@@ -384,7 +384,7 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                     children: [
                       Detail_Box(
                         onPressed: () {
-                          addressController.text = widget.companyModel.address!;
+                          addressController.text = "${widget.companyModel.address}";
                           isEditByName = "company_address";
                           setState(() {});
                         },
@@ -410,9 +410,9 @@ class _Admin_ProfileState extends State<Admin_Profile> {
                               },
                             )
                           : Text(
-                              "${widget.companyModel.address}",
+                              widget.companyModel.address == null ? "" : "${widget.companyModel.address}",
                               style: mTextStyle13(),
-                            )
+                            ),
                     ],
                   ),
                 ),

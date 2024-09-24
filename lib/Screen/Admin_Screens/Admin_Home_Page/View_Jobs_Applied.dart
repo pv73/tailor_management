@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -158,9 +156,11 @@ class _View_Jobs_AppliedState extends State<View_Jobs_Applied> {
                                     onTap: () {
                                       Navigator.push(
                                         context,
-                                        PageTransition(child: AdminSeen_TailorProfile_Screen(
-                                          getUserId: appliedJobData['userId'],
-                                        ), type: PageTransitionType.fade),
+                                        PageTransition(
+                                            child: AdminSeen_TailorProfile_Screen(
+                                              getUserId: appliedJobData['userId'],
+                                            ),
+                                            type: PageTransitionType.fade),
                                       );
                                     },
                                     child: Container(

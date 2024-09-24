@@ -41,7 +41,6 @@ class _Post_JobState extends State<Post_Job> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late MediaQueryData mq;
 
-
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context);
@@ -75,7 +74,6 @@ class _Post_JobState extends State<Post_Job> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Text
             Padding(
               padding: EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 0),
@@ -774,7 +772,7 @@ class _Post_JobState extends State<Post_Job> {
   void cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: file.path,
-      aspectRatio: CropAspectRatio(ratioX: 16, ratioY: 9),
+      // aspectRatio: CropAspectRatio(ratioX: 16, ratioY: 9),
       compressQuality: 15,
     );
 

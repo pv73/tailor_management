@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tailor/app_widget/ShowSnackBar_Widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/ui_helper.dart';
 
@@ -8,7 +11,9 @@ class Forget_Password extends StatefulWidget {
 }
 
 class _Forget_Password extends State<Forget_Password> {
+  TextEditingController recoveryEmailController = TextEditingController();
   late MediaQueryData mq;
+  String? sendMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +37,7 @@ class _Forget_Password extends State<Forget_Password> {
                   heightSpacer(mHeight: 55),
                   Text(
                     "Forget Password",
-                    style: mTextStyle24(
-                        mFontWeight: FontWeight.w900,
-                        mColor: AppColor.textColorBlue),
+                    style: mTextStyle24(mFontWeight: FontWeight.w900, mColor: AppColor.textColorBlue),
                   ),
 
                   heightSpacer(),
@@ -56,6 +59,7 @@ class _Forget_Password extends State<Forget_Password> {
 
                   heightSpacer(mHeight: 30),
                   TextFormField(
+                    controller: recoveryEmailController,
                     keyboardType: TextInputType.emailAddress,
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                     decoration: mInputDecoration(
@@ -69,13 +73,52 @@ class _Forget_Password extends State<Forget_Password> {
                     ),
                   ),
 
+                  // ---------- Send Message -------------
+                  sendMessage == null
+                      ? Container()
+                      : Container(
+                          margin: EdgeInsets.only(top: 10),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "${sendMessage}",
+                            style: mTextStyle13(mColor: Colors.red),
+                          ),
+                        ),
+
                   // Reset Btn
-                  heightSpacer(mHeight: 30),
+                  heightSpacer(mHeight: 25),
                   Rounded_Btn_Widget(
                     mfontSize: 15,
                     mAlignment: Alignment.center,
                     borderRadius: 5,
-                    onPress: () {},
+                    onPress: () async {
+                      final auth = FirebaseAuth.instance;
+
+                      if (recoveryEmailController.text.isNotEmpty) {
+                        try {
+                          await auth.sendPasswordResetEmail(email: recoveryEmailController.text.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('We have sent you email to recover password, Please check email')),
+                          );
+                          sendMessage = "Password reset email sent";
+                          recoveryEmailController.clear();
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
+                      } else {
+                        sendMessage = "Please enter email Id";
+                      }
+                      setState(() {});
+
+                      // auth.sendPasswordResetEmail(email: recoveryEmailController.text.toString()).then((value) {
+                      //   return showSnackBar_Widget(context,
+                      //       mHeading: "Success", title: "We have sent you email to recover password, Please check email");
+                      // }).onError((error, stackTrace) {
+                      //   return showSnackBar_Widget(context, mHeading: "Error", title: "${error}");
+                      // });
+                    },
                     title: "Reset Password ",
                   ),
 

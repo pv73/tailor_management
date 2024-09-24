@@ -71,7 +71,7 @@ class _Interest_Into_ScreenState extends State<Interest_Into_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 1,

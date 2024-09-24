@@ -1,26 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/Show_Experience_Widget.dart';
+import 'package:tailor/Screen/Users_Screens/Home/home_page.dart';
+import 'package:tailor/modal/ApplyJobModel.dart';
+import 'package:tailor/modal/UserModel.dart';
 import 'package:tailor/ui_helper.dart';
 
 class View_Job_List_Widget extends StatelessWidget {
+  final User? firebaseUser;
+  final UserModel? userModel;
+  final String? jobId;
   String? date;
   void Function()? onPress;
   void Function()? applyPress;
   var jobPost;
   String? daysAgo;
   bool? isApplied;
+  bool? isAdmin;
   Widget? morePopupButton;
 
-
   View_Job_List_Widget({
+    this.firebaseUser,
+    this.userModel,
+    this.jobId,
     required this.date,
     required this.onPress,
     this.applyPress,
     required this.jobPost,
     required this.daysAgo,
-    this.isApplied = false,
+    required this.isAdmin,
+    this.isApplied,
     this.morePopupButton,
   });
+
+  bool isApplieds = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,46 +44,42 @@ class View_Job_List_Widget extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(
-            color: Colors.green.shade200),
+        side: BorderSide(color: Colors.green.shade200),
       ),
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //============== Post Date ===============
-          // ============== If Job already Applied this job then hide==============
-          isApplied == true
-              ? Container()
-              : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Posted Date: ",
-                        style: mTextStyle13(
-                          mFontWeight: FontWeight.w500,
-                          mColor: AppColor.btnBgColorGreen,
-                        ),
-                      ),
-                      Text(
-                        "${date}",
-                        style: mTextStyle13(
-                          mFontWeight: FontWeight.w600,
-                          mColor: AppColor.btnBgColorGreen,
-                        ),
-                      )
-                    ],
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Posted Date: ",
+                  style: mTextStyle13(
+                    mFontWeight: FontWeight.w500,
+                    mColor: AppColor.btnBgColorGreen,
                   ),
                 ),
+                Text(
+                  "${date}",
+                  style: mTextStyle13(
+                    mFontWeight: FontWeight.w600,
+                    mColor: AppColor.btnBgColorGreen,
+                  ),
+                )
+              ],
+            ),
+          ),
 
           // ===========  Image & JobType & company_name ============
           InkWell(
@@ -119,17 +130,23 @@ class View_Job_List_Widget extends StatelessWidget {
                 Icon(
                   Icons.place,
                   size: 18,
-                  color: AppColor.textColorLightBlack,
+                  color: Colors.blue,
                 ),
                 widthSpacer(mWidth: 5),
                 Expanded(
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "${jobPost['company_address']}",
-                      style: mTextStyle14(mFontWeight: FontWeight.w400),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      openGoogleMaps("${jobPost['company_address']}");
+                    },
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "${jobPost['company_address']}",
+                        style: mTextStyle14(mFontWeight: FontWeight.w400),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                   ),
                 ),
@@ -268,50 +285,129 @@ class View_Job_List_Widget extends StatelessWidget {
               : Container(),
 
           // ================ Other Details ==============
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            margin: EdgeInsets.only(bottom: 10, top: 2),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    child: Text(
-                      daysAgo == "0"
-                          ? "Today"
-                          : int.tryParse("${daysAgo}") != null && int.parse("${daysAgo}") > 30
-                              ? "30+d ago"
-                              : "${daysAgo}d ago",
-                      style: mTextStyle13(mColor: Colors.grey.shade500),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: onPress,
-                    child: Text(
-                      "View More..",
-                      style: mTextStyle13(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
-                      textAlign: isApplied == true ? TextAlign.right : TextAlign.center,
-                    ),
-                  ),
-                ),
-
-                // =========== If Job Applied then hide ================
-                isApplied == true
-                    ? Container()
-                    : Expanded(
-                        child: InkWell(
-                          onTap: applyPress,
+          // --------- When See Admin then not visible apply and more view button --------
+          // ----- Only See Tailor (user) ----------------
+          isAdmin == true
+              ? Container(
+                  height: 10,
+                )
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  margin: EdgeInsets.only(bottom: 10, top: 2),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
                           child: Text(
-                            "Apply Now",
-                            style: mTextStyle13(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
-                            textAlign: TextAlign.right,
+                            daysAgo == "0"
+                                ? "Today"
+                                : int.tryParse("${daysAgo}") != null && int.parse("${daysAgo}") > 30
+                                    ? "30+d ago"
+                                    : "${daysAgo}d ago",
+                            style: mTextStyle13(mColor: Colors.grey.shade500),
                           ),
                         ),
                       ),
-              ],
-            ),
-          ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: onPress,
+                          child: Text(
+                            "View More..",
+                            style: mTextStyle13(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
+                            textAlign: isApplied == true ? TextAlign.right : TextAlign.center,
+                          ),
+                        ),
+                      ),
+
+                      // =========== If Job Applied then hide ================
+                      Expanded(
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('jobs')
+                              .doc(jobId)
+                              .collection('apply_job')
+                              .doc(userModel!.uid)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              // Data is still loading
+                              return Container();
+                            }
+
+                            if (!snapshot.data!.exists) {
+                              // Document does not exist, set isApplied to false
+                              isApplieds = false;
+                            } else {
+                              // Document exists, retrieve the isApplied field value
+                              isApplieds = snapshot.data!.get('isApplied') ?? false;
+                            }
+
+                            return InkWell(
+                              onTap: isApplieds
+                                  ? () {
+                                      print("job");
+                                    }
+                                  : () async {
+                                      try {
+                                        // ========== store value in variable ==========
+                                        ApplyJobModel newApplyJob = ApplyJobModel(
+                                          dateTime: DateTime.now(),
+                                          jobId: jobId,
+                                          userId: userModel!.uid,
+                                          user_name: userModel!.user_name,
+                                          emailId: userModel!.email,
+                                          isApplied: true,
+                                          garment_category: userModel!.garment_category,
+                                          skills: userModel!.skills,
+                                          profilePicUrl: userModel!.profile_pic,
+                                        );
+
+                                        await FirebaseFirestore.instance
+                                            .collection("jobs")
+                                            .doc(jobId)
+                                            .collection("apply_job")
+                                            .doc(userModel!.uid)
+                                            .set(newApplyJob.toMap());
+
+                                        // log("JobApply Successfully");
+                                      } catch (err) {
+                                        print(err.toString());
+                                      }
+                                    },
+                              child: Text(
+                                isApplieds ? "Applied" : "Job Apply",
+                                style: mTextStyle13(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
+                                textAlign: TextAlign.right,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      // isApplied == true
+                      //     ? Expanded(
+                      //         child: InkWell(
+                      //           onTap: () {},
+                      //           child: Text(
+                      //             "Applied",
+                      //             style: mTextStyle13(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
+                      //             textAlign: TextAlign.right,
+                      //           ),
+                      //         ),
+                      //       )
+                      //     : Expanded(
+                      //         child: InkWell(
+                      //           onTap: applyPress,
+                      //           child: Text(
+                      //             "Apply Now",
+                      //             style: mTextStyle13(mColor: AppColor.btnBgColorGreen, mFontWeight: FontWeight.w500),
+                      //             textAlign: TextAlign.right,
+                      //           ),
+                      //         ),
+                      //       ),
+                    ],
+                  ),
+                ),
         ],
       ),
     );

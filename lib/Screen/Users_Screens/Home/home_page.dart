@@ -9,15 +9,15 @@ import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/View_Jobs_Details.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/View_Job_List_Widget.dart';
+import 'package:tailor/Screen/Users_Screens/navigation_screen/jobs_screen.dart';
 import 'package:tailor/app_widget/Attendence_HomePage_Widget.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/OurProfile_HomePage_Widget.dart';
-import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
-import 'package:tailor/dynimic_list/job_referral_list.dart';
 import 'package:tailor/modal/ApplyJobModel.dart';
 import 'package:tailor/modal/UserModel.dart';
 import 'package:tailor/ui_helper.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class Home_Page extends StatefulWidget {
   final User firebaseUser;
@@ -133,7 +133,7 @@ class _Home_PageState extends State<Home_Page> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 20),
+                margin: EdgeInsets.only(bottom: 5),
                 child: BlocBuilder<JobPostCubit, JobPostState>(
                   builder: (context, state) {
                     return StreamBuilder<QuerySnapshot>(
@@ -156,12 +156,12 @@ class _Home_PageState extends State<Home_Page> {
                           }
 
                           return ListView.builder(
-                            itemCount: getJobPostList.length > 5 ? 5 : getJobPostList.length,
+                            itemCount: getJobPostList.length > 10 ? 10 : getJobPostList.length,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               var jobPost = getJobPostList[index];
-                              JobID =  getJobPostList[index]['jobId'];
+                              JobID = getJobPostList[index]['jobId'];
 
                               // Assuming 'dateTime' is the field storing DateTime in Firestore
                               DateTime jobDateTime = jobPost['dateTime'].toDate();
@@ -173,14 +173,16 @@ class _Home_PageState extends State<Home_Page> {
                                 children: [
                                   // ============== Job list view Widget ==============
                                   View_Job_List_Widget(
+                                    isAdmin: false,
+                                    firebaseUser: widget.firebaseUser,
+                                    userModel: widget.userModel,
+                                    jobId: JobID,
                                     date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
                                     daysAgo: "${daysDifference}",
                                     jobPost: jobPost,
-                                    applyPress: () {
-                                      JobApplyFunction();
-                                    },
+                                    // isApplied: getJobPostList[index]['isApplied'],
+                                    applyPress: () {},
                                     onPress: () {
-
                                       Navigator.push(
                                         context,
                                         PageTransition(
@@ -218,98 +220,35 @@ class _Home_PageState extends State<Home_Page> {
                 ),
               ),
 
-              // Only Image
-              // heightSpacer(),
-              // Container(
-              //   width: double.infinity,
-              //   padding: EdgeInsets.all(5),
-              //   child: Image.asset(
-              //     "assets/images/banner/working_home.jpg",
-              //     fit: BoxFit.cover,
-              //   ),
-              // ),
-
-              // People from Your field
-              heightSpacer(),
-              Container(
-                width: double.infinity,
-                color: Colors.blue.shade50,
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  "People from your filed",
-                  style: mTextStyle17(mFontWeight: FontWeight.w500),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                color: Colors.blue.shade50,
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: referral_list.length > 4 ? 4 : referral_list.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, mainAxisSpacing: 5, crossAxisSpacing: 5, mainAxisExtent: 220),
-                  itemBuilder: (context, releted_job_Index) {
-                    return Container(
-                      child: Card(
-                        color: AppColor.textColorWhite,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 25,
-                                backgroundColor: AppColor.textColorBlue,
-                                child: Text(
-                                  getInitials(referral_list[releted_job_Index]['name']!),
-                                  style: mTextStyle18(mFontWeight: FontWeight.w700, mColor: AppColor.textColorWhite),
-                                ),
-                              ),
-                              heightSpacer(mHeight: 7),
-                              Text(
-                                referral_list[releted_job_Index]['name'].toString(),
-                                style: mTextStyle15(mFontWeight: FontWeight.w600),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              heightSpacer(mHeight: 7),
-                              Text(
-                                referral_list[releted_job_Index]['skills'].toString(),
-                                style: mTextStyle12(),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                              heightSpacer(mHeight: 7),
-                              Text(
-                                referral_list[releted_job_Index]['company_name'].toString(),
-                                style: mTextStyle12(),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Spacer(),
-                              Rounded_Btn_Widget(
-                                title: "Ask for eferral",
-                                mFontWeight: FontWeight.w600,
-                                mfontSize: 12,
-                                mAlignment: Alignment.center,
-                                btnBgColor: AppColor.cardBtnBgGreen,
-                                mHeight: 25,
-                                onPress: () {
-                                  print(releted_job_Index);
-                                  print(referral_list[releted_job_Index]['name'].toString());
-                                  setState(() {});
-                                },
-                              )
-                            ],
-                          ),
-                        ),
+              // ================ See more button ===========
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Jobs_Screen(
+                        firebaseUser: widget.firebaseUser,
+                        userModel: widget.userModel,
                       ),
-                    );
-                  },
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 30),
+                  padding: EdgeInsets.all(7),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      border: Border.all(color: Colors.green.shade300),
+                      borderRadius: BorderRadius.circular(2)),
+                  child: Text(
+                    "See more..",
+                    style: mTextStyle14(mFontWeight: FontWeight.w600, mColor: Colors.green),
+                  ),
                 ),
-              ),
+              )
+
             ],
           ),
         ),
@@ -342,7 +281,6 @@ class _Home_PageState extends State<Home_Page> {
       ),
     );
   }
-
 
   // ========== JobApplyFunction button clicked ===============
   void JobApplyFunction() async {
@@ -387,4 +325,12 @@ class _Home_PageState extends State<Home_Page> {
 
     return initials;
   }
+}
+
+// ===== openGoogleMaps ==============
+Future<void> openGoogleMaps(String address) async {
+  String query = Uri.encodeComponent(address);
+  String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$query';
+
+  await canLaunchUrlString(googleUrl) ? await launchUrlString(googleUrl) : throw 'Could not Lunch';
 }

@@ -1,12 +1,7 @@
-import 'dart:developer';
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:tailor/ui_helper.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 
 class Image_Viewer_Screen extends StatelessWidget {
   final String ImageUrl;

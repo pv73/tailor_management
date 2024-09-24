@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +15,7 @@ import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/Factory_details.dart
 import 'package:tailor/Screen/Users_Screens/Introduction/aadhar_into_screen.dart';
 import 'package:tailor/Screen/Users_Screens/navigation_screen/navigation_bar.dart';
 import 'package:tailor/Screen/splash/splash_screen.dart';
-import 'package:tailor/Screen/user_onboard/First_Dashboard.dart';
+import 'package:tailor/Screen/Users_Screens/Home/First_Dashboard.dart';
 import 'package:tailor/controller/firebase_connection.dart';
 import 'package:tailor/cubits/auth_cubit/auth_cubit.dart';
 import 'package:tailor/cubits/auth_cubit/auth_state.dart';
@@ -45,7 +44,6 @@ void main() async {
   await Push_Notification.initNotifications();
 
   //============== Device Preview ==============
-
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,

@@ -1,4 +1,3 @@
-
 class JobPostModel {
   DateTime? dateTime;
   String? uid;
@@ -32,7 +31,6 @@ class JobPostModel {
   String? maximum_experience;
   List<String>? tailor_skill;
   List<String>? skills_tailor_employee;
-
 
   JobPostModel({
     this.dateTime,
@@ -110,34 +108,34 @@ class JobPostModel {
       'uid': uid,
       'jobId': jobId,
       'company_logo': company_logo,
-      'company_name' : company_name,
-      'company_address' : company_address,
-      'garment_type' : garment_type,
-      'garment_image' : garment_image,
-      'garmentPicName' : garmentPicName,
-      'garment_order' : garment_order,
-      'work_type' : work_type,
-      'work_shift' : work_shift,
-      'job_type' : job_type,
-      'department' : department,
-      'category' : category,
-      'samp_salary' : samp_salary,
-      'part_time_category' : part_time_category,
-      'part_time_sub_cat' : part_time_sub_cat,
-      'pt_sub_cat_text' : pt_sub_cat_text,
-      'grade_salary' : grade_salary,
-      'grade_salary_amount' : grade_salary_amount,
-      'part_rate' : part_rate,
-      'part_rate_text' : part_rate_text,
-      'part_rate_url' : part_rate_url,
-      'part_rate_url_name' : part_rate_url_name,
-      'full_pc_amount' : full_pc_amount,
-      'full_pc' : full_pc,
-      'total_tailor' : total_tailor,
-      'minimum_experience' : minimum_experience,
-      'maximum_experience' : maximum_experience,
-      'tailor_skill' : tailor_skill,
-      'skills_tailor_employee' : skills_tailor_employee,
+      'company_name': company_name,
+      'company_address': company_address,
+      'garment_type': garment_type,
+      'garment_image': garment_image,
+      'garmentPicName': garmentPicName,
+      'garment_order': garment_order,
+      'work_type': work_type,
+      'work_shift': work_shift,
+      'job_type': job_type,
+      'department': department,
+      'category': category,
+      'samp_salary': samp_salary,
+      'part_time_category': part_time_category,
+      'part_time_sub_cat': part_time_sub_cat,
+      'pt_sub_cat_text': pt_sub_cat_text,
+      'grade_salary': grade_salary,
+      'grade_salary_amount': grade_salary_amount,
+      'part_rate': part_rate,
+      'part_rate_text': part_rate_text,
+      'part_rate_url': part_rate_url,
+      'part_rate_url_name': part_rate_url_name,
+      'full_pc_amount': full_pc_amount,
+      'full_pc': full_pc,
+      'total_tailor': total_tailor,
+      'minimum_experience': minimum_experience,
+      'maximum_experience': maximum_experience,
+      'tailor_skill': tailor_skill,
+      'skills_tailor_employee': skills_tailor_employee,
     };
   }
 }

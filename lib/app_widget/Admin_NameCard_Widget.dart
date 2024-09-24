@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tailor/cubits/company_cubit/company_cubit.dart';
@@ -191,8 +191,8 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
               ],
             ),
 
-            /// Address
-            heightSpacer(mHeight: 3),
+            /// Location
+            heightSpacer(mHeight: 5),
             Row(
               children: [
                 Text(
@@ -247,7 +247,7 @@ class _Admin_NameCard_WidgetState extends State<Admin_NameCard_Widget> {
   cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: companyLogoPath!,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      // aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
       compressQuality: 15,
     );
 

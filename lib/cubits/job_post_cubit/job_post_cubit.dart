@@ -11,6 +11,7 @@ class JobPostCubit extends Cubit<JobPostState> {
 
   // all Data store in clients_data list from clients collection firebase
   final jobPosts = [];
+  List filteredJobList = []; // this used only First Dashboard, finding jobs
 
   //======== Add New Job===============
   void addJobPostModel(JobPostModel jobPostModel) async {
@@ -35,6 +36,27 @@ class JobPostCubit extends Cubit<JobPostState> {
     var jobs = _fireStore.collection("jobs").orderBy('dateTime', descending: true);
 
     return jobs.snapshots();
+  }
+
+  //=============== Search Function ==================
+  void searchJob(String query) {
+    if (query.isNotEmpty) {
+      filteredJobList = jobPosts.where((element) {
+        String ipcNo = element['category'].toString().toLowerCase();
+        String bnsNo = element['department'].toString().toLowerCase();
+        String title = element['job_type'].toString().toLowerCase();
+        String desc = element['work_shift'].toString().toLowerCase();
+        String update = element['work_type'].toString().toLowerCase();
+
+        return ipcNo.contains(query) ||
+            bnsNo.contains(query) ||
+            title.contains(query.toLowerCase()) ||
+            desc.contains(query.toLowerCase()) ||
+            update.contains(query.toLowerCase());
+      }).toList();
+    } else {
+      filteredJobList = [];
+    }
   }
 
   //======================= Update Job Post model by id ======================

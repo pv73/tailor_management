@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tailor/dynimic_list/Job_Dropdown_list.dart';
 import 'package:tailor/modal/CompanyModel.dart';
 import 'package:tailor/ui_helper.dart';
 

@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tailor/Screen/Users_Screens/navigation_screen/Tailor_profile_Edit_Widget/Update_Button_widget.dart';
 import 'package:tailor/app_widget/ShowSnackBar_Widget.dart';
 import 'package:tailor/app_widget/rounded_btn_widget.dart';
 import 'package:tailor/cubits/user_cubit/user_cubit.dart';

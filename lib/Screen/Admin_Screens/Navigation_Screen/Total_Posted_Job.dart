@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
@@ -172,6 +169,7 @@ class _Total_Posted_Job extends State<Total_Posted_Job> {
                                   int daysDifference = DateTime.now().difference(jobDateTime).inDays;
 
                                   return View_Job_List_Widget(
+                                    isAdmin: true,
                                     date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
                                     daysAgo: "${daysDifference}",
                                     jobPost: jobPost,

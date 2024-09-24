@@ -35,7 +35,7 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 1,
@@ -99,14 +99,14 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                         textCapitalization: TextCapitalization.words,
                         maxLines: null,
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-                       onChanged: (value){
-                          if(value.isNotEmpty){
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
                             permanentError = null;
-                          }else{
+                          } else {
                             permanent_address.text = value;
                           }
                           setState(() {});
-                       },
+                        },
                         decoration: mInputDecoration(
                           padding: EdgeInsets.only(top: 3, left: 10),
                           mIconSize: 18,
@@ -115,8 +115,12 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                           hintColor: AppColor.textColorLightBlack,
                         ),
                       ),
-
-                      permanentError == null ? Container() : Text("${permanentError}", style: mTextStyle13(mColor: Colors.red),),
+                      permanentError == null
+                          ? Container()
+                          : Text(
+                              "${permanentError}",
+                              style: mTextStyle13(mColor: Colors.red),
+                            ),
                     ],
                   ),
 
@@ -223,10 +227,19 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
                             btnBgColor: AppColor.btnBgColorGreen,
                             onPress: address_1 == null
                                 ? () {
-                                    getLatLong();
-                                    setState(() {
-                                      isLoading = true;
-                                    });
+                                    alertBox(
+                                      context,
+                                      title: "Location Permission",
+                                      content:
+                                          "This app collects location data to enable job matching and provide location-based job recommendations, even when the app is closed or not in use.",
+                                      okayPress: () {
+                                        Navigator.pop(context);
+                                        getLatLong();
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                      },
+                                    );
                                   }
                                 : () {
                                     if (permanent_address.text != "" && address_1 != "") {
@@ -302,6 +315,43 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
     );
   }
 
+  getLatLong() {
+    Future<Position> data = _determinePosition();
+    data.then((value) {
+      print("value $value");
+      setState(() {
+        lat = value.latitude;
+        long = value.longitude;
+      });
+
+      getAddress(value.latitude, value.longitude);
+    }).catchError((error) {
+      print("Error $error");
+      setState(() {
+        // Set loading state to false once address is obtained
+        isLoading = false;
+      });
+    });
+  }
+
+  // =================================================
+  //         For convert lat long to address
+  // ==================================================
+  getAddress(lat, long) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    setState(() {
+      address_1 = placemarks[3].name! + ", " + placemarks[3].subLocality! + ", ";
+      address_2 = placemarks[3].locality! + ", " + placemarks[3].postalCode! + ", " + placemarks[3].country!;
+
+// Set loading state to false once address is obtained
+      isLoading = false;
+    });
+
+    for (int i = 1; i < placemarks.length; i++) {
+      print("INDEX $i ${placemarks[i]}");
+    }
+  }
+
   // For Location Fatch Function
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -347,42 +397,5 @@ class _Location_Into_Screen extends State<Location_Into_Screen> {
     }
 
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  }
-
-  getLatLong() {
-    Future<Position> data = _determinePosition();
-    data.then((value) {
-      print("value $value");
-      setState(() {
-        lat = value.latitude;
-        long = value.longitude;
-      });
-
-      getAddress(value.latitude, value.longitude);
-    }).catchError((error) {
-      print("Error $error");
-      setState(() {
-        // Set loading state to false once address is obtained
-        isLoading = false;
-      });
-    });
-  }
-
-  // =================================================
-  //         For convert lat long to address
-  // ==================================================
-  getAddress(lat, long) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    setState(() {
-      address_1 = placemarks[3].name! + ", " + placemarks[3].subLocality! + ", ";
-      address_2 = placemarks[3].locality! + ", " + placemarks[3].postalCode! + ", " + placemarks[3].country!;
-
-// Set loading state to false once address is obtained
-      isLoading = false;
-    });
-
-    for (int i = 1; i < placemarks.length; i++) {
-      print("INDEX $i ${placemarks[i]}");
-    }
   }
 }

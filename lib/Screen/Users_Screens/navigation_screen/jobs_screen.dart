@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,9 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tailor/Filter_Pages/Filter_Page_Screen.dart';
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/View_Jobs_Details.dart';
 import 'package:tailor/Screen/Admin_Screens/Job_Post_Components/View_Job_List_Widget.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
+import 'package:tailor/app_widget/FilterBoxContainer.dart';
 import 'package:tailor/controller/firebase_connection.dart';
 import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
 import 'package:tailor/modal/ApplyJobModel.dart';
@@ -35,6 +36,7 @@ class _Jobs_Screen extends State<Jobs_Screen> {
   bool isDepartment_hide = false;
   late MediaQueryData mq;
   var JobID;
+  bool _isShowFilterSection = false;
 
   @override
   void initState() {
@@ -129,9 +131,9 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                               aspectRatio: 16 / 9,
                               autoPlayInterval: Duration(seconds: 2),
                               onPageChanged: (index, reason) {
-                                setState(() {
-                                  activeIndex = index;
-                                });
+                                // setState(() {
+                                //   activeIndex = index;
+                                // });
                               }),
                         ),
                       );
@@ -190,7 +192,6 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                   ),
                 ),
 
-
                 // =============== Show all jobs ===================
                 Container(
                   child: BlocBuilder<JobPostCubit, JobPostState>(
@@ -232,12 +233,14 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                                   children: [
                                     // ============== Job list view Widget ==============
                                     View_Job_List_Widget(
+                                      isAdmin: false,
+                                      firebaseUser: widget.firebaseUser,
+                                      userModel: widget.userModel,
+                                       jobId: JobID,
                                       date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
                                       daysAgo: "${daysDifference}",
                                       jobPost: jobPost,
-                                      applyPress: () {
-                                        JobApplyFunction();
-                                      },
+                                      applyPress: () {},
                                       onPress: () {
                                         Navigator.push(
                                           context,
@@ -254,12 +257,61 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                                       },
                                     ),
 
-                                    // ======= If index is 2 then Show this Business image ===========
+                                    // ======= If index is 2 then Show this Filter sections ===========
                                     if (index == 1)
-                                      Container(
-                                        margin: EdgeInsets.symmetric(vertical: 10),
-                                        child: Image.asset("assets/images/banner/img_business.jpg"),
-                                      )
+                                      _isShowFilterSection == true
+                                          ? Container()
+                                          : Container(
+                                              margin: EdgeInsets.symmetric(horizontal: 12),
+                                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.blue.shade50,
+                                                  borderRadius: BorderRadius.circular(3),
+                                                  border: Border.all(color: Colors.blue)),
+                                              child: FilterBoxContainer(
+                                                onClose: () {
+                                                  setState(() {
+                                                    _isShowFilterSection = true;
+                                                  });
+                                                },
+                                                onDayShift: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => Filter_Page_Screen(
+                                                        userModel: widget.userModel,
+                                                        firebaseUser: widget.firebaseUser,
+                                                        work_Shift: "Day Shift",
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                onNightShift: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => Filter_Page_Screen(
+                                                        userModel: widget.userModel,
+                                                        firebaseUser: widget.firebaseUser,
+                                                        work_Shift: "Night Shift",
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                onSite: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => Filter_Page_Screen(
+                                                        userModel: widget.userModel,
+                                                        firebaseUser: widget.firebaseUser,
+                                                        work_Type: "Onsite",
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            )
                                     else
                                       Container(),
                                   ],

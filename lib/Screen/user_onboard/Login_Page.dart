@@ -8,7 +8,7 @@ import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/Admin_Dashboard.dart
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/Factory_details.dart';
 import 'package:tailor/Screen/Users_Screens/Introduction/aadhar_into_screen.dart';
 import 'package:tailor/Screen/Users_Screens/navigation_screen/navigation_bar.dart';
-import 'package:tailor/Screen/user_onboard/First_Dashboard.dart';
+import 'package:tailor/Screen/Users_Screens/Home/First_Dashboard.dart';
 import 'package:tailor/Screen/user_onboard/Forget_Password.dart';
 import 'package:tailor/Screen/user_onboard/Number_Login.dart';
 import 'package:tailor/app_widget/ShowSnackBar_Widget.dart';

@@ -4,9 +4,12 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,11 +51,18 @@ class _Factory_DetailsState extends State<Factory_Details> {
   String? gstFileError;
   bool? isLodding = false;
   String? logoError;
+  double? lat;
+  double? long;
+  String? address;
+  bool addressSwitches = false;
+  bool? isLocationLodding = false;
 
   @override
   Widget build(BuildContext context) {
+    log("${address}");
     return Scaffold(
       // resizeToAvoidBottomInset: false,
+
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
@@ -368,28 +378,112 @@ class _Factory_DetailsState extends State<Factory_Details> {
                         ),
                       ),
 
+                      // --------- Address Switch Button -------------
+                      heightSpacer(mHeight: 15),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FlutterSwitch(
+                              activeColor: Colors.green,
+                              valueFontSize: 12.0,
+                              toggleSize: 15.0,
+                              padding: 5,
+                              height: 26,
+                              width: 50,
+                              value: addressSwitches,
+                              borderRadius: 20.0,
+                              showOnOff: true,
+                              onToggle: (val) {
+                                setState(() {
+                                  addressSwitches = val;
+
+                                  // --------- When Switch turn on or Off then Empty address and addressController
+                                  address = "";
+                                  addressController.clear();
+                                });
+                              },
+                            ),
+                          ),
+                          widthSpacer(),
+                          Expanded(
+                              flex: 5,
+                              child: Text(
+                                "Your Current Location",
+                                style: mTextStyle13(mFontWeight: FontWeight.w400),
+                              ))
+                        ],
+                      ),
+
                       // =============== Company Address ===============
                       heightSpacer(mHeight: 15),
-                      TextFormField(
-                        controller: addressController,
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-                        textCapitalization: TextCapitalization.words,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter company address';
-                          }
-                          return null;
-                        },
-                        decoration: mInputDecoration(
-                          padding: EdgeInsets.only(top: 3),
-                          prefixIcon: Icon(Icons.location_pin),
-                          preFixColor: AppColor.textColorLightBlack,
-                          mIconSize: 18,
-                          radius: 5,
-                          hint: "Address *",
-                          hintColor: AppColor.textColorLightBlack,
-                        ),
-                      ),
+                      addressSwitches == false
+                          ? TextFormField(
+                              controller: addressController,
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                              textCapitalization: TextCapitalization.words,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value.isNotEmpty) {
+                                    address = addressController.text.toString();
+                                  }
+                                });
+                              },
+                              decoration: mInputDecoration(
+                                padding: EdgeInsets.only(top: 3),
+                                prefixIcon: Icon(Icons.location_pin),
+                                preFixColor: AppColor.textColorLightBlack,
+                                mIconSize: 18,
+                                radius: 5,
+                                hint: "Enter Address *",
+                                hintColor: AppColor.textColorLightBlack,
+                              ),
+                            )
+
+                          // ------- Company Current Location ---------
+                          : Container(
+                              padding: EdgeInsets.only(left: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: AppColor.textColorLightBlack),
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.location_pin, color: AppColor.textColorLightBlack, size: 22),
+                                        widthSpacer(),
+                                        Expanded(
+                                          child: Text(
+                                            address == null ? "Current Address" : "${address}",
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  widthSpacer(),
+                                  Expanded(
+                                    child: Rounded_Btn_Widget(
+                                      mPadding: EdgeInsets.only(left: 15, right: 10, top: 10, bottom: 10),
+                                      btnBgColor: AppColor.btnBgColorGreen,
+                                      title: isLocationLodding == false ? "Get Location" : "Lodding...",
+                                      mFontWeight: FontWeight.w400,
+                                      mfontSize: 13,
+                                      onPress: () {
+                                        setState(() {
+                                          isLocationLodding = true;
+                                          getLatLong();
+                                          print(address);
+                                        });
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
 
                       // =============  Login Btn ====================
                       heightSpacer(mHeight: 25),
@@ -475,7 +569,7 @@ class _Factory_DetailsState extends State<Factory_Details> {
   cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper.platform.cropImage(
       sourcePath: companyLogoPath!,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      // aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
       compressQuality: 15,
     );
 
@@ -514,19 +608,100 @@ class _Factory_DetailsState extends State<Factory_Details> {
     }
   }
 
+  getLatLong() {
+    Future<Position> data = _determinePosition();
+    data.then((value) {
+      print("value $value");
+      setState(() {
+        lat = value.latitude;
+        long = value.longitude;
+      });
+
+      getAddress(value.latitude, value.longitude);
+    }).catchError((error) {
+      print("Error $error");
+    });
+  }
+
+  // =================================================
+  //         For convert lat long to address
+  // ==================================================
+  getAddress(lat, long) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    setState(() {
+      var address_1 = placemarks[3].name! + ", " + placemarks[3].subLocality! + ", ";
+      var address_2 = placemarks[3].locality! + ", " + placemarks[3].postalCode! + ", " + placemarks[3].country!;
+
+      address = ("${address_1} ${address_2}");
+
+      // Set loading state to false once address is obtained
+      isLocationLodding = false;
+    });
+
+    for (int i = 1; i < placemarks.length; i++) {
+      print("INDEX $i ${placemarks[i]}");
+    }
+  }
+
+  // For Location Fetch Function
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          padding: EdgeInsets.all(10),
+          content: Text('Location services are disabled.'),
+        ),
+      );
+
+      // return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          content: Text("Location permissions are denied"),
+        ));
+        // return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        content: Text("Location permissions are permanently denied, we cannot request permissions."),
+      ));
+      // return Future.error(
+      //     'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+
   // ===========  Upload File and all data ============
   void _uploadFileData() async {
     String companyName = companyNameController.text.toString();
     String companyPhone = companyPhoneController.text.toString();
     String gstNo = gstNoController.text.toString();
     String panNo = panNoController.text.toString();
-    String address = addressController.text.toString();
     String gst_file_downloadUrl = "";
     UploadTask? logoUploadTask;
     UploadTask? gstFileUploadTask;
 
     try {
-      if (companyName.isNotEmpty && companyPhone.isNotEmpty && company_logo != null && address.isNotEmpty) {
+      if (companyName.isNotEmpty && companyPhone.isNotEmpty && company_logo != null) {
         // condition true
         setState(() {
           isLodding = true;

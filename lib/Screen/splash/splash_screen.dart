@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:tailor/Screen/user_onboard/First_Dashboard.dart';
+import 'package:tailor/Screen/Users_Screens/Home/First_Dashboard.dart';
 import 'package:tailor/cubits/auth_cubit/auth_cubit.dart';
 import 'package:tailor/ui_helper.dart';
 

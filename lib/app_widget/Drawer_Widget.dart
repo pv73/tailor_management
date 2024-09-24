@@ -9,7 +9,7 @@ import 'package:tailor/Screen/Drawer_Screen/About_us.dart';
 import 'package:tailor/Screen/Drawer_Screen/Disclaimer.dart';
 import 'package:tailor/Screen/Drawer_Screen/Privacy_Policy.dart';
 import 'package:tailor/Screen/Drawer_Screen/Terms_&_Condition.dart';
-import 'package:tailor/Screen/user_onboard/First_Dashboard.dart';
+import 'package:tailor/Screen/Users_Screens/Home/First_Dashboard.dart';
 import 'package:tailor/Screen/user_onboard/Login_Page.dart';
 import 'package:tailor/Screen/user_onboard/Number_Login.dart';
 import 'package:tailor/Screen/user_onboard/SignUp_page.dart';
