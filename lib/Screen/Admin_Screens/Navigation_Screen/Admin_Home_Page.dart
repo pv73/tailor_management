@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Post_Job.dart';
+import 'package:tailor/Screen/Admin_Screens/Navigation_Screen/Total_Posted_Job.dart';
 import 'package:tailor/app_widget/Admin_NameCard_Widget.dart';
 import 'package:tailor/app_widget/Drawer_Widget.dart';
 import 'package:tailor/app_widget/admin_Dashboard_widget.dart';
-import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
+import 'package:tailor/cubits/company_cubit/company_cubit.dart';
 import 'package:tailor/modal/CompanyModel.dart';
 import 'package:tailor/ui_helper.dart';
 
@@ -16,8 +16,7 @@ class Admin_Home_Page extends StatefulWidget {
   final User firebaseUser;
   final CompanyModel companyModel;
 
-  const Admin_Home_Page(
-      {super.key, required this.firebaseUser, required this.companyModel});
+  const Admin_Home_Page({super.key, required this.firebaseUser, required this.companyModel});
 
   @override
   State<Admin_Home_Page> createState() => _Admin_Home_PageState();
@@ -26,6 +25,15 @@ class Admin_Home_Page extends StatefulWidget {
 class _Admin_Home_PageState extends State<Admin_Home_Page> {
   late MediaQueryData mq;
   var getJobPostedList;
+  int allAppliedJobCount = 0;
+  int userPostedJobCount = 0;
+  int TotalCompanyLength2 = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAppliedJobsByUserId(widget.firebaseUser.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,30 +60,26 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
           ),
         ),
       ),
-      drawer: Drawer_Widget(
-          isCurUserCom: true,
-          firebaseUser: widget.firebaseUser,
-          companyModel: widget.companyModel),
+      drawer: Drawer_Widget(isCurUserCom: true, firebaseUser: widget.firebaseUser, companyModel: widget.companyModel),
 
       // Floating Action button
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColor.navBgColor,
         foregroundColor: AppColor.textColorWhite,
         elevation: 0,
         onPressed: () {
           Navigator.push(
-              context,
-              PageTransition(
-                  child: Post_Job(
-                    companyModel: widget.companyModel,
-                    firebaseUser: widget.firebaseUser,
-                    isButtonClick: true,
-                  ),
-                  type: PageTransitionType.bottomToTop,
-                duration: Duration(milliseconds: 400)
+            context,
+            PageTransition(
+              child: Post_Job(
+                companyModel: widget.companyModel,
+                firebaseUser: widget.firebaseUser,
+                isButtonClick: true,
               ),
+              type: PageTransitionType.bottomToTop,
+              duration: Duration(milliseconds: 400),
+            ),
           );
         },
         label: const Text("Create New Job"),
@@ -115,40 +119,21 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           //
-                          BlocBuilder<JobPostCubit, JobPostState>(
-                            builder: (context, state) {
-                              return StreamBuilder<QuerySnapshot>(
-                                stream: BlocProvider.of<JobPostCubit>(context)
-                                    .getDataFilterByOrder(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else if (snapshot.hasData) {
-                                    // var getAllJobPosts = snapshot.data!.docs;
-                                    totalPostedJob(snapshot);
-
-                                    return Admin_Dashboard_Widget(
-                                      mBgColor: Colors.white,
-                                      mImage:
-                                          "assets/images/logo/ic_attendence.png",
-                                      mText: "Posted Job",
-                                      mTextNo: getJobPostedList.length.isNaN
-                                          ? "0"
-                                          : "${getJobPostedList.length}",
-                                      mColor: AppColor.textColorBlue,
-                                    );
-                                  }
-                                  return Admin_Dashboard_Widget(
-                                    mBgColor: Colors.white,
-                                    mImage:
-                                        "assets/images/logo/ic_attendence.png",
-                                    mText: "Applied Job",
-                                    widget: Lottie.asset(
-                                        "assets/images/lottie_animation/loading_animation.json",
-                                        width: 50),
-                                    mColor: AppColor.textColorBlue,
-                                  );
-                                },
+                          Admin_Dashboard_Widget(
+                            mBgColor: Colors.white,
+                            mImage: "assets/images/logo/ic_attendence.png",
+                            mText: "Posted Job",
+                            mTextNo: "${userPostedJobCount}",
+                            mColor: AppColor.textColorBlue,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Total_Posted_Job(
+                                    companyModel: widget.companyModel,
+                                    firebaseUser: widget.firebaseUser,
+                                  ),
+                                ),
                               );
                             },
                           ),
@@ -157,28 +142,8 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                             mBgColor: Colors.white,
                             mImage: "assets/images/logo/applied_job.png",
                             mText: "Applied Job",
-                            mTextNo: "25",
+                            mTextNo: "${allAppliedJobCount}",
                             mColor: AppColor.cardBtnBgGreen,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //
-                          Admin_Dashboard_Widget(
-                            mBgColor: Colors.white,
-                            mImage: "assets/images/logo/total_employee.png",
-                            mText: "Total Employee",
-                            mTextNo: "200",
-                            mColor: AppColor.textColorBlack,
-                          ),
-                          Admin_Dashboard_Widget(
-                            mBgColor: Colors.white,
-                            mImage: "assets/images/logo/total_company.png",
-                            mText: "Total Company",
-                            mTextNo: "500",
-                            mColor: AppColor.textColorBlue,
                           ),
                         ],
                       ),
@@ -195,8 +160,8 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                     children: [
                       heightSpacer(mHeight: 5),
                       Text(
-                        "Total job post for",
-                        style: mTextStyle15(mFontWeight: FontWeight.w500),
+                        "Total available Tailor and Job on Tailor Management Apps.",
+                        style: mTextStyle14(mFontWeight: FontWeight.w500),
                       ),
                       heightSpacer(mHeight: 5),
                       Row(
@@ -205,16 +170,16 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                           //
                           Admin_Dashboard_Widget(
                             mBgColor: Colors.grey.shade50,
-                            mImage: "assets/images/logo/ic_attendence.png",
-                            mText: "Total Full Piece",
-                            mTextNo: "1202",
+                            mImage: "assets/images/logo/total_employee.png",
+                            mText: "Available Tailor",
+                            mTextNo: "5000",
                             mColor: AppColor.cardBtnBgGreen,
                           ),
                           Admin_Dashboard_Widget(
                             mBgColor: Colors.grey.shade50,
                             mImage: "assets/images/logo/applied_job.png",
-                            mText: "Total Part Rate",
-                            mTextNo: "2500",
+                            mText: "Available Job",
+                            mTextNo: "500",
                             mColor: AppColor.textColorBlack,
                           ),
                         ],
@@ -224,18 +189,33 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
                         children: [
                           //
                           Admin_Dashboard_Widget(
-                            mBgColor: Colors.grey.shade50,
+                            mBgColor: Colors.white,
                             mImage: "assets/images/logo/total_employee.png",
-                            mText: "Other Total",
+                            mText: "Total Employee",
                             mTextNo: "200",
-                            mColor: AppColor.textColorBlue,
+                            mColor: AppColor.textColorBlack,
                           ),
-                          Admin_Dashboard_Widget(
-                            mBgColor: Colors.grey.shade50,
-                            mImage: "assets/images/logo/total_company.png",
-                            mText: "Total full Piece",
-                            mTextNo: "500",
-                            mColor: AppColor.textColorBlue,
+
+                          BlocProvider(
+                            create: (context) => CompanyCubit()..fetchCompanyDocsLength(), // Call fetch method here
+                            child: BlocBuilder<CompanyCubit, CompanyState>(
+                              builder: (context, state) {
+                                if (state is CompanyLoadingState) {
+                                  return Center(child: CircularProgressIndicator());
+                                } else if (state is CompanyLoadedState) {
+                                  return Admin_Dashboard_Widget(
+                                    mBgColor: Colors.white,
+                                    mImage: "assets/images/logo/total_company.png",
+                                    mText: "Total Company",
+                                    mTextNo: "${state.companyDocsLength}",
+                                    mColor: AppColor.textColorBlue,
+                                  );
+                                } else if (state is CompanyErrorState) {
+                                  return Text('Error: ${state.error}');
+                                }
+                                return Container();
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -285,23 +265,29 @@ class _Admin_Home_PageState extends State<Admin_Home_Page> {
     return initials;
   }
 
-  //
-  void totalPostedJob(snapshot) {
-    // first get jobPosts List from JobPostCubit file the store getJobPostList variable
-    getJobPostedList = BlocProvider.of<JobPostCubit>(context).jobPosts;
-    getJobPostedList.clear();
+  // --------- fetchAppliedJobsLength and Posted Job ------------
+  Future<void> fetchAppliedJobsByUserId(String userId) async {
+    try {
+      // Fetch all jobs
+      QuerySnapshot jobsSnapshot = await FirebaseFirestore.instance.collection('jobs').get();
 
-    // var jobPosts = snapshot.data!.docs;
-    for (DocumentSnapshot doc in snapshot.data!.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      for (var jobDoc in jobsSnapshot.docs) {
+        // Check if the userId matches the specified userId
+        if (jobDoc['uid'] == userId) {
+          userPostedJobCount++; // Increment count if userId matches
 
-      // Check if the UserId isNotEqual to the current user's ID
-      if (data.containsKey("uid") && data["uid"] != widget.firebaseUser.uid) {
-        // Skip adding this document to clients_data
-        continue;
+          CollectionReference applyJobRef = jobDoc.reference.collection('apply_job');
+
+          // Get the documents in apply_job collection
+          QuerySnapshot applyJobSnapshot = await applyJobRef.get();
+
+          // Get the length of apply_job documents
+          allAppliedJobCount += applyJobSnapshot.docs.length;
+          setState(() {});
+        }
       }
-      // Add all Data in jobPosts list
-      getJobPostedList.add(data);
+    } catch (e) {
+      print("Error fetching jobs: $e");
     }
   }
 }

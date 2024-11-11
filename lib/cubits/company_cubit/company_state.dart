@@ -8,9 +8,10 @@ class CompanyInitialState extends CompanyState {}
 class CompanyLoadingState extends CompanyState {}
 
 class CompanyLoadedState extends CompanyState {
-  final CompanyModel companyModel;
+  final CompanyModel? companyModel;
+  final int? companyDocsLength;
 
-  CompanyLoadedState(this.companyModel);
+  CompanyLoadedState(this.companyModel, this.companyDocsLength);
 }
 
 class CompanyErrorState extends CompanyState {

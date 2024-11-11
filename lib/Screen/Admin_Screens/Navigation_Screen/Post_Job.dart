@@ -862,6 +862,8 @@ class _Post_JobState extends State<Post_Job> {
             company_logo: widget.companyModel.company_logo,
             company_name: widget.companyModel.company_name,
             company_address: widget.companyModel.address,
+            company_number: widget.companyModel.company_number,
+            phone: widget.companyModel.phone,
             garment_type: garment,
             garment_image: garment_downloadUrl,
             garmentPicName: garmentPicName,

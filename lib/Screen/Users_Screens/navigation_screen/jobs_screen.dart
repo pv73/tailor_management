@@ -216,7 +216,7 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                             }
 
                             return ListView.builder(
-                              itemCount: getJobPostList.length > 5 ? 5 : getJobPostList.length,
+                              itemCount: getJobPostList.length < 5 ? 5 : getJobPostList.length,
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
@@ -236,7 +236,7 @@ class _Jobs_Screen extends State<Jobs_Screen> {
                                       isAdmin: false,
                                       firebaseUser: widget.firebaseUser,
                                       userModel: widget.userModel,
-                                       jobId: JobID,
+                                      jobId: JobID,
                                       date: "${DateFormat("d MMM yy").format(jobDateTime)} ",
                                       daysAgo: "${daysDifference}",
                                       jobPost: jobPost,

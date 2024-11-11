@@ -156,7 +156,7 @@ class _Home_PageState extends State<Home_Page> {
                           }
 
                           return ListView.builder(
-                            itemCount: getJobPostList.length > 10 ? 10 : getJobPostList.length,
+                            itemCount: 5,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {

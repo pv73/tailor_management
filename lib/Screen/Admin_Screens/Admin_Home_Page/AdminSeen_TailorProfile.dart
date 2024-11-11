@@ -1,20 +1,25 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:tailor/app_widget/rounded_btn_widget.dart';
+import 'package:tailor/cubits/job_post_cubit/job_post_cubit.dart';
 import 'package:tailor/ui_helper.dart';
 
-class AdminSeen_TailorProfile_Screen extends StatelessWidget {
+class AdminSeen_TailorProfile_Screen extends StatefulWidget {
   final String? getUserId;
 
   AdminSeen_TailorProfile_Screen({this.getUserId});
 
+  @override
+  State<AdminSeen_TailorProfile_Screen> createState() => _AdminSeen_TailorProfile_ScreenState();
+}
+
+class _AdminSeen_TailorProfile_ScreenState extends State<AdminSeen_TailorProfile_Screen> {
   FirebaseFirestore _Firebase = FirebaseFirestore.instance;
+  var tailorData;
 
   @override
   Widget build(BuildContext context) {
-    log(getUserId.toString());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -57,7 +62,7 @@ class AdminSeen_TailorProfile_Screen extends StatelessWidget {
       ),
       body: Container(
         child: StreamBuilder(
-          stream: _Firebase.collection("clients").doc(getUserId).snapshots(),
+          stream: _Firebase.collection("clients").doc(widget.getUserId).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -66,7 +71,7 @@ class AdminSeen_TailorProfile_Screen extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             } else {
-              final tailorData = snapshot.data!.data();
+              tailorData = snapshot.data!.data();
               return Container(
                 margin: EdgeInsets.all(10),
                 child: SingleChildScrollView(
@@ -547,11 +552,51 @@ class AdminSeen_TailorProfile_Screen extends StatelessWidget {
           },
         ),
       ),
+      bottomSheet: Container(
+        color: AppColor.bgColorWhite,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            children: [
+              // Expanded(
+              //   child: Rounded_Btn_Widget(
+              //     title: "Recruited",
+              //     mFontWeight: FontWeight.w500,
+              //     mTextColor: Colors.white,
+              //     btnBgColor: AppColor.navBgColor,
+              //     borderColor: AppColor.navBgColor,
+              //     onPress: () {
+              //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Coming Soon", textAlign: TextAlign.center)));
+              //     },
+              //     mHeight: 40,
+              //     borderRadius: 5,
+              //     mAlignment: Alignment.center,
+              //   ),
+              // ),
+              // widthSpacer(),
+              Expanded(
+                child: Rounded_Btn_Widget(
+                  title: "Call",
+                  mFontWeight: FontWeight.w500,
+                  mTextColor: Colors.white,
+                  btnBgColor: AppColor.btnBgColorGreen,
+                  borderColor: AppColor.btnBgColorGreen,
+                  onPress: () {
+                    makePhoneCall(phoneNumber: "${tailorData['phone']}");
+                  },
+                  mHeight: 40,
+                  borderRadius: 5,
+                  mAlignment: Alignment.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   // ================= UI design end  ===========================
-  //  TextCapitalization
   String capitalize(String input) {
     return input
         .toLowerCase()

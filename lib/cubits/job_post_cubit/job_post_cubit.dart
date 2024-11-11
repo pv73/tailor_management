@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:tailor/modal/JobModel.dart';
+import 'package:url_launcher/url_launcher.dart';
 part 'job_post_state.dart';
 
 class JobPostCubit extends Cubit<JobPostState> {
@@ -37,6 +38,8 @@ class JobPostCubit extends Cubit<JobPostState> {
 
     return jobs.snapshots();
   }
+
+
 
   //=============== Search Function ==================
   void searchJob(String query) {
@@ -82,5 +85,15 @@ class JobPostCubit extends Cubit<JobPostState> {
     } catch (e) {
       emit(JobPostErrorState('Failed to delete user: $e'));
     }
+  }
+}
+
+//======================= Make a Phone call function ======================
+Future<void> makePhoneCall({required String phoneNumber}) async {
+  final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+  if (await canLaunchUrl(phoneUri)) {
+    await launchUrl(phoneUri);
+  } else {
+    throw 'Could not launch $phoneNumber';
   }
 }

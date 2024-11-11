@@ -5,6 +5,8 @@ class JobPostModel {
   String? company_logo;
   String? company_name;
   String? company_address;
+  String? phone;
+  String? company_number;
   String? garment_type;
   String? garment_image;
   String? garmentPicName;
@@ -39,6 +41,8 @@ class JobPostModel {
     this.company_logo,
     this.company_name,
     this.company_address,
+    this.phone,
+    this.company_number,
     this.garment_type,
     this.garment_image,
     this.garmentPicName,
@@ -74,6 +78,8 @@ class JobPostModel {
     company_logo = map['company_logo'];
     company_name = map['company_name'];
     company_address = map['company_address'];
+    phone = map['phone'];
+    company_number = map['company_number'];
     garment_type = map['garment_type'];
     garment_image = map['garment_image'];
     garmentPicName = map['garmentPicName'];
@@ -110,6 +116,8 @@ class JobPostModel {
       'company_logo': company_logo,
       'company_name': company_name,
       'company_address': company_address,
+      'phone' : phone,
+      'company_number' : company_number,
       'garment_type': garment_type,
       'garment_image': garment_image,
       'garmentPicName': garmentPicName,

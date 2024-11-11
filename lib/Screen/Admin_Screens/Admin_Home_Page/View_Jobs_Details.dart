@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tailor/Screen/Admin_Screens/Admin_Home_Page/Image_Viewer_Screen.dart';
@@ -30,6 +32,8 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
 
   late MediaQueryData mq;
   bool isApplied = false;
+  bool isBothNoEmpty = false;
+  var getFieldByJobId;
 
   @override
   void initState() {
@@ -103,7 +107,7 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                 );
               } else if (snapshot.hasData) {
                 // ====== Store Data in getFieldByJobId var ============
-                var getFieldByJobId = snapshot.data!;
+                getFieldByJobId = snapshot.data!;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,56 +129,88 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                     Text("at ${getFieldByJobId['company_name']}", style: mTextStyle14()),
                     heightSpacer(mHeight: 10),
                     Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          InkWell(
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              openGoogleMaps("${getFieldByJobId['company_address']}");
-                            },
-                            child: Container(
-                              height: 70,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: AppColor.textColorLightBlack),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.directions,
-                                    color: AppColor.textColorBlue,
-                                  ),
-                                  Text("Direction", style: mTextStyle12(mFontWeight: FontWeight.w700)),
-                                ],
+                          Expanded(
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                openGoogleMaps("${getFieldByJobId['company_address']}");
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                decoration: BoxDecoration(
+                                    color: AppColor.bgColorWhite,
+                                    border: Border.all(color: Colors.blue.shade700),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.directions,
+                                      color: AppColor.textColorBlue,
+                                    ),
+                                    Text("Direction", style: mTextStyle11(mFontWeight: FontWeight.w700)),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                          // widthSpacer(),
-                          // InkWell(
-                          //   onTap: () {
-                          //     openGoogleMaps("${getFieldByJobId['company_address']}");
-                          //   },
-                          //   child: Container(
-                          //     height: 70,
-                          //     width: 70,
-                          //     decoration: BoxDecoration(
-                          //         color: Colors.white,
-                          //         border: Border.all(color: AppColor.textColorLightBlack),
-                          //         borderRadius: BorderRadius.circular(50)),
-                          //     child: Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.center,
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: [
-                          //         Icon(Icons.call, color: AppColor.btnBgColorGreen),
-                          //         Text("Call", style: mTextStyle12(mFontWeight: FontWeight.w700)),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
+                          widthSpacer(mWidth: 5),
+                          getFieldByJobId['company_number'] == null || getFieldByJobId['company_number'] == ""
+                              ? Container()
+                              : Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      makePhoneCall(phoneNumber: "${getFieldByJobId['company_number']}");
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                      decoration: BoxDecoration(
+                                          color: AppColor.bgColorWhite,
+                                          border: Border.all(color: AppColor.btnBgColorGreen),
+                                          borderRadius: BorderRadius.circular(5)),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.call, color: AppColor.btnBgColorGreen),
+                                          Text("Company No.",
+                                              style: mTextStyle11(mFontWeight: FontWeight.w700), textAlign: TextAlign.center),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          widthSpacer(mWidth: 5),
+                          getFieldByJobId['phone'] == null || getFieldByJobId['phone'] == ""
+                              ? Container()
+                              : Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      makePhoneCall(phoneNumber: "${getFieldByJobId['phone']}");
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                      decoration: BoxDecoration(
+                                          color: AppColor.bgColorWhite,
+                                          border: Border.all(color: AppColor.btnBgColorGreen),
+                                          borderRadius: BorderRadius.circular(5)),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.phone_android, color: AppColor.btnBgColorGreen),
+                                          Text("Phone Number",
+                                              style: mTextStyle11(mFontWeight: FontWeight.w700), textAlign: TextAlign.center),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                         ],
                       ),
                     ),
@@ -690,44 +726,96 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
                 )
 
               //======= If Tailor Job view then slow Apply button =============
-              : StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('jobs')
-                      .doc(widget.jobId)
-                      .collection('apply_job')
-                      .doc(widget.userModel!.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      // Data is still loading
-                      return CircularProgressIndicator();
-                    }
+              : Row(
+                  children: [
+                    Expanded(
+                      child: StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('jobs')
+                            .doc(widget.jobId)
+                            .collection('apply_job')
+                            .doc(widget.userModel!.uid)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            // Data is still loading
+                            return CircularProgressIndicator();
+                          }
 
-                    if (!snapshot.data!.exists) {
-                      // Document does not exist, set isApplied to false
-                      isApplied = false;
-                    } else {
-                      // Document exists, retrieve the isApplied field value
-                      isApplied = snapshot.data!.get('isApplied') ?? false;
-                    }
+                          if (!snapshot.data!.exists) {
+                            // Document does not exist, set isApplied to false
+                            isApplied = false;
+                          } else {
+                            // Document exists, retrieve the isApplied field value
+                            isApplied = snapshot.data!.get('isApplied') ?? false;
+                          }
 
-                    return Rounded_Btn_Widget(
-                      title: isApplied ? "Applied" : "Job Apply",
-                      mFontWeight: FontWeight.w500,
-                      mTextColor: isApplied ? Colors.blue.shade400 : Colors.white,
-                      btnBgColor: isApplied ? Colors.blue.shade100 : AppColor.btnBgColorGreen,
-                      borderColor: isApplied ? Colors.blue.shade100 : AppColor.btnBgColorGreen,
-                      onPress: isApplied
-                          ? () {}
-                          : () {
-                              // ===== call the job apply function =============
-                              JobApplyFunction();
-                            },
-                      mHeight: 40,
-                      borderRadius: 5,
-                      mAlignment: Alignment.center,
-                    );
-                  }),
+                          return Rounded_Btn_Widget(
+                            title: isApplied ? "Applied" : "Job Apply",
+                            mFontWeight: FontWeight.w500,
+                            mTextColor: isApplied ? Colors.blue.shade400 : Colors.white,
+                            btnBgColor: isApplied ? Colors.blue.shade100 : AppColor.navBgColor,
+                            borderColor: isApplied ? Colors.blue.shade100 : AppColor.navBgColor,
+                            onPress: isApplied
+                                ? () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("You are already applied", textAlign: TextAlign.center),
+                                      ),
+                                    );
+                                  }
+                                : () {
+                                    // ===== call the job apply function =============
+                                    JobApplyFunction();
+                                  },
+                            mHeight: 40,
+                            borderRadius: 5,
+                            mAlignment: Alignment.center,
+                          );
+                        },
+                      ),
+                    ),
+                    widthSpacer(),
+                    Expanded(
+                      child: Rounded_Btn_Widget(
+                        title: "Call",
+                        mFontWeight: FontWeight.w500,
+                        mTextColor: isBothNoEmpty ? Colors.blue.shade400 : Colors.white,
+                        btnBgColor: isBothNoEmpty ? Colors.blue.shade100 : AppColor.btnBgColorGreen,
+                        borderColor: isBothNoEmpty ? Colors.blue.shade100 : AppColor.btnBgColorGreen,
+                        onPress: isBothNoEmpty == true
+                            ? () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text("Not available any number", textAlign: TextAlign.center),
+                                  ),
+                                );
+                              }
+                            : () {
+                                var phone = getFieldByJobId['phone'];
+                                var companyNo = getFieldByJobId['company_number'];
+
+                                if ((phone == null || phone == "") && (companyNo == null || companyNo == "")) {
+                                  setState(() {
+                                    isBothNoEmpty = true;
+                                  });
+                                  log("Empty both number");
+                                } else if ((phone != null && phone != "") && (companyNo != null && companyNo != "")) {
+                                  makePhoneCall(phoneNumber: "${getFieldByJobId['phone']}");
+                                } else if (phone == null || phone == "") {
+                                  makePhoneCall(phoneNumber: "${getFieldByJobId['companyNo']}");
+                                } else if (companyNo == null || companyNo == "") {
+                                  makePhoneCall(phoneNumber: "${getFieldByJobId['phone']}");
+                                }
+                              },
+                        mHeight: 40,
+                        borderRadius: 5,
+                        mAlignment: Alignment.center,
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
@@ -802,4 +890,3 @@ class _View_Jobs_DetailsState extends State<View_Jobs_Details> {
     );
   }
 }
-
